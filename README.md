@@ -1,3 +1,15 @@
+## Getting Started
+
+To run the site locally, follow these steps:
+
+1. Open your terminal.
+2. Navigate to the project directory.
+3. Execute the following commands:
+
+```bash
+npm install
+npm run dev
+
 # Starlight Starter Kit: Basics
 
 [![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
