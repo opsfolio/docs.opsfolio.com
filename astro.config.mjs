@@ -56,15 +56,28 @@ export default defineConfig({
               label: "Concepts",
               items: [{ label: "RSSD", link: "/surveilr/concepts/rssd" }],
             },
-			{
-				label: "Reference",
-				items: [
-					{ label: 'Database', items: [
-						{ label: 'State Schema', link: '/surveilr/reference/db/schema' },
-						{ label: 'Notebook Schema', link: '/surveilr/reference/db/notebook' }
-					 ] }
-				],
-			  },
+            {
+              label: "Reference",
+              items: [
+                {
+                  label: "Database",
+                  items: [
+                    {
+                      label: "State Schema",
+                      link: "/surveilr/reference/db/schema",
+                    },
+                    {
+                      label: "Notebook Schema",
+                      link: "/surveilr/reference/db/notebook",
+                    },
+                  ],
+                },
+				{
+					label: 'CLI Commands',
+					link: "/surveilr/reference/cli/commands",
+				}
+              ],
+            },
           ],
         },
       ],
