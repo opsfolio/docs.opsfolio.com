@@ -28,15 +28,12 @@ jobs:
         with:
           node-version: lts/*
 
-      - name: Install step
-        run: "npm install"
-
       - name: Build step
-        run: "npm run build"
+        run: "npm install pnpm -g && pnpm install && pnpm run build" # 📝 Update the build command(s) if necessary
 
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:
           project: "docs-opsfolio"
-          entrypoint: "server/entry.mjs"
-          root: "dist"
+          entrypoint: "https://deno.land/std@0.188.0/http/file_server.ts" # 📝 Update the entrypoint if necessary
+          root: "dist" # 📝 Update the root if necessary
