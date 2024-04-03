@@ -6,9 +6,10 @@ To run the site locally, follow these steps:
 2. Navigate to the project directory.
 3. Execute the following commands:
 
-```bash
+```
 npm install
 npm run dev
+```
 
 # Starlight Starter Kit: Basics
 
