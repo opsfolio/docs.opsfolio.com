@@ -13,7 +13,7 @@ export default defineConfig({
         {
           label: "Resource Surveillance",
           items: [
-            { label: "Introduction", link: "/surveilr/introduction" },
+            { label: "Installation", link: "/surveilr/installation" },
             {
               label: "Ingestion",
               items: [
