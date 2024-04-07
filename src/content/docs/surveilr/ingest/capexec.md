@@ -78,22 +78,50 @@ $ surveilr capturable-exec ls                           # scan for CEs and show 
 $ surveilr capturable-exec ls --markdown > capturable-exec.md  # find CEs, try to execute them, store their output in a Markdown
 ```
 
-Running `capturable-exec ls` on the [test-fixtures]() should show something similar to this:
+Running `capturable-exec ls` on the [test-fixtures](https://github.com/opsfolio/docs.opsfolio.com/tree/main/public/test-fixtures) should show something similar to this:
 
 ```
 | Executable                                                                     | Nature                        | Issue             |
 |:------------------------------------------------------------------------------:|:-----------------------------:|:-----------------:|
-| ./support/test-fixtures/idempotent.surveilr-SQL.sh                             | batched SQL                   |                   |
-| ./support/test-fixtures/capturable-executable.surveilr[json].sh                | json                          |                   |
-| ./support/test-fixtures/capturable-executable.surveilr[json].ts                | json                          |                   |
-| ./support/test-fixtures/echo-stdin.surveilr[json].sh                           | json                          |                   |
-| ./support/test-fixtures/capturable-executable-bad-exit-status.surveilr[txt].sh | txt                           |                   |
-| ./support/test-fixtures/capturable-executable-no-permissions.surveilr[json].sh | Executable Permission Not Set | chmod +x required |
+| ./test-fixtures/idempotent.surveilr-SQL.sh                             | batched SQL                   |                   |
+| ./test-fixtures/capturable-executable.surveilr[json].sh                | json                          |                   |
+| ./test-fixtures/capturable-executable.surveilr[json].ts                | json                          |                   |
+| ./test-fixtures/echo-stdin.surveilr[json].sh                           | json                          |                   |
+| ./test-fixtures/capturable-executable-bad-exit-status.surveilr[txt].sh | txt                           |                   |
+| ./test-fixtures/capturable-executable-no-permissions.surveilr[json].sh | Executable Permission Not Set | chmod +x required |
 ```
 
 Running `capturable-exec ls --markdown` generates a Markdown document that you
 can use to learn more about what `STDIN`, `STDOUT`, and `STDERR` streams will be
 created during `ingest`.
+
+### Capturable Executables Examples
+
+See these examples in [`test-fixtures`](https://github.com/opsfolio/docs.opsfolio.com/tree/main/public/test-fixtures):
+
+- `capturable-executable.surveilr[json].ts` shows how to use simple JSON output
+  from a Deno script and store it in `uniform_resource`
+- `capturable-executable.surveilr[json].sh` shows how to use simple JSON output
+  from a Bash script and store it in `uniform_resource`
+- `echo-stdin.surveilr[json].sh` shows how to accept STDIN and emit JSON as
+  STDOUT -- this allows more complex processing by getting additional context
+  from surveilr and doing something special in a script.
+- `idempotent.surveilr-SQL.sh` shows how a script can generate SQL and
+  `surveilr` will execute the SQL as a batch in the same transaction (WARNING:
+  SQL is unsanitized and this might be a security hole so be careful turning it
+  on).
+
+How to control the behavior of _Capturable Executables_ filenames:
+
+- `surveilr ingest --captured-fs-exec-sql` Regexp(s) control which files are
+  considered capturable executables who output will be captured and executed as
+  "SQL batch"
+- `surveilr ingest --capture-fs-exec` Regexp(s) control which files are
+  considered capturable executables
+
+Full diagnostics of STDIN, STDOUT, STDERR, etc. are present in the
+`ur_session_path_fs_entry` row for all scripts as they're encountered. If you
+need more features, submit tickets.
 
 ## Testing Shell Tasks
 
