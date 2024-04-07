@@ -29,6 +29,13 @@ $ surveilr --help                         # get CLI help (pay special attention 
 
 Checkout more commands in the [reference section](/surveilr/reference/cli/commands)
 
+## Upgrading `surveilr`
+```bash
+$ surveilr upgrade ## Upgrades to the latest version
+
+$ surveilr upgrade -v 0.1.2 ## Upgrades to version 0.1.2 if present
+```
+
 ## Shell Completions
 ```bash
 $ surveilr --completions fish | source    # setup shell completions to reduce typing
