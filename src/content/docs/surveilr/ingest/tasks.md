@@ -57,4 +57,4 @@ $ deno eval "fetch(                                                             
 ```
 
 ## Testing Shell Tasks
-To test the output of shell tasks without persisting with `ingest tasks`, take a look at [capturable executables](/surveilr/ingest/capexec)
+To test the output of shell tasks without persisting with `ingest tasks`, take a look at [capturable executables](/surveilr/ingest/capexec#testing-shell-tasks)
