@@ -5,9 +5,10 @@ import starlight from "@astrojs/starlight";
 export default defineConfig({
   integrations: [
     starlight({
-      title: "Opsfolio",
+      title: "Opsfolio Docs",
       social: {
         github: "https://github.com/opsfolio/releases.opsfolio.com",
+        discord: "https://discord.gg/TbfdKMDY",
       },
       sidebar: [
         {
@@ -65,10 +66,10 @@ export default defineConfig({
                     },
                   ],
                 },
-				{
-					label: 'CLI Commands',
-					link: "/surveilr/reference/cli/commands",
-				}
+                {
+                  label: "CLI Commands",
+                  link: "/surveilr/reference/cli/commands",
+                },
               ],
             },
           ],
