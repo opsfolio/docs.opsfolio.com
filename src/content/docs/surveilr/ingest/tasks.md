@@ -56,30 +56,5 @@ $ deno eval "fetch(                                                             
   | surveilr ingest tasks
 ```
 
-### JSONL Files: Implementation Guide
-There are sample JSONL files provided that demonstrate different types of tasks:
-
-- **Cloud JSONL (cloud-cnquery.jsonl)**: This file contains commands that utilize `cnquery`for running AWS and other cloud-related queries.
-- **Device JSONL (device-security.jsonl)**: This file contains commands using `osqueryi` for device security tasks such as checking multi-factor authentication (MFA), encrypted passwords, and more.
-
-Refer to the [Typical Tasks directory](https://github.com/opsfolio/resource-surveillance/tree/main/support/tasks/typical) for examples of JSONL files and additional details on the structure and types of tasks. Please review the [README](https://github.com/opsfolio/resource-surveillance/blob/main/support/tasks/typical/README.md) for installing pkgx, osquery, and other utilities as per the requirements.
-
-
-### Usage
-You can use these JSONL files as input to the `surveilr ingest tasks` command. For example:
-
-```bash
-$ cat cloud-cnquery.jsonl | surveilr ingest tasks
-```
-
-Similarly, you can ingest tasks from the `device-security.jsonl` file:
-
-```bash
-$ cat device-security.jsonl | surveilr ingest tasks
-```
-
-This will automate the tasks specified in the JSONL files and store the structured output data in the RSSD.
-
-
 ## Testing Shell Tasks
 To test the output of shell tasks without persisting with `ingest tasks`, take a look at [capturable executables](/surveilr/ingest/capexec#testing-shell-tasks)
