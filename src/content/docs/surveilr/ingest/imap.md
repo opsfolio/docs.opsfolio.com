@@ -89,21 +89,12 @@ The output of the command is a JSON object representing the structured data of t
 In addition to the folder and batch size, there are several other options that you can specify for the `surveilr ingest imap` command:
 
 - **`-d`**: Specify the target SQLite database.
-
 - **`-I`**: Specify SQL files for batch execution.
-
 - **`-u`**: Specify the email address (username).
-
 - **`-p`**: Specify the password (mainly an app password).
-
 - **`-a`**: Specify the IMAP server address.
-
 - **`--port`**: Specify the IMAP server port.
-
-- **`-s`**: Specify the status of messages to be ingested.
-
 - **`-e`**: Choose whether to extract attachments.
-
 - **`--progress`**: Choose whether to display progress animation.
 
 
