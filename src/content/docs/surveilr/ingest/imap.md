@@ -59,12 +59,13 @@ $ surveilr ingest imap -f="<email-folder>" --batch-size="<batch-size>" <auth-pro
 ```
 Here's a breakdown of each parameter:
 
-- **f** : Specifies the email folder to ingest from (e.g., "Inbox").
-- **batch-size**: Specifies the number of emails to ingest per batch (e.g., "20000").
-- **<**auth-provider**>** : Specifies the authentication provider (e.g., "microsoft-365").
-- **m**: Specifies the authentication method (e.g., "device-code" or "auth-code").
-- **i**: Specifies the client ID for authentication (e.g., "abxxxx7bxxx-xxx-xxx-xxx63c").
-- **s**: Specifies the client secret for authentication (e.g., "mb8xxxxx-xxxxx-xxxx-ajs").
+- **`-f`**: Specifies the email folder to ingest from (e.g., "Inbox").
+- **`--batch-size`**: Specifies the number of emails to ingest per batch (e.g., "20,000").
+- **`<auth-provider>`**: Specifies the authentication provider (e.g., "microsoft-365").
+- **`-m`**: Specifies the authentication method (e.g., "device-code").
+- **`-i`**: Specifies the client ID for authentication (e.g., "abxxxx7bxxx-xxx-xxx-xxx63c").
+- **`-s`**: Specifies the client secret for authentication (e.g., "mb8xxxxx-xxxxx-xxxx-ajs").
+
 
 ### Methods of Authentication
 There are two primary methods of authentication for the surveilr ingest imap command when using the Microsoft 365 provider:
@@ -87,15 +88,25 @@ The output of the command is a JSON object representing the structured data of t
 ### Additional Usage Options
 In addition to the folder and batch size, there are several other options that you can specify for the `surveilr ingest imap` command:
 
-- **d**: Specify the target SQLite database.
-- **I**: Specify SQL files for batch execution.
-- **u**: Specify the email address (username).
-- **p**: Specify the password (mainly an app password).
-- **a**: Specify the IMAP server address.
-- **--port**: Specify the IMAP server port.
-- **s**: Specify the status of messages to be ingested.
-- **e**: Choose whether to extract attachments.
-- **--progress**: Choose whether to display progress animation.
+- **`-d`**: Specify the target SQLite database.
+
+- **`-I`**: Specify SQL files for batch execution.
+
+- **`-u`**: Specify the email address (username).
+
+- **`-p`**: Specify the password (mainly an app password).
+
+- **`-a`**: Specify the IMAP server address.
+
+- **`--port`**: Specify the IMAP server port.
+
+- **`-s`**: Specify the status of messages to be ingested.
+
+- **`-e`**: Choose whether to extract attachments.
+
+- **`--progress`**: Choose whether to display progress animation.
+
+
 
 ### Conclusion
 By utilizing Surveilr's `surveilr ingest imap` command, you can efficiently ingest IMAP emails into the RSSD for further analysis and processing. This allows for seamless integration of email data with other surveillance data in your system.
