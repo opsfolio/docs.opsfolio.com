@@ -1,6 +1,8 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 
+import pageInsight from "astro-page-insight";
+
 // https://astro.build/config
 export default defineConfig({
   integrations: [
@@ -14,12 +16,21 @@ export default defineConfig({
         {
           label: "Resource Surveillance",
           items: [
-            { label: "Installation", link: "/surveilr/installation" },
+            {
+              label: "Installation",
+              link: "/surveilr/installation",
+            },
             {
               label: "Ingestion",
               items: [
-                { label: "Files Ingestion", link: "/surveilr/ingest/files" },
-                { label: "Tasks Ingestion", link: "/surveilr/ingest/tasks" },
+                {
+                  label: "Files Ingestion",
+                  link: "/surveilr/ingest/files",
+                },
+                {
+                  label: "Tasks Ingestion",
+                  link: "/surveilr/ingest/tasks",
+                },
                 {
                   label: "Capturable Executables",
                   link: "/surveilr/ingest/capexec",
@@ -32,23 +43,39 @@ export default defineConfig({
             },
             {
               label: "Admin",
-              items: [{ label: "Merge", link: "/surveilr/admin/merge" }],
+              items: [
+                {
+                  label: "Merge",
+                  link: "/surveilr/admin/merge",
+                },
+              ],
             },
-            { label: "Code Notebooks", link: "/surveilr/notebooks/code" },
+            {
+              label: "Code Notebooks",
+              link: "/surveilr/notebooks/code",
+            },
             {
               label: "UDI",
               items: [
                 {
                   label: "PGP",
                   items: [
-                    { label: "Introduction", link: "/surveilr/udi/pgp/intro" },
+                    {
+                      label: "Introduction",
+                      link: "/surveilr/udi/pgp/intro",
+                    },
                   ],
                 },
               ],
             },
             {
               label: "Concepts",
-              items: [{ label: "RSSD", link: "/surveilr/concepts/rssd" }],
+              items: [
+                {
+                  label: "RSSD",
+                  link: "/surveilr/concepts/rssd",
+                },
+              ],
             },
             {
               label: "Reference",
@@ -75,6 +102,19 @@ export default defineConfig({
           ],
         },
       ],
+    }),
+    pageInsight({
+      lh: {
+        weight: 0.5,
+        breakPoint: 1024,
+        pwa: true,
+      },
+      firstFetch: "open",
+      cache: true,
+      build: {
+        bundle: true,
+        showOnLoad: true, // This option is only available when `bundle` is `true`.
+      },
     }),
   ],
 });
