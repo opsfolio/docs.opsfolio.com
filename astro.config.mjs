@@ -173,43 +173,77 @@ export default defineConfig({
               ],
             },
             {
-              label: "Ingestion",
+              label: "Extending Surveilr",
               items: [
-                { label: "Files Ingestion", link: "/surveilr/ingest/files" },
-                { label: "Tasks Ingestion", link: "/surveilr/ingest/tasks" },
                 {
-                  label: "Capturable Executables",
-                  link: "/surveilr/ingest/capexec",
+                  label: "Content Extensibility with Capturable Executables",
+                  link: "/surveilr/extend/content-extensibility",
                 },
                 {
-                  label: "IMAP Emails Ingestion",
-                  link: "/surveilr/ingest/imap",
+                  label: "SQL DDL Extensibility with SQL Notebooks",
+                  link: "/surveilr/extend/sql-ddl-extensibility",
+                },
+                {
+                  label:
+                    "Integrated TypeScript programmability and scriptability",
+                  link: "/surveilr/extend/integrated-ts",
                 },
               ],
             },
-            {
-              label: "Admin",
-              items: [{ label: "Merge", link: "/surveilr/admin/merge" }],
-            },
-            { label: "Code Notebooks", link: "/surveilr/notebooks/code" },
-            {
-              label: "UDI",
-              items: [
-                {
-                  label: "PGP",
-                  items: [
-                    { label: "Introduction", link: "/surveilr/udi/pgp/intro" },
-                  ],
-                },
-              ],
-            },
-            {
-              label: "Concepts",
-              items: [{ label: "RSSD", link: "/surveilr/concepts/rssd" }],
-            },
+
             {
               label: "Reference",
               items: [
+                {
+                  label: "Ingestion",
+                  items: [
+                    {
+                      label: "Files Ingestion",
+                      link: "/surveilr/reference/ingest/files",
+                    },
+                    {
+                      label: "Tasks Ingestion",
+                      link: "/surveilr/reference/ingest/tasks",
+                    },
+                    {
+                      label: "Capturable Executables",
+                      link: "/surveilr/reference/ingest/capexec",
+                    },
+                    {
+                      label: "IMAP Emails Ingestion",
+                      link: "/surveilr/reference/ingest/imap",
+                    },
+                  ],
+                },
+                {
+                  label: "Admin",
+                  items: [
+                    { label: "Merge", link: "/surveilr/reference/admin/merge" },
+                  ],
+                },
+                {
+                  label: "UDI",
+                  items: [
+                    {
+                      label: "PGP",
+                      items: [
+                        {
+                          label: "Introduction",
+                          link: "/surveilr/reference/udi/pgp/intro",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  label: "Concepts",
+                  items: [
+                    {
+                      label: "RSSD",
+                      link: "/surveilr/reference/concepts/resource-surveillance",
+                    },
+                  ],
+                },
                 {
                   label: "Database",
                   items: [
@@ -224,8 +258,24 @@ export default defineConfig({
                   ],
                 },
                 {
+                  label: "CLI Arguments",
+                  link: "/surveilr/reference/arguments/cli-arguments",
+                },
+                {
                   label: "CLI Commands",
                   link: "/surveilr/reference/cli/commands",
+                },
+                {
+                  label: "Aggregating RSSDs",
+                  link: "/surveilr/reference/aggregate/aggregating-rssd",
+                },
+                {
+                  label: "Code Notebooks",
+                  link: "/surveilr/reference/notebooks/code",
+                },
+                {
+                  label: "Terminologies",
+                  link: "/surveilr/reference/terminology/terminologies",
                 },
               ],
             },
