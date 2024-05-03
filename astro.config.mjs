@@ -1,6 +1,8 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 
+import pageInsight from "astro-page-insight";
+
 // https://astro.build/config
 export default defineConfig({
   integrations: [
@@ -14,10 +16,14 @@ export default defineConfig({
         {
           label: "Resource Surveillance",
           items: [
-            { label: "Installation", link: "/surveilr/installation" },
+            {
+              label: "Installation",
+              link: "/surveilr/installation",
+            },
             {
               label: "Disciplines and WPAs",
               items: [
+
                 {
                   label: "Software Engineers",
                   link: "/surveilr/disciplines/software-engineer",
@@ -173,6 +179,7 @@ export default defineConfig({
               ],
             },
             {
+
               label: "Extending Surveilr",
               items: [
                 {
@@ -190,6 +197,7 @@ export default defineConfig({
                 },
               ],
             },
+
 
             {
               label: "Reference",
@@ -282,6 +290,19 @@ export default defineConfig({
           ],
         },
       ],
+    }),
+    pageInsight({
+      lh: {
+        weight: 0.5,
+        breakPoint: 1024,
+        pwa: true,
+      },
+      firstFetch: "open",
+      cache: true,
+      build: {
+        bundle: true,
+        showOnLoad: true, // This option is only available when `bundle` is `true`.
+      },
     }),
   ],
 });
