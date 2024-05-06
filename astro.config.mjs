@@ -21,9 +21,12 @@ export default defineConfig({
               link: "/surveilr/installation",
             },
             {
+              label: "FAQs",
+              link: "/surveilr/faq/faqs",
+            },
+            {
               label: "Disciplines and WPAs",
               items: [
-
                 {
                   label: "Software Engineers",
                   link: "/surveilr/disciplines/software-engineer",
@@ -179,7 +182,6 @@ export default defineConfig({
               ],
             },
             {
-
               label: "Extending Surveilr",
               items: [
                 {
@@ -197,7 +199,6 @@ export default defineConfig({
                 },
               ],
             },
-
 
             {
               label: "Reference",
