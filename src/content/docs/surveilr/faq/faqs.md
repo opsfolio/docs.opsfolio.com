@@ -5,15 +5,17 @@ description: Answers to all Frequently asked questions by our users.
 
 <details open>
 
-<summary><span style="font-size: 2rem; font-weight: 600; color: #fff">Why should I use Surveilr?</span></summary>
+<summary>
+<h3>Why should I use Surveilr?</h3>
+</summary>
 
-Surveilr serves as an extendable file system inspector for performing surveillance of machine resources ( [learn more](/surveilr#surveilr) ). Any computing environment that supports SQLite can use the [Resource Surveillance State Database (RSSD)](/surveilr/reference/concepts/resource-surveillance#rssd) , which is created by the program. This enables a variety of tools, services, apps, and data warehouse integration to be made possible for the data gathered by Surveilr. Gathering machine-attested proof or evidence is made possible using Surveilr, which is beneficial for both security and compliance needs. Surveilr helps Individual contributors ( ICs ) focus on important task by automating the process of gathering compliance evidence as compared to manually feeling compliance forms which can be boring and counter-productive.
+Surveilr is the better option for gathering compliance proof through machine attestation, which is why you should use it. Code, test results, emails, issues/tickets, and wikis are examples of machine attestation artifacts that Surveilr's agent can use to conclusively demonstrate adherence to security, privacy, safety, and regulatory compliance policies—as opposed to human attestation, which depends on trust and manual processes. Through the use of this method, people can verify information more quickly and accurately by avoiding the need to complete forms, respond to emails, or take up time in meetings. Compared to conventional human-based approaches, Surveilr's machine attestation technology offers a dependable and automated means of verifying policy compliance, hence improving security and regulatory adherence.
 
 </details>
 
 <details>
 
-<summary><span style="font-size: 2rem; font-weight: 600; color: #fff">How do I install Surveilr?</span></summary>
+<summary><h3>How do I install Surveilr?</h3></summary>
 
 We have provided a detailed guide on how to install `surveilr` on your machine (Linux, Windows, and MacOS ), find it [here](/surveilr/installation).
 
@@ -21,7 +23,7 @@ We have provided a detailed guide on how to install `surveilr` on your machine (
 
 <details>
 
-<summary><span style="font-size: 2rem; font-weight: 600; color: #fff">How do I use Surveilr?</span></summary>
+<summary><h3>How do I use Surveilr?</h3></summary>
 
 We have provided a comprehensive guide on how surveilr can be used to gather machine-attested compliance evidences from different Work Product Artifacts (WPAs) across a wide variety of disciplines. Here's an example of how [software engineers](/surveilr/disciplines/software-engineer) make use of surveilr.
 
@@ -29,14 +31,14 @@ We have provided a comprehensive guide on how surveilr can be used to gather mac
 
 <details>
 
-<summary><span style="font-size: 2rem; font-weight: 600; color: #fff">Will my data such as emails be tracked by Opsfolio?</span></summary>
+<summary><h3>Will my data such as emails be tracked by Opsfolio?</h3></summary>
 
 No, Opsfolio does not track personal information, including emails, at any point in time. All data processed by Surveilr is stored in a Resource Surveillance State Database [(RSSD)](/surveilr/reference/concepts/resource-surveillance#rssd) that is stored locally on the client's machine, and not connected to any of our cloud databases.
 
 </details>
 <details>
 
-<summary><span style="font-size: 2rem; font-weight: 600; color: #fff"> If my data is tracked by the company, how can I trust that my data is safe?</span></summary>
+<summary><h3>If my data is tracked by the company, how can I trust that my data is safe?</h3></summary>
 
 We do not track your data, so you can be rest assured your data is safe.
 
