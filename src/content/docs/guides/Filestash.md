@@ -1,4 +1,7 @@
-# Filestash:
+---
+title:  Filestash
+description: File management platform
+---
 
 ### Requirements
 All you need is a Linux server with these tools installed:
