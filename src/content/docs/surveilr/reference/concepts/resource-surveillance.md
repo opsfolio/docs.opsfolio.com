@@ -13,3 +13,24 @@ description: Explains resource surveillance database (RSSD).
 , allowing it to be integrated into various systems and workflows
 
 - **Evidence Collection**: It is designed to collect machine attestation artifacts like code, test results, emails, issues/tickets, and wikis to prove that security, privacy, safety and regulatory compliance policies are being followed. This provides a more reliable and automated way to demonstrate compliance compared to relying on human attestation.
+
+## How to generate an RSSD
+
+Generating a `RSSD` requires you to execute a `survielr ingest` command which can either be [file ingestion](/surveilr/reference/ingest/files#ingest-files) or [task ingestion](/surveilr/reference/ingest/files). Suppose you have folder  named `my-files` and it is located within your current working directory, you can ingest the files in this folder by navigating into the folder ( `cd` ), and  executing this script:
+
+```bash
+$ surveilr ingest files 
+```
+An `RSSD` will be created inside `my-files`
+
+if you prefer not `cd` into `my-files` before performing file ingestion, there is a `-r` flag that allows you to specify `my-files` as the folder you wish to ingest its content(s) without having to leave your root directory.
+
+```bash
+$ surveilr ingest files -r <PATH>/my-files
+```
+
+The outcome of the execution of this script above is a `resource-surveillance.sqlite.db` file ( known as `resource surveillance state database - RSSD` ) created in your root directory. 
+
+The database consist of several tables which can you can learn about [here](/surveilr/reference/db/surveilr-state-schema/state-schema#tables).
+
+
