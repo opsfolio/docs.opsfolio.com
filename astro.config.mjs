@@ -263,6 +263,16 @@ export default defineConfig({
                   ],
                 },
                 {
+                  label: "Support",
+                  collapsed: true,
+                  items: [
+                    {
+                      label: "Filestash",
+                      link: "/surveilr/reference/support/filestash",
+                    },
+                  ],
+                },
+                {
                   label: "Database",
                   collapsed: true,
                   items: [
