@@ -73,17 +73,19 @@ To start the application with Docker Compose, use the following command:
 $ docker-compose up -d
 ```
 
-
-After installation, navigate to `http://your_domain:8334` to configure your admin password:
+Set up a reverse proxy to create a custom URL, such as `https://files.opsfolio.com/`, and then proceed to configure your admin password.
 
 ![Admin page](/images/adminpage.png) 
 
 You can set the administrator password in this section.
 
-Next, choose `SFTP` as your `Storage Backend` . Use the credentials you specified in the docker-compose file to log in as an SFTP user.
+Next, choose `SFTP` as your `Storage Backend` . 
+
+![Storage Backend](/images/Storage-Backend.png) 
+
+Use the credentials you specified in the docker-compose file to log in as an SFTP user.
 
 ![SFTP Admin page](/images/SFTP-login.png) 
-
 
 Enter the hostname, which should match the `sftp` container name, in this example, `sftp-opsfolio` (sftp container name accessed internally) 
 
