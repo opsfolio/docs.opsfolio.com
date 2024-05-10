@@ -45,9 +45,9 @@ CREATE TABLE "ur_ingest_session_fs_path_entry" (
 | Name                               | Type      | Default           | Nullable | Parents                                                | Comment                                                 |
 | ---------------------------------- | --------- | ----------------- | -------- | ------------------------------------------------------ | ------------------------------------------------------- |
 | ur_ingest_session_fs_path_entry_id | VARCHAR   |                   | false    |                                                        | {"isSqlDomainZodDescrMeta":true,"isVarChar":true}       |
-| ingest_session_id                  | VARCHAR   |                   | false    | [ur_ingest_session](ur_ingest_session)                 | {"isSqlDomainZodDescrMeta":true,"isVarChar":true}       |
-| ingest_fs_path_id                  | VARCHAR   |                   | false    | [ur_ingest_session_fs_path](ur_ingest_session_fs_path) | {"isSqlDomainZodDescrMeta":true,"isVarChar":true}       |
-| uniform_resource_id                | VARCHAR   |                   | true     | [uniform_resource](uniform_resource)                   | {"isSqlDomainZodDescrMeta":true,"isVarChar":true}       |
+| ingest_session_id                  | VARCHAR   |                   | false    | [ur_ingest_session](/surveilr/reference/db/surveilr-state-schema/ur_ingest_session)                 | {"isSqlDomainZodDescrMeta":true,"isVarChar":true}       |
+| ingest_fs_path_id                  | VARCHAR   |                   | false    | [ur_ingest_session_fs_path](/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_fs_path) | {"isSqlDomainZodDescrMeta":true,"isVarChar":true}       |
+| uniform_resource_id                | VARCHAR   |                   | true     | [uniform_resource](/surveilr/reference/db/surveilr-state-schema/uniform_resource)                   | {"isSqlDomainZodDescrMeta":true,"isVarChar":true}       |
 | file_path_abs                      | TEXT      |                   | false    |                                                        |                                                         |
 | file_path_rel_parent               | TEXT      |                   | false    |                                                        |                                                         |
 | file_path_rel                      | TEXT      |                   | false    |                                                        |                                                         |
