@@ -10,16 +10,10 @@ Get the latest `surveilr` using either of the following methods:
     $ curl -sL https://raw.githubusercontent.com/opsfolio/releases.opsfolio.com/main/surveilr/install.sh | sh
 
     # if you want a different install path
-    $ SURVEILR_HOME="$HOME/bin" curl -sL https://raw.githubusercontent.com/opsfolio/releases.opsfolio.com/main/surveilr/install.sh | sh
+    $ curl -sL https://raw.githubusercontent.com/opsfolio/releases.opsfolio.com/main/surveilr/install.sh | SURVEILR_HOME="$HOME/bin" sh
     ```
 
-2. Eget
-     - Download `eget` [here](https://github.com/zyedidia/eget).
-     - ```bash
-           $ eget opsfolio/releases.opsfolio.com --asset tar.gz
-       ```
-
-3. Get the releases from our github [releases page](https://github.com/opsfolio/releases.opsfolio.com/releases).
+2. Get the releases from our github [releases page](https://github.com/opsfolio/releases.opsfolio.com/releases).
 
 ## Verify installation
 ```bash
