@@ -3,47 +3,112 @@ title: Software Engineers
 description: explanation on how how software engineers make use of surveilr.
 ---
 
-As a software engineer you regularly produce `Work Product Artifacts ( WPAs )` such as source code, documentation, commits, e.t.c. `Surveilr` can help you gather compliance evidences from these artifacts without having to worry about filling compliance forms. Below are some examples of `WPAs` that surveilr can help gather compliance evidences from;
+Companies usually have security, privacy, safety and regulatory compliance policies that must be adhered to by their software engineering teams and the adherence to these policies can be validated by using `surveilr` agent to extract compliance evidence from machine attestation artifacts. `Surveilr` can help you retrieve compliance evidence from these artifacts without having to worry about filling compliance forms.
 
-## Source Code
+Below are  examples of `WPAs` associated with software engineers that `surveilr` can help gather compliance evidences;
 
-A source code contains folders and files which means you can perform a [file ingestion](/surveilr/reference/ingest/files#ingest-files) on it, which then processes all files in your source code and stores it in an [RSSD](/surveilr/reference/concepts/resource-surveillance) under the [uniform resource](http://localhost:4321/surveilr/reference/db/surveilr-state-schema/uniform_resource) table. Your end goal is to be able to query the generated `RSSD` for compliance proofs using a structured query language (SQL).
 
-Assuming your source-code is named `resource-surveillance`, you can ingest the files in this folder by executing any of the command  separated by comments  below:
+## Operating System
+
+A company's policy might be: **"All Software engineers/developers who are not working on ‘Windows desktop’ or ‘iOS’ native applications are required to use Debian-based Linux as their base operating system for code development."** These policy could be further broken down into the following:
+
+- Use the latest stable version of Debian-based Linux as the base operating system.
+- All development environments, tools, and libraries must be installed on the Linux OS.
+- Regularly update the OS and development environment for compatibility and security.
+
+`surveilr` can be used to prove these policy is being followed by executing its ingestion command. A simple [file ingestion](/surveilr/reference/ingest/files#ingest-files) command ( `surveilr ingest` ) can  be executed which ingests all the files in the current working directory, stores them in a [Resource Surveillance State Database (RSSD)](/surveilr/reference/concepts/resource-surveillance) with a file name `resource-surveillance.sqlite.db`, under the [uniform_resource](/surveilr/reference/db/surveilr-state-schema/uniform_resource) table, and captures the machine's operating system information, storing it under the [device](/surveilr/reference/db/surveilr-state-schema/device) table as shown below:
+
 
 ```bash
-# ingest files from your desired directory
-$ cd resource-surveillance
 $ surveilr ingest files 
-
-# Ingest files from specific directories by specifying the directory path
-$ surveilr ingest files -r /<path>/resource-surveillance
 ```
 
-Executing any of the commands above generates an [RSSD](/surveilr/reference/concepts/resource-surveillance) in the specified directory. The objective is to utilize structured query language (SQL) to query the generated `RSSD` for compliance proofs, as shown in the following examples.
+ The objective is to utilize structured query language (SQL) to query the generated `RSSD` for compliance proofs, as shown below:
+
+ ### SQL Query
+
+ ```bash
+ # navigate into the database environment (make sure sqlite3 is installed)
+ $ sqlite3 resource-surveillance.sqlite.db
+
+ # Query
+ sqlite> $ SELECT d.state_sysinfo -> 'host_name' as 'Host Name', d.state_sysinfo -> 'name' as 'OS Name', d.state_sysinfo -> 'distribution_id' as 'Distribution Id', d.state_sysinfo -> 'kernel_version' as 'Kernel Version', d.state_sysinfo -> 'os_version' as 'OS Version', d.state_sysinfo -> 'long_os_version' as 'Long OS Version' FROM device d;
+
+ ```
+
+ ### Evidence
+
+ | Host Name       | OS Name | Distribution Id | Kernel Version                     | OS Version | Long OS Version     |
+|-----------------|---------|-----------------|------------------------------------|------------|---------------------|
+| UNNIKRISHNAN-N  | Ubuntu  | ubuntu          | 5.15.133.1-microsoft-standard-WSL2 | 22.04      | Linux 22.04 Ubuntu  |
+| ABDUL-RAZAK     | Ubuntu  | ubuntu          | 5.15.133.1-microsoft-standard-WSL2 | 22.04      | Linux 22.04 Ubuntu  |
 
 
-### Examples
 
-The following examples demonstrates the use of SQL to retrieve compliance evidences fom the generated `RSSD` as a result of executing `surveilr ingest` command on a **`Rust`** source code (folder) named `resource-surveillance`
+
+
 
 
 ## Unit Tests
 
-`surveilr` can be used to store the result of running a unit test in a `RSSD`. Running a test is an action categorized under task ingestion. To learn more about `surveilr ingest tasks`, visit [ingest tasks](/surveilr/reference/ingest/tasks#task-ingestion).
 
-Suppose we want to store the result of executing the unit tests in `resource-surveillance` source code which is written in `rust` in our `RSSD`, the command below is executed:
+A company's policy might be: **"All Software engineers/developers across all the projects must have a consistent code unit testing process."** These policy could be further broken down into the following:
+
+- All developers who use ReactJS as programming language must use Jest and React Testing Library as the unit testing tools.
+- All React developers must ensure they are following React reference Project for React code quality.
+
+`surveilr` can be used to prove these policy is being followed by executing its ingestion command. A simple [file ingestion](/surveilr/reference/ingest/files#ingest-files) command ( `surveilr ingest` ) can  be executed which ingests all the files in the current working directory, stores them in a [Resource Surveillance State Database (RSSD)](/surveilr/reference/concepts/resource-surveillance) with a file name `resource-surveillance.sqlite.db`, under the [uniform_resource](/surveilr/reference/db/surveilr-state-schema/uniform_resource) table as shown below: 
 
 ```bash
-$  echo "cargo test --lib --bins -- --test-threads=1" | surveilr ing
-est tasks
+$ surveilr ingest files 
 ```
 
-As earlier mentioned, Your end goal is to be able to query the generated RSSD for compliance proofs using a structured query language (SQL).
+ The objective is to utilize structured query language (SQL) to query the generated `RSSD` for compliance proofs, as shown below:
 
-### Example
 
-The example below demonstrates the use of SQL to retrieve compliance evidence fom the generated `RSSD` as a result of piping `surveilr ingest tasks` with the command that runs the unit test.
+  
+
+  ### SQL Query
+
+  - **Verification Packages Installation**
+
+ ```bash
+ # navigate into the database environment (make sure sqlite3 is installed)
+ $ sqlite3 resource-surveillance.sqlite.db
+
+ # Query
+ sqlite> $ SELECT d.name as 'host name', ur.content -> 'name' as 'project name', ur.content -> 'devDependencies' -> 'jest' as 'jest with version', ur.content -> 'devDependencies' -> 'jest-environment-jsdom' as 'jest-environment-jsdom with version', ur.content -> 'devDependencies' -> '@testing-library/react' as '@testing-library/react with version', ur.content -> 'devDependencies' -> '@testing-library/jest-dom' as '@testing-library/jest-dom with version', ur.content -> 'devDependencies' -> 'ts-jest' as 'ts-jest with version' FROM uniform_resource ur JOIN device d ON ur.device_id = d.device_id WHERE ur.uri LIKE '%package.json';
+
+ ```
+
+ ### Evidence
+
+ | Host Name       | Project Name                        | Jest With Version | Jest-environment-jsdom With Version | @testing-library/react With Version | @testing-library/jest-dom With Version | Ts-Jest With Version |
+|-----------------|--------------------------------------|-------------------|-------------------------------------|--------------------------------------|----------------------------------------|-----------------------|
+| UNNIKRISHNAN-N  | react-code-quality-reference-project | ^29.6.2           | ^29.6.2                             | ^14.0.0                              | ^5.17.0                                | ^29.1.1               |
+| ABDUL-RAZAK     | react-code-quality-reference-project | ^29.6.2           | ^29.6.2                             | ^14.0.0                              | ^5.17.0                                | ^29.1.1               |
+
+
+  ### SQL Query
+
+  - **Verification of Unit Test Script**
+
+ ```bash
+ # navigate into the database environment (make sure sqlite3 is installed)
+ $ sqlite3 resource-surveillance.sqlite.db
+
+ # Query
+ sqlite> $SELECT d.name as 'host name', ur.content -> 'name' as 'project name', ur.content -> 'scripts' -> 'test' as 'Unit Test Script' FROM uniform_resource ur JOIN device d ON ur.device_id = d.device_id WHERE ur.uri LIKE '%package.json';
+
+ ```
+
+  ### Evidence
+
+| Host Name      | Project Name                         | Unit Test Script |
+| -------------- | ------------------------------------ | ---------------- |
+| UNNIKRISHNAN-N | react-code-quality-reference-project | jest --json      |
+| ABDUL-RAZAK    | react-code-quality-reference-project | jest --json      |
+
 
 
 
