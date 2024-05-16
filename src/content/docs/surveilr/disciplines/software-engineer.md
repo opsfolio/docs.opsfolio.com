@@ -3,47 +3,360 @@ title: Software Engineers
 description: explanation on how how software engineers make use of surveilr.
 ---
 
-As a software engineer you regularly produce `Work Product Artifacts ( WPAs )` such as source code, documentation, commits, e.t.c. `Surveilr` can help you gather compliance evidences from these artifacts without having to worry about filling compliance forms. Below are some examples of `WPAs` that surveilr can help gather compliance evidences from;
+## Introduction
 
-## Source Code
+Companies usually have security, privacy, safety and regulatory compliance policies that must be adhered to by their software engineering teams and the adherence to these policies can be validated by using `surveilr` agent to extract compliance evidence from machine attestation artifacts. `Surveilr` can help you retrieve compliance evidence from these artifacts without having to worry about filling compliance forms.
 
-A source code contains folders and files which means you can perform a [file ingestion](/surveilr/reference/ingest/files#ingest-files) on it, which then processes all files in your source code and stores it in an [RSSD](/surveilr/reference/concepts/resource-surveillance) under the [uniform resource](http://localhost:4321/surveilr/reference/db/surveilr-state-schema/uniform_resource) table. Your end goal is to be able to query the generated `RSSD` for compliance proofs using a structured query language (SQL).
+### Ensuring compliance 
 
-Assuming your source-code is named `resource-surveillance`, you can ingest the files in this folder by executing any of the command  separated by comments  below:
+A simple [file ingestion](/surveilr/reference/ingest/files#ingest-files) [command](/surveilr/disciplines/software-engineer#common-commands) can be executed which ingests all the files in the current working directory, stores them in a [Resource Surveillance State Database (RSSD)](/surveilr/reference/concepts/resource-surveillance) which is a file named `resource-surveillance.sqlite.db`, under the [uniform_resource](/surveilr/reference/db/surveilr-state-schema/uniform_resource) table. 
+
+
+
+### Common commands 
+
+When [ingesting files]((/surveilr/reference/ingest/files#ingest-files)) in the current directory, you can do the following:
 
 ```bash
-# ingest files from your desired directory
-$ cd resource-surveillance
-$ surveilr ingest files 
-
-# Ingest files from specific directories by specifying the directory path
-$ surveilr ingest files -r /<path>/resource-surveillance
+surveilr ingest files 
 ```
 
-Executing any of the commands above generates an [RSSD](/surveilr/reference/concepts/resource-surveillance) in the specified directory. The objective is to utilize structured query language (SQL) to query the generated `RSSD` for compliance proofs, as shown in the following examples.
+When running queries in [RSSDs](/surveilr/reference/concepts/resource-surveillance): 
+
+```bash
+$ sqlite3 resource-surveillance.sqlite.db "SELECT * FROM..."
+```
+
+Below are  examples of Work Product Artifacts ( `WPAs` ) associated with software engineers that `surveilr` can help gather compliance evidences;
+
+## Operating System
+
+A company's policy might state: **"All software engineers/developers who are not working on Windows desktop or iOS native applications are required to use Debian-based Linux as their base operating system for code development."** This policy can be broken down into the following requirements:
+
+- Use the latest stable version of Debian-based Linux as the base operating system.
+- All development environments, tools, and libraries must be installed on the Linux OS.
+- Regularly update the OS and development environment for compatibility and security.
+
+The next step is to use `surveilr` to [ensure compliance](/surveilr/disciplines/software-engineer#ensuring-compliance) with these policies, after which `surveilr` captures the machine's operating system information, and stores it under the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
+
+The objective is to utilize SQL to query the generated `RSSD` for compliance proofs, as shown below:
+
+ ### SQL Query for Verification of Operating System
+
+ ```sql
+SELECT d.state_sysinfo -> 'host_name' AS 'Host Name',
+       d.state_sysinfo -> 'name' AS 'OS Name',
+       d.state_sysinfo -> 'distribution_id' AS 'Distribution Id',
+       d.state_sysinfo -> 'kernel_version' AS 'Kernel Version',
+       d.state_sysinfo -> 'os_version' AS 'OS Version',
+       d.state_sysinfo -> 'long_os_version' AS 'Long OS Version'
+FROM device d;
 
 
-### Examples
+ ```
 
-The following examples demonstrates the use of SQL to retrieve compliance evidences fom the generated `RSSD` as a result of executing `surveilr ingest` command on a **`Rust`** source code (folder) named `resource-surveillance`
+ ### Evidence
+
+ | Host Name       | OS Name | Distribution Id | Kernel Version                     | OS Version | Long OS Version     |
+|-----------------|---------|-----------------|------------------------------------|------------|---------------------|
+| HostName_1  | Ubuntu  | ubuntu          | 5.15.133.1-microsoft-standard-WSL2 | 22.04      | Linux 22.04 Ubuntu  |
+| HostName_2    | Ubuntu  | ubuntu          | 5.15.133.1-microsoft-standard-WSL2 | 22.04      | Linux 22.04 Ubuntu  |
 
 
 ## Unit Tests
 
-`surveilr` can be used to store the result of running a unit test in a `RSSD`. Running a test is an action categorized under task ingestion. To learn more about `surveilr ingest tasks`, visit [ingest tasks](/surveilr/reference/ingest/tasks#task-ingestion).
+A company's policy might state: **"All Software engineers/developers across all the projects must have a consistent code unit testing process."** This policy can be broken down into the following requirements:
 
-Suppose we want to store the result of executing the unit tests in `resource-surveillance` source code which is written in `rust` in our `RSSD`, the command below is executed:
+- All developers who use ReactJS as programming language must use Jest and React Testing Library as the unit testing tools.
+- All React developers must ensure they are following React reference Project for React code quality.
 
-```bash
-$  echo "cargo test --lib --bins -- --test-threads=1" | surveilr ing
-est tasks
+The next step is to use `surveilr` to [ensure compliance](/surveilr/disciplines/software-engineer#ensuring-compliance) with these policies, and utilize SQL to query the generated [RSSD](/surveilr/reference/concepts/resource-surveillance) for compliance proofs, as shown below:
+
+### SQL Query for Verification of Packages Installation
+
+
+ ```sql
+SELECT 
+    d.name AS 'Host Name',
+    ur.content -> 'name' AS 'Project Name',
+    ur.content -> 'devDependencies' -> 'jest' AS 'Jest With Version',
+    ur.content -> 'devDependencies' -> 'jest-environment-jsdom' AS 'Jest-environment-jsdom With Version',
+    ur.content -> 'devDependencies' -> '@testing-library/react' AS '@testing-library/react With Version',
+    ur.content -> 'devDependencies' -> '@testing-library/jest-dom' AS '@testing-library/jest-dom With Version',
+    ur.content -> 'devDependencies' -> 'ts-jest' AS 'Ts-Jest With Version'
+FROM 
+    uniform_resource ur
+JOIN 
+    device d ON ur.device_id = d.device_id
+WHERE 
+    ur.uri LIKE '%package.json';
+ ```
+
+ ### Evidence
+
+ | Host Name       | Project Name                        | Jest With Version | Jest-environment-jsdom With Version | @testing-library/react With Version | @testing-library/jest-dom With Version | Ts-Jest With Version |
+|-----------------|--------------------------------------|-------------------|-------------------------------------|--------------------------------------|----------------------------------------|-----------------------|
+| HostName_1  | react-code-quality-reference-project | ^29.6.2           | ^29.6.2                             | ^14.0.0                              | ^5.17.0                                | ^29.1.1               |
+| HostName_2  | react-code-quality-reference-project | ^29.6.2           | ^29.6.2                             | ^14.0.0                              | ^5.17.0                                | ^29.1.1               |
+
+
+
+### SQL Query for Verification of Unit Test Script
+
+ ```sql
+SELECT 
+    d.name AS 'Host Name',
+    ur.content -> 'name' AS 'Project Name',
+    ur.content -> 'scripts' -> 'test' AS 'Unit Test Script'
+FROM 
+    uniform_resource ur
+JOIN 
+    device d ON ur.device_id = d.device_id
+WHERE 
+    ur.uri LIKE '%package.json';
+ ```
+
+  ### Evidence
+
+| Host Name      | Project Name                         | Unit Test Script |
+| -------------- | ------------------------------------ | ---------------- |
+| HostName_1 | react-code-quality-reference-project | jest --json      |
+| HostName_2    | react-code-quality-reference-project | jest --json      |
+
+
+## Code Coverage
+
+A company's policy might state: **"All Software engineers/developers across all the projects must have a consistent code coverage process."** This policy can be broken down into the following requirements:
+
+- All developers who use ReactJS as programming language must use Jest and React Testing Library as the coverage tools.
+- All developers who use ReactJS as programming language must follow Code [Unit testing](/surveilr/disciplines/software-engineer#unit-tests) Policy.
+- All React developers must ensure they are following React reference Project for React code quality.
+
+The next step is to use `surveilr` to [ensure compliance](/surveilr/disciplines/software-engineer#ensuring-compliance) with these policies, and utilize SQL to query the generated [RSSD](/surveilr/reference/concepts/resource-surveillance) for compliance proofs, as shown below:
+
+### SQL Query for Verification of Packages Installation
+
+```sql
+SELECT 
+    d.name AS 'host name',
+    ur.content -> 'name' AS 'project name',
+    ur.content -> 'devDependencies' -> 'jest' AS 'jest with version',
+    ur.content -> 'devDependencies' -> 'jest-environment-jsdom' AS 'jest-environment-jsdom with version',
+    ur.content -> 'devDependencies' -> '@testing-library/react' AS '@testing-library/react with version',
+    ur.content -> 'devDependencies' -> '@testing-library/jest-dom' AS '@testing-library/jest-dom with version',
+    ur.content -> 'devDependencies' -> 'ts-jest' AS 'ts-jest with version'
+FROM 
+    uniform_resource ur
+JOIN 
+    device d ON ur.device_id = d.device_id
+WHERE 
+    ur.uri LIKE '%package.json';
 ```
 
-As earlier mentioned, Your end goal is to be able to query the generated RSSD for compliance proofs using a structured query language (SQL).
+ ### Evidence
+ | Host Name  | Project Name                         | Jest With Version | Jest-environment-jsdom With Version | @testing-library/react With Version | @testing-library/jest-dom With Version | Ts-Jest With Version |
+ | ---------- | ------------------------------------ | ----------------- | ----------------------------------- | ----------------------------------- | -------------------------------------- | -------------------- |
+ | HostName_1 | react-code-quality-reference-project | ^29.6.2           | ^29.6.2                             | ^14.0.0                             | ^5.17.0                                | ^29.1.1              |
+ | HostName_2 | react-code-quality-reference-project | ^29.6.2           | ^29.6.2                             | ^14.0.0                             | ^5.17.0                                | ^29.1.1              |
 
-### Example
 
-The example below demonstrates the use of SQL to retrieve compliance evidence fom the generated `RSSD` as a result of piping `surveilr ingest tasks` with the command that runs the unit test.
+### SQL Query for Verification of Coverage Script
+
+```sql
+SELECT 
+    d.name AS 'host name', 
+    ur.content -> 'name' AS 'project name', 
+    ur.content -> 'scripts' -> 'test:coverage' AS 'test:coverage Script', 
+    ur.content -> 'scripts' -> 'test:ci' AS 'test:ci Script'
+FROM 
+    uniform_resource ur
+JOIN 
+    device d 
+ON 
+    ur.device_id = d.device_id 
+WHERE 
+    ur.uri LIKE '%package.json';
+
+```
+
+### Evidence
+
+| Host Name  | Project Name                         | Test:coverage Script   | Test:ci Script                                                                       |
+| ---------- | ------------------------------------ | ---------------------- | ------------------------------------------------------------------------------------ |
+| HostName_1 | react-code-quality-reference-project | jest --coverage --json | npm run test -- --testResultsProcessor="jest-junit" --watchAll=false --ci --coverage |
+| HostName_2 | react-code-quality-reference-project | jest --coverage --json | npm run test -- --testResultsProcessor="jest-junit" --watchAll=false --ci --coverage |
+
+## E2E Testing
+
+A company's policy might state: **"All Software engineers/developers across all the projects must have a consistent code e2e testing process."** This policy can be broken down into the following requirements:
+
+- All developers who use ReactJS as programming language must use Playwright as the e2e testing tools.
+
+The next step is to use `surveilr` to [ensure compliance](/surveilr/disciplines/software-engineer#ensuring-compliance) with this policy, and utilize SQL to query the generated [RSSD](/surveilr/reference/concepts/resource-surveillance) for compliance proofs, as shown below:
+
+### SQL Query for Verification of Packages Installation
+
+```sql
+SELECT 
+    d.name as 'Host Name',
+    ur.content -> 'name' as 'Project Name',
+    ur.content -> 'devDependencies' -> '@playwright/test' as '@playwright/test with Version'
+FROM 
+    uniform_resource ur
+JOIN 
+    device d ON ur.device_id = d.device_id
+WHERE 
+    ur.uri LIKE '%package.json';
+```
+
+### Evidence
+
+| Host Name  | Project Name                         | @playwright/test With Version |
+| ---------- | ------------------------------------ | ----------------------------- |
+| HostName_1 | react-code-quality-reference-project | ^1.37.1                       |
+| HostName_2 | react-code-quality-reference-project | ^1.37.1                       |
+
+
+### SQL Query for Verification of E2E Script
+
+```sql
+SELECT 
+    d.name AS 'host name', 
+    ur.content -> 'name' AS 'project name', 
+    ur.content -> 'devDependencies' -> '@playwright/test' AS '@playwright/test with version' 
+FROM 
+    uniform_resource ur 
+JOIN 
+    device d ON ur.device_id = d.device_id 
+WHERE 
+    ur.uri LIKE '%package.json';
+```
+
+### Evidence
+
+| Host Name  | Project Name                           | E2E Script      | E2e:dot Script                              |
+| ---------- | -------------------------------------- | --------------- | ------------------------------------------- |
+| HostName_1 | "react-code-quality-reference-project" | playwright test | DEBUG=pw:api playwright test --reporter=dot |
+| HostName_2 | "react-code-quality-reference-project" | playwright test | DEBUG=pw:api playwright test --reporter=dot |
+
+## Git Hooks
+A company's policy might state: **"All Software engineers/developers across all the projects must have Githooks scripts that are executed by Git before or after certain Git events, such as committing or merging code."** This policy can be broken down into the following requirements:
+
+- All Node.js projects must use Husky to manage Git hooks
+
+The next step is to use `surveilr` to [ensure compliance](/surveilr/disciplines/software-engineer#ensuring-compliance) with this policy, and utilize SQL to query the generated [RSSD](/surveilr/reference/concepts/resource-surveillance) for compliance proofs, as shown below:
+
+### SQL Query for Verification of Husky Installation
+
+```sql
+SELECT 
+    d.name as 'host name', 
+    ur.content -> 'name' as 'project name', 
+    ur.content -> 'devDependencies' -> 'husky' as 'Husky with version', 
+    ur.content -> 'devDependencies' -> 'lint-staged' as 'lint-staged with version', 
+    ur.content -> 'scripts' -> 'lint-staged' as 'Lint Staged Script', 
+    ur.content -> 'devDependencies' -> '@commitlint/cli' as 'commitlint/cli with version', 
+    ur.content -> 'devDependencies' -> '@commitlint/config-conventional' as 'commitlint/config-conventional with version' 
+FROM 
+    uniform_resource ur 
+JOIN 
+    device d 
+ON 
+    ur.device_id = d.device_id 
+WHERE 
+    ur.uri LIKE '%package.json';
+
+```
+
+### Evidence
+
+| Host Name  | Project Name                         | Husky With Version | Lint-staged With Version | Lint Staged Script                                                                             | Commitlint/cli With Version | Commitlint/config-conventional With Version |
+| ---------- | ------------------------------------ | ------------------ | ------------------------ | ---------------------------------------------------------------------------------------------- | --------------------------- | ------------------------------------------- |
+| HostName_1 | react-code-quality-reference-project | ^8.0.3             | ^13.2.0                  | eslint "src/**/*.{js,jsx,ts,tsx}" --quiet --fix && prettier "src/**/*.{js,jsx,ts,tsx}" --write | ^17.4.4                     | ^17.4.4                                     |
+| HostName_2 | react-code-quality-reference-project | ^8.0.3             | ^13.2.0                  | eslint "src/**/*.{js,jsx,ts,tsx}" --quiet --fix && prettier "src/**/*.{js,jsx,ts,tsx}" --write | ^17.4.4                     | ^17.4.4                                     |
+
+## Code Formatting
+
+A company's policy might state: **"All Software engineers/developers across all the projects must have a consistent code formatting process."** This policy can be broken down into the following requirements:
+
+- All developers who use Node.js as a runtime for their programming language must use Prettier as the formatting tool. 
+  
+The next step is to use `surveilr` to [ensure compliance](/surveilr/disciplines/software-engineer#ensuring-compliance) with this policy, and utilize SQL to query the generated [RSSD](/surveilr/reference/concepts/resource-surveillance) for compliance proofs, as shown below:
+
+### SQL Query for Verification of Code Formatter Installation
+
+```sql
+SELECT 
+    d.name AS 'Host Name', 
+    ur.content -> 'name' AS 'Project Name', 
+    ur.content -> 'devDependencies' -> 'prettier' AS 'Prettier with Version', 
+    ur.content -> 'devDependencies' -> 'prettier-eslint' AS 'Prettier-Eslint with Version', 
+    ur.content -> 'scripts' -> 'format' AS 'Format Script' 
+FROM 
+    uniform_resource ur 
+JOIN 
+    device d ON ur.device_id = d.device_id 
+WHERE 
+    ur.uri LIKE '%package.json';
+
+```
+
+### Evidence
+
+| Host Name  | Project Name                           | Prettier With Version | Prettier-eslint With Version | Format Script                               |
+| ---------- | -------------------------------------- | --------------------- | ---------------------------- | ------------------------------------------- |
+| HostName_1 | "react-code-quality-reference-project" | ^2.8.4                | ^15.0.1                      | npx prettier --write "**/*.{js,jsx,ts,tsx}" |
+| HostName_2 | "react-code-quality-reference-project" | ^2.8.4                | ^15.0.1                      | npx prettier --write "**/*.{js,jsx,ts,tsx}" |
+
+
+## Code Linting
+
+A company's policy might state: **"All Software engineers/developers across all the projects must have a consistent code Linting process."** This policy can be broken down into the following requirements:
+
+- All developers who use Node.js as a runtime for their programming language must use ESLint as the linting tool.
+
+The next step is to use `surveilr` to [ensure compliance](/surveilr/disciplines/software-engineer#ensuring-compliance) with this policy, and utilize SQL to query the generated [RSSD](/surveilr/reference/concepts/resource-surveillance) for compliance proofs, as shown below:
+
+### SQL Query for Verification of ESLint as Linting Tool
+
+```sql
+SELECT 
+    d.name AS 'Host Name', 
+    ur.content -> 'name' AS 'Project Name', 
+    ur.content -> 'devDependencies' -> '@typescript-eslint/eslint-plugin' AS '@typescript-eslint/eslint-plugin with version', 
+    ur.content -> 'devDependencies' -> '@typescript-eslint/parser' AS '@typescript-eslint/parser with version', 
+    ur.content -> 'devDependencies' -> 'eslint' AS 'eslint with version', 
+    ur.content -> 'devDependencies' -> 'eslint-config-prettier' AS 'eslint-config-prettier with version', 
+    ur.content -> 'devDependencies' -> 'eslint-plugin-import' AS 'eslint-plugin-import with version', 
+    ur.content -> 'devDependencies' -> 'eslint-plugin-prettier' AS 'eslint-plugin-prettier with version', 
+    ur.content -> 'devDependencies' -> 'prettier-eslint' AS 'prettier-eslint with version', 
+    ur.content -> 'devDependencies' -> 'typescript' AS 'typescript with version' 
+FROM 
+    uniform_resource ur 
+JOIN 
+    device d ON ur.device_id = d.device_id 
+WHERE 
+    ur.uri LIKE '%package.json';
+
+```
+
+### Evidence
+
+| Host Name  | Project Name                           | @typescript-eslint/eslint-plugin With Version | Lint-staged With Version | @typescript-eslint/parser With Version | Eslint With Version | Eslint-config-prettier With Version | Eslint-plugin-import With Version | Eslint-plugin-prettier With Version | Prettier-eslint With Version | Typescript With Version |
+| ---------- | -------------------------------------- | --------------------------------------------- | ------------------------ | -------------------------------------- | ------------------- | ----------------------------------- | --------------------------------- | ----------------------------------- | ---------------------------- | ----------------------- |
+| HostName_1 | "react-code-quality-reference-project" | ^5.57.0                                       | ^5.55.0                  | ^8.0.1                                 | ^8.7.0              | ^2.27.5                             | ^4.2.1                            | ^15.0.1                             | ^4.9.5                       | ^4.9.5                  |
+| HostName_2 | "react-code-quality-reference-project" | ^5.57.0                                       | ^5.55.0                  | ^8.0.1                                 | ^8.7.0              | ^2.27.5                             | ^4.2.1                            | ^15.0.1                             | ^4.9.5                       | ^4.9.5                  |
+
+
+
+
+
+
+
+
+
+
+
 
 
 
