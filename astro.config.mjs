@@ -356,6 +356,19 @@ export default defineConfig({
             },
           ],
         },
+        {
+          label: "Opsfolio Suite",
+          items: [
+            {
+              label: "Vision & Mission",
+              link: "/opsfolio/",
+            },
+            {
+              label: "FAQs",
+              link: "/opsfolio/faq/faqs",
+            },
+          ],
+        },
       ],
     }),
     pageInsight({
