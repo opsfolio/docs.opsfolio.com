@@ -11,7 +11,15 @@ Companies usually have security, privacy, safety and regulatory compliance polic
 
 A simple [file ingestion](/surveilr/reference/ingest/files#ingest-files) [command](/surveilr/disciplines/software-engineer#common-commands) can be executed which ingests all the files in the current working directory, stores them in a [Resource Surveillance State Database (RSSD)](/surveilr/reference/concepts/resource-surveillance) which is a file named `resource-surveillance.sqlite.db`, under the [uniform_resource](/surveilr/reference/db/surveilr-state-schema/uniform_resource) table. 
 
+### Evidence Types
 
+- **Compliance Evidence**: This table shows compliance with policies
+- **Non-Compliance Evidence**: This table shows non-compliance with policies. 
+  
+  
+> #### Note
+>
+> The attribute(s)  of a record (row) that is non-compliant are highlighted.
 
 ### Common commands 
 
@@ -55,12 +63,21 @@ FROM device d;
 
  ```
 
- ### Evidence
+ ### Compliance Evidence
 
  | Host Name       | OS Name | Distribution Id | Kernel Version                     | OS Version | Long OS Version     |
 |-----------------|---------|-----------------|------------------------------------|------------|---------------------|
 | HostName_1  | Ubuntu  | ubuntu          | 5.15.133.1-microsoft-standard-WSL2 | 22.04      | Linux 22.04 Ubuntu  |
 | HostName_2    | Ubuntu  | ubuntu          | 5.15.133.1-microsoft-standard-WSL2 | 22.04      | Linux 22.04 Ubuntu  |
+
+
+ ### Non-compliance Evidence
+
+| Host Name  | OS Name | Distribution Id | Kernel Version                    | OS Version | Long OS Version    |
+| ---------- | ------- | --------------- | --------------------------------- | ---------- | ------------------ |
+| HostName_1 | Ubuntu  | debian          | 4.4.0-19041-Microsoft             | 20.04      | Linux 20.04 Debian |
+| HostName_2 | Fedora  | fedora          | 5.10.16.3-microsoft-standard-WSL2 | 33         | Linux 33 Fedora    |
+
 
 
 ## Unit Tests
@@ -92,13 +109,21 @@ WHERE
     ur.uri LIKE '%package.json';
  ```
 
- ### Evidence
+ ### Compliance Evidence
 
  | Host Name       | Project Name                        | Jest With Version | Jest-environment-jsdom With Version | @testing-library/react With Version | @testing-library/jest-dom With Version | Ts-Jest With Version |
 |-----------------|--------------------------------------|-------------------|-------------------------------------|--------------------------------------|----------------------------------------|-----------------------|
 | HostName_1  | react-code-quality-reference-project | ^29.6.2           | ^29.6.2                             | ^14.0.0                              | ^5.17.0                                | ^29.1.1               |
 | HostName_2  | react-code-quality-reference-project | ^29.6.2           | ^29.6.2                             | ^14.0.0                              | ^5.17.0                                | ^29.1.1               |
 
+
+
+### Non-compliance Evidence
+
+| Host Name  | Project Name                         | Jest With Version | Jest-environment-jsdom With Version | @testing-library/react With Version | @testing-library/jest-dom With Version | Ts-Jest With Version |
+| ---------- | ------------------------------------ | ----------------- | ----------------------------------- | ----------------------------------- | -------------------------------------- | -------------------- |
+| HostName_1 | react-code-quality-reference-project | ^26.6.0           | ^26.6.0                             | ^10.0.0                             | ^4.2.0                                 | ^26.5.0              |
+| HostName_2 | react-code-quality-reference-project | ^26.6.0           | ^26.6.0                             | ^10.0.0                             | ^4.2.0                                 | ^26.5.0              |
 
 
 ### SQL Query for Verification of Unit Test Script
@@ -116,12 +141,20 @@ WHERE
     ur.uri LIKE '%package.json';
  ```
 
-  ### Evidence
+  ### Compliance Evidence
 
 | Host Name      | Project Name                         | Unit Test Script |
 | -------------- | ------------------------------------ | ---------------- |
 | HostName_1 | react-code-quality-reference-project | jest --json      |
 | HostName_2    | react-code-quality-reference-project | jest --json      |
+
+
+### Non-compliance Evidence
+
+| Host Name  | Project Name                         | Unit Test Script |
+| ---------- | ------------------------------------ | ---------------- |
+| HostName_1 | react-code-quality-reference-project | mocha --reporter |
+| HostName_2 | react-code-quality-reference-project | mocha --reporter |
 
 
 ## Code Coverage
@@ -153,11 +186,20 @@ WHERE
     ur.uri LIKE '%package.json';
 ```
 
- ### Evidence
+ ### Compliance Evidence
+
  | Host Name  | Project Name                         | Jest With Version | Jest-environment-jsdom With Version | @testing-library/react With Version | @testing-library/jest-dom With Version | Ts-Jest With Version |
  | ---------- | ------------------------------------ | ----------------- | ----------------------------------- | ----------------------------------- | -------------------------------------- | -------------------- |
  | HostName_1 | react-code-quality-reference-project | ^29.6.2           | ^29.6.2                             | ^14.0.0                             | ^5.17.0                                | ^29.1.1              |
  | HostName_2 | react-code-quality-reference-project | ^29.6.2           | ^29.6.2                             | ^14.0.0                             | ^5.17.0                                | ^29.1.1              |
+
+### Non-compliance Evidence
+
+| Host Name  | Project Name                         | Jest With Version | Jest-environment-jsdom With Version | @testing-library/react With Version | @testing-library/jest-dom With Version | Ts-Jest With Version |
+| ---------- | ------------------------------------ | ----------------- | ----------------------------------- | ----------------------------------- | -------------------------------------- | -------------------- |
+| HostName_1 | react-code-quality-reference-project | ^26.6.3           | ^26.6.3                             | ^9.0.0                              | ^4.0.0                                 | ^26.4.4              |
+| HostName_2 | react-code-quality-reference-project | ^26.6.3           | ^26.6.3                             | ^9.0.0                              | ^4.0.0                                 | ^26.4.4              |
+
 
 
 ### SQL Query for Verification of Coverage Script
@@ -179,12 +221,20 @@ WHERE
 
 ```
 
-### Evidence
+### Compliance Evidence
 
 | Host Name  | Project Name                         | Test:coverage Script   | Test:ci Script                                                                       |
 | ---------- | ------------------------------------ | ---------------------- | ------------------------------------------------------------------------------------ |
 | HostName_1 | react-code-quality-reference-project | jest --coverage --json | npm run test -- --testResultsProcessor="jest-junit" --watchAll=false --ci --coverage |
 | HostName_2 | react-code-quality-reference-project | jest --coverage --json | npm run test -- --testResultsProcessor="jest-junit" --watchAll=false --ci --coverage |
+
+### Non-compliance Evidence
+
+| Host Name  | Project Name                         | Test:coverage Script | Test:ci Script                     |
+| ---------- | ------------------------------------ | -------------------- | ---------------------------------- |
+| HostName_1 | react-code-quality-reference-project | mocha --reporter     | npm test -- --reporter=mocha-junit |
+| HostName_2 | react-code-quality-reference-project | mocha --reporter     | npm test -- --reporter=mocha-junit |
+
 
 ## E2E Testing
 
@@ -209,12 +259,21 @@ WHERE
     ur.uri LIKE '%package.json';
 ```
 
-### Evidence
+### Compliance Evidence
 
 | Host Name  | Project Name                         | @playwright/test With Version |
 | ---------- | ------------------------------------ | ----------------------------- |
 | HostName_1 | react-code-quality-reference-project | ^1.37.1                       |
 | HostName_2 | react-code-quality-reference-project | ^1.37.1                       |
+
+
+### Non-compliance Evidence
+
+| Host Name  | Project Name                         | @playwright/test With Version |
+| ---------- | ------------------------------------ | ----------------------------- |
+| HostName_1 | react-code-quality-reference-project | ^1.36.0                       |
+| HostName_2 | react-code-quality-reference-project | ^1.36.0                       |
+
 
 
 ### SQL Query for Verification of E2E Script
@@ -232,12 +291,20 @@ WHERE
     ur.uri LIKE '%package.json';
 ```
 
-### Evidence
+### Compliance Evidence
 
 | Host Name  | Project Name                           | E2E Script      | E2e:dot Script                              |
 | ---------- | -------------------------------------- | --------------- | ------------------------------------------- |
 | HostName_1 | "react-code-quality-reference-project" | playwright test | DEBUG=pw:api playwright test --reporter=dot |
 | HostName_2 | "react-code-quality-reference-project" | playwright test | DEBUG=pw:api playwright test --reporter=dot |
+
+### Non-compliance Evidence
+
+| Host Name  | Project Name                         | E2E Script  | E2e:dot Script                    |
+| ---------- | ------------------------------------ | ----------- | --------------------------------- |
+| HostName_1 | react-code-quality-reference-project | cypress run | DEBUG=cypress:cypress cypress run |
+| HostName_2 | react-code-quality-reference-project | cypress run | DEBUG=cypress:cypress cypress run |
+
 
 ## Git Hooks
 A company's policy might state: **"All Software engineers/developers across all the projects must have Githooks scripts that are executed by Git before or after certain Git events, such as committing or merging code."** This policy can be broken down into the following requirements:
@@ -268,12 +335,20 @@ WHERE
 
 ```
 
-### Evidence
+### Compliance Evidence
 
 | Host Name  | Project Name                         | Husky With Version | Lint-staged With Version | Lint Staged Script                                                                             | Commitlint/cli With Version | Commitlint/config-conventional With Version |
 | ---------- | ------------------------------------ | ------------------ | ------------------------ | ---------------------------------------------------------------------------------------------- | --------------------------- | ------------------------------------------- |
 | HostName_1 | react-code-quality-reference-project | ^8.0.3             | ^13.2.0                  | eslint "src/**/*.{js,jsx,ts,tsx}" --quiet --fix && prettier "src/**/*.{js,jsx,ts,tsx}" --write | ^17.4.4                     | ^17.4.4                                     |
 | HostName_2 | react-code-quality-reference-project | ^8.0.3             | ^13.2.0                  | eslint "src/**/*.{js,jsx,ts,tsx}" --quiet --fix && prettier "src/**/*.{js,jsx,ts,tsx}" --write | ^17.4.4                     | ^17.4.4                                     |
+
+### Non-compliance Evidence
+
+| Host Name  | Project Name                         | Husky With Version | Lint-staged With Version | Lint Staged Script                                                                             | Commitlint/cli With Version | Commitlint/config-conventional With Version |
+| ---------- | ------------------------------------ | ------------------ | ------------------------ | ---------------------------------------------------------------------------------------------- | --------------------------- | ------------------------------------------- |
+| HostName_1 | react-code-quality-reference-project | ^7.5.0             | ^12.0.0                  | eslint "src/**/*.{js,jsx,ts,tsx}" --quiet --fix && prettier "src/**/*.{js,jsx,ts,tsx}" --write | ^16.0.0                     | ^16.0.0                                     |
+| HostName_2 | react-code-quality-reference-project | ^7.5.0             | ^12.0.0                  | eslint "src/**/*.{js,jsx,ts,tsx}" --quiet --fix && prettier "src/**/*.{js,jsx,ts,tsx}" --write | ^16.0.0                     | ^16.0.0                                     |
+
 
 ## Code Formatting
 
@@ -301,12 +376,20 @@ WHERE
 
 ```
 
-### Evidence
+### Compliance Evidence
 
 | Host Name  | Project Name                           | Prettier With Version | Prettier-eslint With Version | Format Script                               |
 | ---------- | -------------------------------------- | --------------------- | ---------------------------- | ------------------------------------------- |
 | HostName_1 | "react-code-quality-reference-project" | ^2.8.4                | ^15.0.1                      | npx prettier --write "**/*.{js,jsx,ts,tsx}" |
 | HostName_2 | "react-code-quality-reference-project" | ^2.8.4                | ^15.0.1                      | npx prettier --write "**/*.{js,jsx,ts,tsx}" |
+
+
+### Non-compliance Evidence
+
+| Host Name  | Project Name                         | Prettier With Version | Prettier-eslint With Version | Format Script                                                                          |
+| ---------- | ------------------------------------ | --------------------- | ---------------------------- | -------------------------------------------------------------------------------------- |
+| HostName_1 | react-code-quality-reference-project | ^2.6.0                | ^14.0.0                      | npx eslint --fix "**/*.{js,jsx,ts,tsx}" && npx prettier --write "**/*.{js,jsx,ts,tsx}" |
+| HostName_2 | react-code-quality-reference-project | ^2.6.0                | ^14.0.0                      | npx eslint --fix "**/*.{js,jsx,ts,tsx}" && npx prettier --write "**/*.{js,jsx,ts,tsx}" |
 
 
 ## Code Linting
@@ -340,13 +423,20 @@ WHERE
 
 ```
 
-### Evidence
+### Compliance Evidence
 
 | Host Name  | Project Name                           | @typescript-eslint/eslint-plugin With Version | Lint-staged With Version | @typescript-eslint/parser With Version | Eslint With Version | Eslint-config-prettier With Version | Eslint-plugin-import With Version | Eslint-plugin-prettier With Version | Prettier-eslint With Version | Typescript With Version |
 | ---------- | -------------------------------------- | --------------------------------------------- | ------------------------ | -------------------------------------- | ------------------- | ----------------------------------- | --------------------------------- | ----------------------------------- | ---------------------------- | ----------------------- |
 | HostName_1 | "react-code-quality-reference-project" | ^5.57.0                                       | ^5.55.0                  | ^8.0.1                                 | ^8.7.0              | ^2.27.5                             | ^4.2.1                            | ^15.0.1                             | ^4.9.5                       | ^4.9.5                  |
 | HostName_2 | "react-code-quality-reference-project" | ^5.57.0                                       | ^5.55.0                  | ^8.0.1                                 | ^8.7.0              | ^2.27.5                             | ^4.2.1                            | ^15.0.1                             | ^4.9.5                       | ^4.9.5                  |
 
+
+### Non-compliance Evidence
+
+| Host Name  | Project Name                         | @typescript-eslint/eslint-plugin With Version | Lint-staged With Version | @typescript-eslint/parser With Version | Eslint With Version | Eslint-config-prettier With Version | Eslint-plugin-import With Version | Eslint-plugin-prettier With Version | Prettier-eslint With Version | Typescript With Version |
+| ---------- | ------------------------------------ | --------------------------------------------- | ------------------------ | -------------------------------------- | ------------------- | ----------------------------------- | --------------------------------- | ----------------------------------- | ---------------------------- | ----------------------- |
+| HostName_1 | react-code-quality-reference-project | ^6.0.0                                        | ^6.0.0                   | ^9.0.0                                 | ^9.0.0              | ^3.0.0                              | ^5.0.0                            | ^16.0.0                             | ^5.0.0                       | ^5.0.0                  |
+| HostName_2 | react-code-quality-reference-project | ^6.0.0                                        | ^6.0.0                   | ^9.0.0                                 | ^9.0.0              | ^3.0.0                              | ^5.0.0                            | ^16.0.0                             | ^5.0.0                       | ^5.0.0                  |
 
 
 
