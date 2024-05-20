@@ -16,10 +16,10 @@ A simple [file ingestion](/surveilr/reference/ingest/files#ingest-files) [comman
 - **Compliance Evidence**: This table shows compliance with policies
 - **Non-Compliance Evidence**: This table shows non-compliance with policies. 
   
-  
+<!--   
 > #### Note
 >
-> The attribute(s)  of a record (row) that is non-compliant are highlighted.
+> The attribute(s)  of a record (row) that is non-compliant are highlighted. -->
 
 ### Common commands 
 
