@@ -33,8 +33,18 @@ details[open] > summary.faq::after {
   transform: rotate(180deg);
 }
 
+summary.faq {
+  padding: 0;
+}
+
 summary.faq::-webkit-details-marker {
   display: none;
+}
+
+summary.faq h6 {
+  display: inline;
+  max-width: 80%;
+  font-weight: bold;
 }
 
 
@@ -43,7 +53,7 @@ summary.faq::-webkit-details-marker {
 <details class="details" open>
 
 <summary class="faq">
-<h4 style="display: inline;">Why should I use Surveilr?</h4>
+<h6>Why should I use Surveilr?</h6>
 </summary>
 
 <p>Surveilr is the better option for gathering compliance proof through machine
@@ -62,7 +72,7 @@ policy compliance, hence improving security and regulatory adherence.</p>
 
 <details class="details">
 
-<summary class="faq"><h4 style="display: inline;">How do I install Surveilr?</h4></summary>
+<summary class="faq"><h6>How do I install Surveilr?</h6></summary>
 
 <p>We have provided a detailed guide on how to install `surveilr` on your machine
 (Linux, Windows, and MacOS ), find it [here](/surveilr/installation).</p>
@@ -71,7 +81,7 @@ policy compliance, hence improving security and regulatory adherence.</p>
 
 <details class="details">
 
-<summary class="faq"><h4 style="display: inline;">How do I use Surveilr?</h4></summary>
+<summary class="faq"><h6>How do I use Surveilr?</h6></summary>
 
 <p>We have provided a comprehensive guide on how surveilr can be used to gather
 machine-attested compliance evidences from different Work Product Artifacts
@@ -83,7 +93,7 @@ surveilr.</p>
 
 <details class="details">
 
-<summary class="faq"><h4 style="display: inline;">Will my data such as emails be tracked by Opsfolio?</h4></summary>
+<summary class="faq"><h6>Will my data such as emails be tracked by Opsfolio?</h6></summary>
 
 <p>No, Opsfolio does not track personal information, including emails, at any point
 in time. All data processed by Surveilr is stored in a Resource Surveillance
@@ -95,7 +105,7 @@ cloud databases.</p>
 
 <details class="details">
 
-<summary class="faq"><h4 style="display: inline;">If my data is tracked by the company, how can I trust that my data is safe?</h4></summary>
+<summary class="faq"><h6>If my data is tracked by the company, how can I trust that my data is safe?</h6></summary>
 
 <p>We do not track your data, so you can be rest assured your data is safe.</p>
 

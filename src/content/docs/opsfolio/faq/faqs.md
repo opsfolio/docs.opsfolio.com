@@ -33,12 +33,18 @@ details[open] > summary.faq::after {
   transform: rotate(180deg);
 }
 
+summary.faq {
+  padding: 0;
+}
+
 summary.faq::-webkit-details-marker {
   display: none;
 }
 
-summary.faq h4 {
+summary.faq h6 {
+  display: inline;
   max-width: 80%;
+  font-weight: bold;
 }
 
 </style>
@@ -46,7 +52,7 @@ summary.faq h4 {
 <details class="details" open>
 
 <summary class="faq">
-<h4 style="display: inline; ">What are the key advantages of utilizing this system compared to manual compliance and audit procedures?</h4>
+<h6>What are the key advantages of utilizing this system compared to manual compliance and audit procedures?</h6>
 </summary>
 
 <p>Using automated evidence has several advantages over manual procedures. Data gathering is streamlined by automation, which lowers mistake rates and guarantees accurate, consistent compliance records. By doing this, time and resources used on manual chores are saved. Additionally, real-time monitoring made possible by automated evidence helps firms to quickly address compliance issues and lower risks and penalties. It encourages cooperation between interested parties, which improves compliance and efficiency. All things considered, automated systems boost corporate performance and risk management by increasing compliance's agility, precision, and efficiency.</p>
@@ -55,7 +61,7 @@ summary.faq h4 {
 
 <details class="details">
 
-<summary class="faq"><h4 style="display: inline; ">Which compliance audit reports can I access for viewing and generating to present to my clients?</h4></summary>
+<summary class="faq"><h6>Which compliance audit reports can I access for viewing and generating to present to my clients?</h6></summary>
 
 <p>Upon completion of the audit, a comprehensive audit report is generated,
 encompassing controls, policies, and evidence along with their respective
@@ -65,7 +71,7 @@ statuses. This report can be readily shared with your clients.</p>
 
 <details class="details">
 
-<summary class="faq"><h4 style="display: inline; ">How secure is our data when the agent is installed in our system? What measures do you take to ensure our data's safety and security?</h4></summary>
+<summary class="faq"><h6>How secure is our data when the agent is installed in our system? What measures do you take to ensure our data's safety and security?</h6></summary>
 
 <p>Ensuring the security of your data is our paramount concern once our agent is
 installed on your system.
@@ -85,7 +91,7 @@ dedication to upholding the highest standards of security and confidentiality.</
 
 <details class="details">
 
-<summary class="faq"><h4 style="display: inline; ">Is there an automated alert notification system for compliance deadlines? For instance, if we fail to conduct a quarterly or monthly user access review as per our policy, will the system generate an alert?</h4></summary>
+<summary class="faq"><h6>Is there an automated alert notification system for compliance deadlines? For instance, if we fail to conduct a quarterly or monthly user access review as per our policy, will the system generate an alert?</h6></summary>
 
 <p>Yes, in our pipeline, we anticipate the introduction of an automated alert
 notification system for compliance deadlines in the upcoming release. This
@@ -97,7 +103,7 @@ designated stakeholders, facilitating timely action and compliance adherence.</p
 
 <details class="details">
 
-<summary class="faq"><h4 style="display: inline; ">How can we update custom policies in Opsfolio if they differ from the existing ones?</h4></summary>
+<summary class="faq"><h6>How can we update custom policies in Opsfolio if they differ from the existing ones?</h6></summary>
 
 <p>In Opsfolio, you have the flexibility to update or include custom policies
 tailored to your organization's specific needs.</p>
@@ -106,7 +112,7 @@ tailored to your organization's specific needs.</p>
 
 <details class="details">
 
-<summary class="faq"><h4 style="display: inline; ">Are there any training documents available for the Opsfolio Application?</h4></summary>
+<summary class="faq"><h6>Are there any training documents available for the Opsfolio Application?</h6></summary>
 
 <p>Yes, training documents for the Opsfolio Application are readily available.
 These documents serve as comprehensive guides to familiarize users with the
