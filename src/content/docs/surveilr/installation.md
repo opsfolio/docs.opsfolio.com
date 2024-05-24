@@ -3,7 +3,7 @@ title: Installation
 description: Descriptions on how to install surveilr.
 ---
 
-## Download & Install
+<!-- ## Download & Install
 
 Get the latest `surveilr` by following these steps to complete the installation:
 
@@ -63,4 +63,72 @@ $ surveilr upgrade -v 0.1.2 --yes
 ## Shell Completions
 ```bash
 $ surveilr --completions fish | source    # setup shell completions to reduce typing
-```
+``` -->
+
+
+
+## Download & Install
+Get the latest Surveilr by following these steps to complete the installation:
+
+1. Visit our GitHub Releases page:
+
+    - Navigate to our [GitHub Releases](https://github.com/opsfolio/releases.opsfolio.com/releases) page to download the latest version of Surveilr that’s compatible with your operating system.
+2. Download the appropriate version:
+
+    - Select and download the version that matches your operating system (Windows, macOS, or Linux).
+3. Extract the executable file from the downloaded archive:
+
+   - Windows:
+        - Right-click on the downloaded .zip file and select "Extract All..."
+        - Choose the destination folder where you want to extract the files.
+    - macOS:
+        - Double-click the downloaded .tar.gz or .zip file to extract it.
+    - Linux:
+        - Open a terminal.
+        - Navigate to the directory where the file was downloaded.
+        - Use the appropriate command to extract the file. For **.tar.gz** files, use:
+             ```bash
+             tar -xvzf surveilr-version.tar.gz
+             ```
+
+            For **.zip** files, use:
+            ```bash
+            unzip surveilr-version.zip
+            ```
+
+4. Move the extracted file to your desired path or directory:
+
+    - You can move the extracted executable file to a directory included in your system's PATH or to a directory of your choice.
+    - Windows:
+        - Open File Explorer and navigate to the extracted file.
+        - Right-click the file and select "Cut".
+        - Navigate to the desired directory, right-click, and select "Paste".
+    - macOS and Linux:
+        - Use the mv command in the terminal to move the file. For example:
+            ```
+            mv surveilr /usr/local/bin/
+            ```
+5. Open your terminal and change directory (cd) to where the extracted file was moved:
+
+    - Windows:
+        - Open Command Prompt.
+        - Use the cd command to navigate to the directory. For example:
+            ```bash
+                cd C:\path\to\surveilr
+            ```
+    - macOS and Linux:
+        - Open Terminal.
+        - Use the cd command to navigate to the directory. For example:
+            ```
+            cd /usr/local/bin/
+            ```
+6. Verify installation:
+
+    - Run the following command to verify that Surveilr is installed correctly:
+        ```
+            surveilr --version
+        ```
+    - You should see the version information of Surveilr, indicating that it has been installed successfully.
+
+### Alternative Installation for Linux Using Eget
+You can also install Surveilr on Linux using [eget](https://github.com/opsfolio/releases.opsfolio.com/blob/main/README.md)
