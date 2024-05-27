@@ -46,6 +46,19 @@ summary.faq h6 {
   max-width: 80%;
   font-weight: bold;
 }
+.sl-markdown-content details.details{
+  border-left: 0px!important;
+  padding-left: 0px !important;
+}
+.sl-markdown-content summary:not(:where(.not-content *))::before{
+  content:inherit!important;
+}
+.sl-markdown-content summary:not(:where(.not-content *)){
+  margin-inline-start: 0px!important;
+}
+.sl-markdown-content details:not(:where(.not-content *)){
+  --sl-details-border-color--hover: var(--sl-color-gray-5)!important;
+}
 
 </style>
 
