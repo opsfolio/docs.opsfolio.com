@@ -13,36 +13,7 @@ description: Descriptions on how to install surveilr.
 
 4. **Navigate:** Open terminal and `cd` to the directory where you moved the file.
    
-5. **Verify:** Run verification steps [here](/surveilr/installation#verify-installation). 
-
-
-<!-- ## Download & Install
-
-Get the latest `surveilr` by following these steps to complete the installation:
-
-1. Visit our github [releases page](https://github.com/opsfolio/releases.opsfolio.com/releases) to download the latest version of `surveilr` that's compatible with your operating system. 
-
-2. Extract the executable file from the downloaded archive.
-   
-3. Move the extracted file to your desired path or directory 
-   
-4. Open your terminal and change directory ( `cd` ) to where the extracted file was moved.
-   
-5. [Verify installation](/surveilr/installation#verify-installation).
-
-
-## Alternative Installation Method for Linux and Mac
-
-```bash
-# install in current path
-$ curl -sL https://raw.githubusercontent.com/opsfolio/releases.opsfolio.com/main/surveilr/install.sh | sh
-
-# Install globally
-$ curl -sL https://raw.githubusercontent.com/opsfolio/releases.opsfolio.com/main/surveilr/install.sh | SURVEILR_HOME="$HOME/bin" sh
-
-# install in preferred path
-$ curl -sL https://raw.githubusercontent.com/opsfolio/releases.opsfolio.com/main/surveilr/install.sh | SURVEILR_HOME="/path/to/directory" sh
-``` -->
+5. **Verify:** Run verification steps [here](/surveilr/how-to/installation#verify-installation). 
 
 
 ## Installation ( Detailed Instructions)
@@ -100,7 +71,8 @@ Get the latest Surveilr by following these steps to complete the installation:
         - Use the cd command to navigate to the directory. For example:
             ```bash
             cd /usr/local/bin/
-            ```
+     ```
+6. Run verification steps [here](/surveilr/how-to/installation#verify-installation). 
 
 ### Alternative Installation for Linux Using Eget
 
@@ -114,7 +86,7 @@ Get the latest Surveilr by following these steps to complete the installation:
     ```bash
     $ eget opsfolio/releases.opsfolio.com --asset tar.gz
     ```
-3. Run verification steps [here](/surveilr/installation#verify-installation). 
+3. Run verification steps [here](/surveilr/how-to/installation#verify-installation). 
 
 ### Alternative Installation for Linux and Mac
 
@@ -131,7 +103,7 @@ Get the latest Surveilr by following these steps to complete the installation:
     $ curl -sL https://raw.githubusercontent.com/opsfolio/releases.opsfolio.com/main/surveilr/install.sh | SURVEILR_HOME="/path/to/directory" sh
     ```
 
-2. Run verification steps [here](/surveilr/installation#verify-installation). 
+2. Run verification steps [here](/surveilr/how-to/installation#verify-installation).  
 
 
 ## Verify installation
