@@ -122,3 +122,83 @@ your workflow, Opsfolio's training documents offer step-by-step instructions,
 tutorials, and troubleshooting tips.</p>
 
 </details>
+
+<details class="details">
+
+<summary class="faq"><h6>What is Opsfolio Suite?</h6></summary>
+
+<p>Opsfolio Suite is a comprehensive privacy and security compliance solution featuring a suite of command-line interface (CLI) and web-based tools. It provides baseline policy content and a range of agents that gather evidence to ensure compliance with various standards.</p>
+
+</details>
+
+<details class="details">
+
+<summary class="faq"><h6>What industries does Opsfolio Suite cater to?</h6></summary>
+
+<p>Opsfolio Suite caters to industries with safety-critical and regulated software engineering requirements, including healthcare (HIPAA privacy), medical device manufacturing (FDA SaMD and 510(k)), and any sector needing stringent compliance with privacy and security regulations.</p>
+
+</details>
+
+<details class="details">
+
+<summary class="faq"><h6>Is Opsfolio Suite suitable for small businesses?</h6></summary>
+
+<p>Yes, Opsfolio Suite is designed to help small and medium-sized project and product teams achieve compliance with various industry standards.</p>
+
+</details>
+
+<details class="details">
+
+<summary class="faq"><h6>Does Opsfolio Suite support compliance with industry standards?</h6></summary>
+
+<p>Yes, the Opsfolio Suite helps organizations comply with standards like SOC 2, FedRAMP, HITRUST, HIPAA, and more.</p>
+
+</details>
+
+<details class="details">
+
+<summary class="faq"><h6>Is there a free trial available for Opsfolio Suite?</h6></summary>
+
+<p>Please connect with our team through our <a href="https://discord.gg/UeXrg49V">Discord channel</a> for more details.</p>
+
+</details>
+
+<details class="details">
+
+<summary class="faq"><h6>Can Opsfolio Suite integrate with other tools and software?</h6></summary>
+
+<p>Yes, Opsfolio Suite is designed to integrate with various tools and software to enhance its functionality and streamline compliance processes.</p>
+
+</details>
+
+<details class="details">
+
+<summary class="faq"><h6>Does Opsfolio Suite support data migration from other tools?</h6></summary>
+
+<p>Opsfolio Suite offers support for migrating data from other compliance tools. For assistance with data migration, please reach out to our team through our <a href="https://discord.gg/UeXrg49V">Discord channel</a>.</p>
+
+</details>
+
+<details class="details">
+
+<summary class="faq"><h6>Where can I get product support for Opsfolio Suite?</h6></summary>
+
+<p>Product support for Opsfolio Suite is available through our <a href="https://discord.gg/UeXrg49V">Discord channel</a>.</p>
+
+</details>
+
+<details class="details">
+
+<summary class="faq"><h6>Does Opsfolio Suite offer training for new users?</h6></summary>
+
+<p>Yes, Opsfolio Suite provides training for new users to help them get started and fully utilize the suite's features. Please join us through our <a href="https://discord.gg/UeXrg49V">Discord channel</a>.</p>
+
+</details>
+
+<details class="details">
+
+<summary class="faq"><h6>What compliance frameworks does Opsfolio Suite support?</h6></summary>
+
+<p>The Opsfolio Suite supports a wide range of compliance frameworks, including SOC 2, FedRAMP, HITRUST, and more.</p>
+
+</details>
