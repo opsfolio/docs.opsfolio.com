@@ -17,13 +17,194 @@ export default defineConfig({
           label: "Resource Surveillance",
           items: [
             {
-              label: "Installation",
-              link: "/surveilr/installation",
+              label: "Introduction",
+              link: "/surveilr/introduction",
             },
             {
-              label: "FAQs",
-              link: "/surveilr/faq/faqs",
+              label: "How-To",
+              items: [
+                {
+                  label: "Installation",
+                  link: "/surveilr/how-to/installation",
+                },
+              ],
             },
+            {
+              label: "Tutorials",
+              link: "/surveilr/tutorials",
+            },
+            {
+              label: "Reference",
+              collapsed: true,
+              items: [
+                {
+                  label: "Ingestion",
+                  collapsed: true,
+                  items: [
+                    {
+                      label: "Files Ingestion",
+                      link: "/surveilr/reference/ingest/files",
+                    },
+                    {
+                      label: "Tasks Ingestion",
+                      link: "/surveilr/reference/ingest/tasks",
+                    },
+                    {
+                      label: "Capturable Executables",
+                      link: "/surveilr/reference/ingest/capexec",
+                    },
+                    {
+                      label: "IMAP Emails Ingestion",
+                      link: "/surveilr/reference/ingest/imap",
+                    },
+                  ],
+                },
+                {
+                  label: "Admin",
+                  collapsed: true,
+
+                  items: [
+                    { label: "Merge", link: "/surveilr/reference/admin/merge" },
+                  ],
+                },
+                {
+                  label: "UDI",
+                  collapsed: true,
+                  items: [
+                    {
+                      label: "PGP",
+                      collapsed: true,
+                      items: [
+                        {
+                          label: "Introduction",
+                          link: "/surveilr/reference/udi/pgp/intro",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  label: "Concepts",
+                  collapsed: true,
+                  items: [
+                    {
+                      label: "RSSD",
+                      link: "/surveilr/reference/concepts/resource-surveillance",
+                    },
+                  ],
+                },
+                {
+                  label: "Support",
+                  collapsed: true,
+                  items: [
+                    {
+                      label: "Filestash",
+                      link: "/surveilr/reference/support/filestash",
+                    },
+                  ],
+                },
+                {
+                  label: "Database",
+                  collapsed: true,
+                  items: [
+                    {
+                      label: "State Schema",
+                      collapsed: true,
+                      items: [
+                        {
+                          label: "Schema",
+                          link: "/surveilr/reference/db/surveilr-state-schema/state-schema",
+                        },
+                        {
+                          label: "Device",
+                          link: "/surveilr/reference/db/surveilr-state-schema/device",
+                        },
+                        {
+                          label: "Behavior",
+                          link: "/surveilr/reference/db/surveilr-state-schema/behavior",
+                        },
+                        {
+                          label: "ingest Resource Path Match",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_resource_path_match_rule",
+                        },
+                        {
+                          label: "ingest Resource Path Rewrite",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_resource_path_rewrite_rule",
+                        },
+                        {
+                          label: "Ingest Session",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session",
+                        },
+                        {
+                          label: "Ingest Session Fs Path",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_fs_path",
+                        },
+                        {
+                          label: "Uniform Resource",
+                          link: "/surveilr/reference/db/surveilr-state-schema/uniform_resource",
+                        },
+                        {
+                          label: "Uniform Resource Transform",
+                          link: "/surveilr/reference/db/surveilr-state-schema/uniform_resource_transform",
+                        },
+                        {
+                          label: "Ingest Session Fs Path Entry",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_fs_path_entry",
+                        },
+                        {
+                          label: "Ingest Session Task",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_task",
+                        },
+                      ],
+                    },
+                    {
+                      label: "Notebook Schema",
+                      link: "/surveilr/reference/db/notebook",
+                    },
+                  ],
+                },
+                {
+                  label: "CLI Arguments",
+                  link: "/surveilr/reference/arguments/cli-arguments",
+                },
+                {
+                  label: "CLI Commands",
+                  link: "/surveilr/reference/cli/commands",
+                },
+                {
+                  label: "Aggregating RSSDs",
+                  link: "/surveilr/reference/aggregate/aggregating-rssd",
+                },
+                {
+                  label: "Code Notebooks",
+                  link: "/surveilr/reference/notebooks/code",
+                },
+                {
+                  label: "Terminologies",
+                  link: "/surveilr/reference/terminology/terminologies",
+                },
+              ],
+            },
+            {
+              label: "Extending Surveilr",
+              collapsed: true,
+              items: [
+                {
+                  label: "Content Extensibility with Capturable Executables",
+                  link: "/surveilr/extend/content-extensibility",
+                },
+                {
+                  label: "SQL DDL Extensibility with SQL Notebooks",
+                  link: "/surveilr/extend/sql-ddl-extensibility",
+                },
+                {
+                  label:
+                    "Integrated TypeScript programmability and scriptability",
+                  link: "/surveilr/extend/integrated-ts",
+                },
+              ],
+            },
+
             {
               label: "Disciplines and WPAs",
               collapsed: true,
@@ -182,180 +363,14 @@ export default defineConfig({
                 },
               ],
             },
-            {
-              label: "Extending Surveilr",
-              collapsed: true,
-              items: [
-                {
-                  label: "Content Extensibility with Capturable Executables",
-                  link: "/surveilr/extend/content-extensibility",
-                },
-                {
-                  label: "SQL DDL Extensibility with SQL Notebooks",
-                  link: "/surveilr/extend/sql-ddl-extensibility",
-                },
-                {
-                  label:
-                    "Integrated TypeScript programmability and scriptability",
-                  link: "/surveilr/extend/integrated-ts",
-                },
-              ],
-            },
 
             {
-              label: "Reference",
-              collapsed: true,
-              items: [
-                {
-                  label: "Ingestion",
-                  collapsed: true,
-                  items: [
-                    {
-                      label: "Files Ingestion",
-                      link: "/surveilr/reference/ingest/files",
-                    },
-                    {
-                      label: "Tasks Ingestion",
-                      link: "/surveilr/reference/ingest/tasks",
-                    },
-                    {
-                      label: "Capturable Executables",
-                      link: "/surveilr/reference/ingest/capexec",
-                    },
-                    {
-                      label: "IMAP Emails Ingestion",
-                      link: "/surveilr/reference/ingest/imap",
-                    },
-                  ],
-                },
-                {
-                  label: "Admin",
-                  collapsed: true,
-
-                  items: [
-                    { label: "Merge", link: "/surveilr/reference/admin/merge" },
-                  ],
-                },
-                {
-                  label: "UDI",
-                  collapsed: true,
-                  items: [
-                    {
-                      label: "PGP",
-                      collapsed: true,
-                      items: [
-                        {
-                          label: "Introduction",
-                          link: "/surveilr/reference/udi/pgp/intro",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                {
-                  label: "Concepts",
-                  collapsed: true,
-                  items: [
-                    {
-                      label: "RSSD",
-                      link: "/surveilr/reference/concepts/resource-surveillance",
-                    },
-                  ],
-                },
-                {
-                  label: "Support",
-                  collapsed: true,
-                  items: [
-                    {
-                      label: "Filestash",
-                      link: "/surveilr/reference/support/filestash",
-                    },
-                  ],
-                },
-                {
-                  label: "Database",
-                  collapsed: true,
-                  items: [
-                    {
-                      label: "State Schema",
-                      collapsed: true,
-                      items: [
-                        {
-                          label: "Schema",
-                          link: "/surveilr/reference/db/surveilr-state-schema/state-schema",
-                        },
-                        {
-                          label: "Device",
-                          link: "/surveilr/reference/db/surveilr-state-schema/device",
-                        },
-                        {
-                          label: "Behavior",
-                          link: "/surveilr/reference/db/surveilr-state-schema/behavior",
-                        },
-                        {
-                          label: "ingest Resource Path Match",
-                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_resource_path_match_rule",
-                        },
-                        {
-                          label: "ingest Resource Path Rewrite",
-                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_resource_path_rewrite_rule",
-                        },
-                        {
-                          label: "Ingest Session",
-                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session",
-                        },
-                        {
-                          label: "Ingest Session Fs Path",
-                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_fs_path",
-                        },
-                        {
-                          label: "Uniform Resource",
-                          link: "/surveilr/reference/db/surveilr-state-schema/uniform_resource",
-                        },
-                        {
-                          label: "Uniform Resource Transform",
-                          link: "/surveilr/reference/db/surveilr-state-schema/uniform_resource_transform",
-                        },
-                        {
-                          label: "Ingest Session Fs Path Entry",
-                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_fs_path_entry",
-                        },
-                        {
-                          label: "Ingest Session Task",
-                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_task",
-                        },
-                      ],
-                    },
-                    {
-                      label: "Notebook Schema",
-                      link: "/surveilr/reference/db/notebook",
-                    },
-                  ],
-                },
-                {
-                  label: "CLI Arguments",
-                  link: "/surveilr/reference/arguments/cli-arguments",
-                },
-                {
-                  label: "CLI Commands",
-                  link: "/surveilr/reference/cli/commands",
-                },
-                {
-                  label: "Aggregating RSSDs",
-                  link: "/surveilr/reference/aggregate/aggregating-rssd",
-                },
-                {
-                  label: "Code Notebooks",
-                  link: "/surveilr/reference/notebooks/code",
-                },
-                {
-                  label: "Terminologies",
-                  link: "/surveilr/reference/terminology/terminologies",
-                },
-              ],
+              label: "FAQs",
+              link: "/surveilr/faq/faqs",
             },
           ],
         },
+
         {
           label: "Opsfolio Suite",
           items: [

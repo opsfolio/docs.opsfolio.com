@@ -1,9 +1,9 @@
 ---
-title: Surveilr
-description: Documentation for the resource surveillance CLI tool.
+title: Introduction
+description: Introduction to Surveilr, a resource-surveillance CLI tool.
 ---
 
-`surveilr` is an extendable file system inspector for performing surveillance of
+**`surveilr`** is an extendable file system inspector for performing surveillance of
 machine resources. It is used to walk resources like file systems and generate
 an SQLite database which can then be consumed by any computing environment that
 supports SQLite.
