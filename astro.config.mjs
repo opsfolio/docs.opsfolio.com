@@ -8,6 +8,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "Opsfolio Docs",
+      customCss: ["./src/assets/css/custom.css"],
       social: {
         github: "https://github.com/opsfolio/releases.opsfolio.com",
         discord: "https://discord.gg/TbfdKMDY",
