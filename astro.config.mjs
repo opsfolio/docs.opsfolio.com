@@ -39,76 +39,6 @@ export default defineConfig({
               collapsed: true,
               items: [
                 {
-                  label: "Ingestion",
-                  collapsed: true,
-                  items: [
-                    {
-                      label: "Files Ingestion",
-                      link: "/surveilr/reference/ingest/files",
-                    },
-                    {
-                      label: "Tasks Ingestion",
-                      link: "/surveilr/reference/ingest/tasks",
-                    },
-                    {
-                      label: "Capturable Executables",
-                      link: "/surveilr/reference/ingest/capexec",
-                    },
-                    {
-                      label: "IMAP Emails Ingestion",
-                      link: "/surveilr/reference/ingest/imap",
-                    },
-                  ],
-                },
-                {
-                  label: "Admin",
-                  collapsed: true,
-
-                  items: [
-                    { label: "Merge", link: "/surveilr/reference/admin/merge" },
-                  ],
-                },
-                {
-                  label: "UDI",
-                  collapsed: true,
-                  items: [
-                    {
-                      label: "PGP",
-                      collapsed: true,
-                      items: [
-                        {
-                          label: "Introduction",
-                          link: "/surveilr/reference/udi/pgp/intro",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                {
-                  label: "Concepts",
-                  collapsed: true,
-                  items: [
-                    {
-                      label: "RSSD",
-                      link: "/surveilr/reference/concepts/resource-surveillance",
-                    },
-                  ],
-                },
-                {
-                  label: "Support",
-                  collapsed: true,
-                  items: [
-                    {
-                      label: "Filestash",
-                      link: "/surveilr/reference/support/filestash",
-                    },
-                    {
-                      label: "RCLONE",
-                      link: "/surveilr/reference/support/rclone",
-                    },
-                  ],
-                },
-                {
                   label: "Database",
                   collapsed: true,
                   items: [
@@ -169,6 +99,98 @@ export default defineConfig({
                   ],
                 },
                 {
+                  label: "Ingestion",
+                  collapsed: true,
+                  items: [
+                    {
+                      label: "Files Ingestion",
+                      link: "/surveilr/reference/ingest/files",
+                    },
+                    {
+                      label: "Tasks Ingestion",
+                      link: "/surveilr/reference/ingest/tasks",
+                    },
+                    {
+                      label: "Capturable Executables",
+                      link: "/surveilr/reference/ingest/capexec",
+                    },
+                    {
+                      label: "IMAP Emails Ingestion",
+                      link: "/surveilr/reference/ingest/imap",
+                    },
+                  ],
+                },
+                {
+                  label: "Admin",
+                  collapsed: true,
+
+                  items: [
+                    { label: "Merge", link: "/surveilr/reference/admin/merge" },
+                  ],
+                },
+                {
+                  label: "Extending Surveilr",
+                  collapsed: true,
+                  items: [
+                    {
+                      label:
+                        "Content Extensibility with Capturable Executables",
+                      link: "/surveilr/extend/content-extensibility",
+                    },
+                    {
+                      label: "SQL DDL Extensibility with SQL Notebooks",
+                      link: "/surveilr/extend/sql-ddl-extensibility",
+                    },
+                    {
+                      label:
+                        "Integrated TypeScript programmability and scriptability",
+                      link: "/surveilr/extend/integrated-ts",
+                    },
+                  ],
+                },
+
+                {
+                  label: "UDI",
+                  collapsed: true,
+                  items: [
+                    {
+                      label: "PGP",
+                      collapsed: true,
+                      items: [
+                        {
+                          label: "Introduction",
+                          link: "/surveilr/reference/udi/pgp/intro",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  label: "Concepts",
+                  collapsed: true,
+                  items: [
+                    {
+                      label: "RSSD",
+                      link: "/surveilr/reference/concepts/resource-surveillance",
+                    },
+                  ],
+                },
+                {
+                  label: "Support",
+                  collapsed: true,
+                  items: [
+                    {
+                      label: "Filestash",
+                      link: "/surveilr/reference/support/filestash",
+                    },
+                    {
+                      label: "RCLONE",
+                      link: "/surveilr/reference/support/rclone",
+                    },
+                  ],
+                },
+
+                {
                   label: "CLI Arguments",
                   link: "/surveilr/reference/arguments/cli-arguments",
                 },
@@ -187,25 +209,6 @@ export default defineConfig({
                 {
                   label: "Terminologies",
                   link: "/surveilr/reference/terminology/terminologies",
-                },
-              ],
-            },
-            {
-              label: "Extending Surveilr",
-              collapsed: true,
-              items: [
-                {
-                  label: "Content Extensibility with Capturable Executables",
-                  link: "/surveilr/extend/content-extensibility",
-                },
-                {
-                  label: "SQL DDL Extensibility with SQL Notebooks",
-                  link: "/surveilr/extend/sql-ddl-extensibility",
-                },
-                {
-                  label:
-                    "Integrated TypeScript programmability and scriptability",
-                  link: "/surveilr/extend/integrated-ts",
                 },
               ],
             },
