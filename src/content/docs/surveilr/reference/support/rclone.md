@@ -69,7 +69,7 @@ rclone config create sftp sftp <host> user <username>  pass <password> port <por
 rclone config create sftp sftp <host> user <username> port <port> key_file <path-to-the-key-file>
 ```
 
-#### Once configured, you can copy files using:
+##### Once configured, you can copy files using:
 
 ```bash
 rclone copy <file-name> <rclone-remote-name>:<remote-path-to-copy>
