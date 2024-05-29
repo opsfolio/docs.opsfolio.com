@@ -3,17 +3,28 @@ title: Installation
 description: Descriptions on how to install surveilr.
 ---
 
-## Quick Start ( TL;DR )
+## Quick Start 
 
-1. **Download:** Get the latest `surveilr` from the  [GitHub releases page](https://github.com/opsfolio/releases.opsfolio.com/releases)
+Start using `surveilr` by following the quick guide below: 
 
-2. **Extract:** Unzip the downloaded file.
+   - **MacOS & Linux**
 
-3. **Move:** Place the extracted file in your desired directory.
+        Install in desired path by running any of the following commands:
 
-4. **Navigate:** Open terminal and `cd` to the directory where you moved the file.
-   
-5. **Verify:** Run verification steps [here](/surveilr/how-to/installation#verify-installation). 
+        ```bash
+        # install in current path
+        $ curl -sL https://raw.githubusercontent.com/opsfolio/releases.opsfolio.com/main/surveilr/install.sh | sh
+
+        # Install globally
+        $ curl -sL https://raw.githubusercontent.com/opsfolio/releases.opsfolio.com/main/surveilr/install.sh | SURVEILR_HOME="$HOME/bin" sh
+
+        # install in preferred path
+        $ curl -sL https://raw.githubusercontent.com/opsfolio/releases.opsfolio.com/main/surveilr/install.sh | SURVEILR_HOME="/path/to/directory" sh
+        ```
+
+  - **Windows (TODO)**
+  
+  - Run verification steps [here](/surveilr/how-to/installation#verify-installation).  
 
 
 ## Installation ( Detailed Instructions)
@@ -29,50 +40,14 @@ Get the latest Surveilr by following these steps to complete the installation:
 3. Extract the executable file from the downloaded archive:
 
    - **Windows:**
-        - Right-click on the downloaded .zip file and select "Extract All..."
-        - Choose the destination folder where you want to extract the files.
-    - **macOS:**
-        - Double-click the downloaded .tar.gz or .zip file to extract it.
-    - **Linux:**
-        - Open a terminal.
-        - Navigate to the directory where the file was downloaded.
-        - Use the appropriate command to extract the file. For **.tar.gz** files, use:
-             ```bash
-             tar -xvzf surveilr-version.tar.gz
-             ```
+        - Extract the downloaded zip file
+        - Copy the executable ( ends with `.exe` ) file from the extracted zip folder and move to your desired path or directory
+        - Open your terminal and change directory (cd) to where the extracted file was moved
 
-            For **.zip** files, use:
-            ```bash
-            unzip surveilr-version.zip
-            ```
-
-4. Move the extracted file to your desired path or directory:
-
-    - You can move the extracted executable file to a directory included in your system's PATH or to a directory of your choice.
-    - **Windows:**
-        - Open File Explorer and navigate to the extracted file.
-        - Right-click the file and select "Cut".
-        - Navigate to the desired directory, right-click, and select "Paste".
     - **macOS and Linux:**
-        - Use the mv command in the terminal to move the file. For example:
-            ```bash
-            mv surveilr /usr/local/bin/
-            ```
-5. Open your terminal and change directory (cd) to where the extracted file was moved:
-
-    - **Windows:**
-        - Open Command Prompt.
-        - Use the cd command to navigate to the directory. For example:
-            ```bash
-                cd C:\path\to\surveilr**
-            ```
-    - **macOS and Linux:**
-        - Open Terminal.
-        - Use the cd command to navigate to the directory. For example:
-            ```bash
-            cd /usr/local/bin/
-     ```
-6. Run verification steps [here](/surveilr/how-to/installation#verify-installation). 
+        - Follow the instructions in [quick start](/surveilr/how-to/installation#quick-start)
+          
+4. Run verification steps [here](/surveilr/how-to/installation#verify-installation). 
 
 ### Alternative Installation for Linux Using Eget
 
@@ -87,23 +62,6 @@ Get the latest Surveilr by following these steps to complete the installation:
     $ eget opsfolio/releases.opsfolio.com --asset tar.gz
     ```
 3. Run verification steps [here](/surveilr/how-to/installation#verify-installation). 
-
-### Alternative Installation for Linux and Mac
-
-1. Install in desired path by running any of the following commands:
-    
-    ```bash
-    # install in current path
-    $ curl -sL https://raw.githubusercontent.com/opsfolio/releases.opsfolio.com/main/surveilr/install.sh | sh
-
-    # Install globally
-    $ curl -sL https://raw.githubusercontent.com/opsfolio/releases.opsfolio.com/main/surveilr/install.sh | SURVEILR_HOME="$HOME/bin" sh
-
-    # install in preferred path
-    $ curl -sL https://raw.githubusercontent.com/opsfolio/releases.opsfolio.com/main/surveilr/install.sh | SURVEILR_HOME="/path/to/directory" sh
-    ```
-
-2. Run verification steps [here](/surveilr/how-to/installation#verify-installation).  
 
 
 ## Verify installation

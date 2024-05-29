@@ -30,7 +30,7 @@ policy compliance, hence improving security and regulatory adherence.</p>
 <summary class="faq"><h6>How do I install Surveilr?</h6></summary>
 
 <p>We have provided a detailed guide on how to install `surveilr` on your machine
-(Linux, Windows, and MacOS ), find it [here](/surveilr/installation).</p>
+(Linux, Windows, and MacOS ), find it <a href="/surveilr/how-to/installation">here</a>.</p>
 
 </details>
 
@@ -41,7 +41,7 @@ policy compliance, hence improving security and regulatory adherence.</p>
 <p>We have provided a comprehensive guide on how surveilr can be used to gather
 machine-attested compliance evidences from different Work Product Artifacts
 (WPAs) across a wide variety of disciplines. Here's an example of how
-[software engineers](/surveilr/disciplines/software-engineer) make use of
+<a href="/surveilr/disciplines/software-engineer">software engineers</a> make use of
 surveilr.</p>
 
 </details>
@@ -52,7 +52,7 @@ surveilr.</p>
 
 <p>No, Opsfolio does not track personal information, including emails, at any point
 in time. All data processed by Surveilr is stored in a Resource Surveillance
-State Database [(RSSD)](/surveilr/reference/concepts/resource-surveillance#rssd)
+State Database <a href="/surveilr/reference/concepts/resource-surveillance#rssd">(RSSD)</a>
 that is stored locally on the client's machine, and not connected to any of our
 cloud databases.</p>
 
