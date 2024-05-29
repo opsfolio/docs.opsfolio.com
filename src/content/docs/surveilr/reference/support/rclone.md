@@ -1,4 +1,7 @@
-# Rclone Documentation
+---
+title:  Rclone
+description: File management platform
+---
 
 This documentation provides comprehensive instructions for installing and configuring Rclone, a powerful command-line program for syncing files and directories to various cloud storage providers.
 
