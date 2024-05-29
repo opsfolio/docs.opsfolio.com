@@ -102,6 +102,10 @@ export default defineConfig({
                       label: "Filestash",
                       link: "/surveilr/reference/support/filestash",
                     },
+                    {
+                      label: "RCLONE",
+                      link: "/surveilr/reference/support/rclone",
+                    },
                   ],
                 },
                 {
