@@ -5,36 +5,36 @@ description: File management platform
 
 This documentation provides comprehensive instructions for installing and configuring Rclone, a powerful command-line program for syncing files and directories to various cloud storage providers.
 
-## Prerequisites
+#### Prerequisites
 
 Before you begin, make sure you have the following:
 
 - A working internet connection.
 - Appropriate permissions to install software on your system.
 
-## Installation Steps
+### Installation Steps
 
 
-#### Install rclone
+##### Install rclone
 
 Rclone is single executable (rclone, or rclone.exe on Windows) that you can simply download and install from the [official website](https://rclone.org/downloads/)
 
 Alternatively, you can use the Eget binary installer:
 
-- #### Eget binary installer
+- ##### Eget binary installer
 
 ```bash
 curl https://zyedidia.github.io/eget.sh | sh
 sudo mv eget /usr/local/bin/
 ```
 
-- #### Install rclone
+- ##### Install rclone
 
 ```bash
 eget --download-only --asset linux-amd64.deb  rclone/rclone
 sudo dpkg -i rclone*linux-amd64.deb
 ```
-#### Run rclone config
+##### Run rclone config
 
 Run the following command to configure Rclone:
 
@@ -43,11 +43,11 @@ rclone config
 ```
 --------------------------------
 
-# Rclone Setup with SFTP
+## Rclone Setup with SFTP
 
 This guide provides step-by-step instructions for configuring Rclone with SFTP.
 
-## Prerequisites
+#### Prerequisites
 
 Before you start, ensure you have the following:
 
@@ -55,32 +55,32 @@ Before you start, ensure you have the following:
 - Create an ssh key for passwordless login
 
 
-### Configure Rclone
+#### Configure Rclone
 
-#### If you're not using key based password less login , pass in the credentials:
+##### If you're not using key based password less login , pass in the credentials:
 
 ```bash
 rclone config create sftp sftp <host> user <username>  pass <password> port <port>
 ```
 
-#### If you have a public key, follow the command below:
+##### If you have a public key, follow the command below:
 
 ```bash
 rclone config create sftp sftp <host> user <username> port <port> key_file <path-to-the-key-file>
 ```
 
-### Once configured, you can copy files using:
+#### Once configured, you can copy files using:
 
 ```bash
 rclone copy <file-name> <rclone-remote-name>:<remote-path-to-copy>
 ```
 
 --------------------------------
-# Configure AWS S3 as storage provider 
+## Configure AWS S3 as storage provider 
 
 This guide provides step-by-step instructions for configuring Rclone with AWS S3.
 
-## Prerequisites
+#### Prerequisites
 
 Before you start, ensure you have the following:
 
@@ -88,14 +88,14 @@ Before you start, ensure you have the following:
 - AWS Access Key ID and Secret Access Key.
 - AWS bucket with respective policy
 
-### Step 1: Create a AWS bucket and add respective policy
+#### Step 1: Create a AWS bucket and add respective policy
 
 - login to aws account and Navigate to S3
 - Click the "Create bucket" button. 
 - Enter a unique and meaningful name for your bucket.
 - Choose a region for your bucket.
 - Configure other settings as needed and click "Create bucket."
-#### Navigate to S3:
+##### Navigate to S3:
 - In the S3 dashboard, click on the bucket you just created.
 - Click on the "Permissions" tab.
 - Block public access disable this
@@ -125,7 +125,7 @@ Before you start, ensure you have the following:
 }
 
 ```
-### Step 2: Configure Rclone
+#### Step 2: Configure Rclone
 
 Run the following command in your terminal to configure Rclone:
 
@@ -136,50 +136,50 @@ rclone config create resource-surveillance s3 provider AWS access_key_id <key_id
 Change the values with your values
 
 
-### Start Using Rclone
+#### Start Using Rclone
 ```
 You're now ready to use Rclone for managing files on AWS S3!
 ```
 
-#### You can now use Rclone for various operations. For example, to copy local files to your S3 bucket:
+##### You can now use Rclone for various operations. For example, to copy local files to your S3 bucket:
 
 ```
 rclone copy <file-name> <rclone-remote-name>:<bucket_name>
 ```
 
 --------------------------------
-# Configure OneDrive as storage provider
+## Configure OneDrive as storage provider
 
 This guide provides step-by-step instructions for configuring Rclone with Microsoft OneDrive
 
-## Creating Client ID for OneDrive Business
+### Creating Client ID for OneDrive Business
 
 This guide provides step-by-step instructions on how to create a Client ID for OneDrive Business to integrate with your application.
 
-### Prerequisites
+#### Prerequisites
 
 Before you begin, make sure you have the following:
 
 - Microsoft 365 Business account with administrative privileges.
 - Access to the Azure portal (https://portal.azure.com/).
 
-### 1. Log in to the Azure Portal
+#### 1. Log in to the Azure Portal
 
 Visit [Azure Portal](https://portal.azure.com/) and log in with your Microsoft 365 Business account.
 
-### 2. Navigate to Azure Active Directory
+#### 2. Navigate to Azure Active Directory
 
 In the left navigation pane, select "Azure Active Directory."
 
-### 3. App Registrations
+#### 3. App Registrations
 
 Navigate to "App registrations" under the "Manage" section.
 
-### 4. New Registration
+#### 4. New Registration
 
 Click on "New registration" to create a new application registration.
 
-### 5. Configure the Application
+#### 5. Configure the Application
 
 - **Name:** Provide a name for your application.
 - **Supported account types:**  Accounts in this organizational directory only (Single tenant)
@@ -194,7 +194,7 @@ In the rclone config, set auth_url to https://login.microsoftonline.com/YOUR_TEN
 In the rclone config, set token_url to https://login.microsoftonline.com/YOUR_TENANT_ID/oauth2/v2.0/token
 
 
-### Configure Rclone
+#### Configure Rclone
 
 Run the following command in your terminal to configure Rclone:
 
@@ -270,11 +270,11 @@ d) Delete this remote
 y/e/d> y
 ```
 
-### Start Using rclone
+#### Start Using rclone
 
 You're now ready to use rclone for managing files on Microsoft OneDrive
 
-#### Copy your RSSD SQLite .db file to  OneDrive Aggregrated RSSD remote drive. 
+##### Copy your RSSD SQLite .db file to  OneDrive Aggregrated RSSD remote drive. 
 
 ```bash
 rclone copy /path/to/file/resource-surveillance-$(hostname).sqlite.db one-drive:opsfolio-arssd
