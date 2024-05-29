@@ -88,7 +88,7 @@ Before you start, ensure you have the following:
 - AWS Access Key ID and Secret Access Key.
 - AWS bucket with respective policy
 
-#### Step 1: Create a AWS bucket and add respective policy
+##### Step 1: Create a AWS bucket and add respective policy
 
 - login to aws account and Navigate to S3
 - Click the "Create bucket" button. 
@@ -125,7 +125,7 @@ Before you start, ensure you have the following:
 }
 
 ```
-#### Step 2: Configure Rclone
+##### Step 2: Configure Rclone
 
 Run the following command in your terminal to configure Rclone:
 
@@ -163,23 +163,23 @@ Before you begin, make sure you have the following:
 - Microsoft 365 Business account with administrative privileges.
 - Access to the Azure portal (https://portal.azure.com/).
 
-#### 1. Log in to the Azure Portal
+##### 1. Log in to the Azure Portal
 
 Visit [Azure Portal](https://portal.azure.com/) and log in with your Microsoft 365 Business account.
 
-#### 2. Navigate to Azure Active Directory
+##### 2. Navigate to Azure Active Directory
 
 In the left navigation pane, select "Azure Active Directory."
 
-#### 3. App Registrations
+##### 3. App Registrations
 
 Navigate to "App registrations" under the "Manage" section.
 
-#### 4. New Registration
+##### 4. New Registration
 
 Click on "New registration" to create a new application registration.
 
-#### 5. Configure the Application
+##### 5. Configure the Application
 
 - **Name:** Provide a name for your application.
 - **Supported account types:**  Accounts in this organizational directory only (Single tenant)
@@ -274,7 +274,7 @@ y/e/d> y
 
 You're now ready to use rclone for managing files on Microsoft OneDrive
 
-##### Copy your RSSD SQLite .db file to  OneDrive Aggregrated RSSD remote drive. 
+###### Copy your RSSD SQLite .db file to  OneDrive Aggregrated RSSD remote drive. 
 
 ```bash
 rclone copy /path/to/file/resource-surveillance-$(hostname).sqlite.db one-drive:opsfolio-arssd
