@@ -105,7 +105,7 @@ cloud databases.</p>
 
 <summary class="faq"><h6>Will we be using this RSSD file in Opsfolio Suite for auditing or in some other way?</h6></summary>
 
-<p>Yes, RSSDs are used for auding in Opsfolio Suite but because they are simple SQLite databases they can also be used for anything else your company would like.</p>
+<p>Yes, RSSDs are used for auditing in Opsfolio Suite but because they are simple SQLite databases they can also be used for anything else your company would like.</p>
 
 </details>
 
