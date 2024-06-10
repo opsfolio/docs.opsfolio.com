@@ -79,7 +79,7 @@ cloud databases.</p>
 
 <summary class="faq"><h6>While using the IMAP ingestion how can I exclude confidential email from getting ingested in the RSSDs?</h6></summary>
 
-<p>We are working to get this answered as soon as possible</p>
+<p>Specific emails boxes are authorized via credentials that you supply. Usually, operational emails are sent to individual purpose-specific mailboxes (not personal) so if you can segregate by mailbox then no confidential emails will ever be ingested. If you have a mailbox which might have mixed content, we have filters that allow you to only pick up emails using regular expressions and search expressions to match specific content only.</p>
 
 </details>
 
@@ -88,7 +88,7 @@ cloud databases.</p>
 
 <summary class="faq"><h6>How does the tool perform under high data loads?</h6></summary>
 
-<p>We are working to get this answered as soon as possible</p>
+<p>It performs very well with full horizontal and vertical scaling capabilities. Many workloads are performed offline with very low CPU, memory, and I/O impacts.</p>
 
 </details>
 
@@ -105,7 +105,7 @@ cloud databases.</p>
 
 <summary class="faq"><h6>Will we be using this RSSD file in Opsfolio Suite for auditing or in some other way?</h6></summary>
 
-<p>We are working to get this answered as soon as possible</p>
+<p>Yes, RSSDs are used for auding in Opsfolio Suite but because they are simple SQLite databases they can also be used for anything else your company would like.</p>
 
 </details>
 
