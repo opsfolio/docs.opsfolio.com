@@ -31,7 +31,7 @@ When running queries in [RSSDs](/surveilr/reference/concepts/resource-surveillan
 Below are examples of Work Product Artifacts ( `WPAs` ) associated with quality engineers that `surveilr` can help gather compliance evidences:
 
 ## Creating a Test Plan
-
+ 
 A company’s policy might state: **“All quality engineers must create a detailed test plan for each project.”** This policy can be broken down into the following requirements:
 
 - Outline the testing approach, objectives, scope, resources, and timelines.
@@ -41,11 +41,18 @@ The next step is to use `surveilr` to ensure compliance with these policies, cap
 
 ### SQL Query for Verification of Test Plan
 
-    SELECT d.state_sysinfo -> 'host_name' AS 'Host Name',
-           tp.content -> 'test_plan' AS 'Test Plan'
-    FROM uniform_resource ur
-    JOIN device d ON ur.device_id = d.device_id
-    WHERE ur.uri LIKE '%test_plan.json';
+```sql
+SELECT 
+    d.state_sysinfo -> 'host_name' AS "Host Name",
+    tp.content -> 'test_plan' AS "Test Plan"
+FROM 
+    uniform_resource ur
+JOIN 
+    device d ON ur.device_id = d.device_id
+WHERE 
+    ur.uri LIKE '%test_plan.json';
+
+```
 
 ### Compliance Evidence
 
@@ -56,10 +63,11 @@ The next step is to use `surveilr` to ensure compliance with these policies, cap
 
 ### Non-compliance Evidence
 
-| Host Name | Test Plan       |
-|-----------|-----------------|
-| HostName_1| Missing Plan    |
-| HostName_2| Incomplete Plan |
+| Host Name  | Test Plan |
+| ---------- | --------- |
+| HostName_1 |           |
+| HostName_2 |           |
+
 
 ## Designing Test Cases
 
@@ -70,12 +78,18 @@ A company's policy might state: **“All quality engineers must design test case
 
 ### SQL Query for Verification of Test Cases
 
-    SELECT ur.content -> 'name' AS 'Project Name',
-           ur.content -> 'test_cases' AS 'Test Cases'
-    FROM uniform_resource ur
-    JOIN device d ON ur.device_id = d.device_id
-    WHERE ur.uri LIKE '%test_cases.json';
-
+```sql
+SELECT 
+    ur.content -> 'name' AS "Project Name",
+    ur.content -> 'test_cases' AS "Test Cases"
+FROM 
+    uniform_resource ur
+JOIN 
+    device d ON ur.device_id = d.device_id
+WHERE 
+    ur.uri LIKE '%test_cases.json';
+```
+  
 ### Compliance Evidence
 
 | Host Name  | Project Name             | Test Cases       |
@@ -85,10 +99,11 @@ A company's policy might state: **“All quality engineers must design test case
 
 ### Non-compliance Evidence
 
-| Host Name  | Project Name             | Test Cases       |
-|------------|--------------------------|------------------|
-| HostName_1 | project-1                | Incomplete       |
-| HostName_2 | project-2                | Missing          |
+| Host Name  | Project Name | Test Cases |
+| ---------- | ------------ | ---------- |
+| HostName_1 | project-1    |            |
+| HostName_2 | project-2    |            |
+
 
 ## Setting Up Test Environments
 
@@ -99,11 +114,17 @@ A company’s policy might state: **“All quality engineers must set up test en
 
 ### SQL Query for Verification of Test Environments
 
-    SELECT ur.content -> 'name' AS 'Environment Name',
-           ur.content -> 'setup_details' AS 'Setup Details'
-    FROM uniform_resource ur
-    JOIN device d ON ur.device_id = d.device_id
-    WHERE ur.uri LIKE '%environment_setup.json';
+```sql
+SELECT 
+    ur.content -> 'name' AS "Environment Name",
+    ur.content -> 'setup_details' AS "Setup Details"
+FROM 
+    uniform_resource ur
+JOIN 
+    device d ON ur.device_id = d.device_id
+WHERE 
+    ur.uri LIKE '%environment_setup.json';
+```
 
 ### Compliance Evidence
 
@@ -114,10 +135,11 @@ A company’s policy might state: **“All quality engineers must set up test en
 
 ### Non-compliance Evidence
 
-| Host Name  | Environment Name         | Setup Details     |
-|------------|--------------------------|-------------------|
-| HostName_1 | staging-1                | Incomplete Setup  |
-| HostName_2 | staging-2                | Missing Setup     |
+| Host Name  | Environment Name | Setup Details |
+| ---------- | ---------------- | ------------- |
+| HostName_1 | staging-1        |               |
+| HostName_2 | staging-2        |               |
+
 
 ## Manually Executing Test Cases
 
@@ -128,11 +150,17 @@ A company’s policy might state: **“All quality engineers must manually execu
 
 ### SQL Query for Verification of Manual Test Execution
 
-    SELECT ur.content -> 'name' AS 'Test Case Name',
-           ur.content -> 'execution_results' AS 'Execution Results'
-    FROM uniform_resource ur
-    JOIN device d ON ur.device_id = d.device_id
-    WHERE ur.uri LIKE '%manual_tests.json';
+```sql
+SELECT 
+    ur.content -> 'name' AS "Test Case Name",
+    ur.content -> 'execution_results' AS "Execution Results"
+FROM 
+    uniform_resource ur
+JOIN 
+    device d ON ur.device_id = d.device_id
+WHERE 
+    ur.uri LIKE '%manual_tests.json';
+```
 
 ### Compliance Evidence
 
@@ -157,11 +185,17 @@ A company’s policy might state: **“All quality engineers must develop and ex
 
 ### SQL Query for Verification of Automated Test Scripts
 
-    SELECT ur.content -> 'name' AS 'Project Name',
-           ur.content -> 'scripts' -> 'test:automation' AS 'Automation Script'
-    FROM uniform_resource ur
-    JOIN device d ON ur.device_id = d.device_id
-    WHERE ur.uri LIKE '%automation_tests.json';
+```sql
+SELECT 
+    ur.content -> 'name' AS "Project Name",
+    ur.content -> 'scripts' -> 'test:automation' AS "Automation Script"
+FROM 
+    uniform_resource ur
+JOIN 
+    device d ON ur.device_id = d.device_id
+WHERE 
+    ur.uri LIKE '%automation_tests.json';
+```
 
 ### Compliance Evidence
 
@@ -186,11 +220,17 @@ A company’s policy might state: **“All quality engineers must perform regres
 
 ### SQL Query for Verification of Regression Testing
 
-    SELECT ur.content -> 'name' AS 'Project Name',
-           ur.content -> 'scripts' -> 'test:regression' AS 'Regression Script'
-    FROM uniform_resource ur
-    JOIN device d ON ur.device_id = d.device_id
-    WHERE ur.uri LIKE '%regression_tests.json';
+```sql
+SELECT 
+    ur.content -> 'name' AS "Project Name",
+    ur.content -> 'scripts' -> 'test:regression' AS "Regression Script"
+FROM 
+    uniform_resource ur
+JOIN 
+    device d ON ur.device_id = d.device_id
+WHERE 
+    ur.uri LIKE '%regression_tests.json';
+```
 
 ### Compliance Evidence
 
@@ -215,11 +255,17 @@ A company's policy might state: **“All quality engineers must conduct performa
 
 ### SQL Query for Verification of Performance Testing
 
-    SELECT ur.content -> 'name' AS 'Project Name',
-           ur.content -> 'scripts' -> 'test:performance' AS 'Performance Script'
-    FROM uniform_resource ur
-    JOIN device d ON ur.device_id = d.device_id
-    WHERE ur.uri LIKE '%performance_tests.json';
+```sql
+SELECT 
+    ur.content -> 'name' AS "Project Name",
+    ur.content -> 'scripts' -> 'test:performance' AS "Performance Script"
+FROM 
+    uniform_resource ur
+JOIN 
+    device d ON ur.device_id = d.device_id
+WHERE 
+    ur.uri LIKE '%performance_tests.json';
+```
 
 ### Compliance Evidence
 
