@@ -173,6 +173,10 @@ export default defineConfig({
                       label: "RSSD",
                       link: "/surveilr/reference/concepts/resource-surveillance",
                     },
+                    {
+                      label: "WPAs",
+                      link: "/surveilr/reference/concepts/work-product-artifacts",
+                    },
                   ],
                 },
                 {

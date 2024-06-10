@@ -35,7 +35,7 @@ When running queries in [RSSDs](/surveilr/reference/concepts/resource-surveillan
 $ sqlite3 resource-surveillance.sqlite.db "SELECT * FROM..."
 ```
 
-Below are  examples of Work Product Artifacts ( `WPAs` ) associated with software engineers that `surveilr` can help gather compliance evidences;
+Below are  examples of Work Product Artifacts ( `WPAs` ) associated with software engineers that `surveilr` can help gather compliance evidences from;
 
 ## Operating System
 

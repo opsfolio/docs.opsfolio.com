@@ -65,3 +65,47 @@ cloud databases.</p>
 <p>We do not track your data, so you can be rest assured your data is safe.</p>
 
 </details>
+
+<details class="details">
+
+<summary class="faq"><h6>I have generated the RSSD files, now what's the next step from this?</h6></summary>
+
+<p>The next step is to navigate to the <a href="/surveilr/disciplines/software-engineer">disciplines and WPAs</a> page, choose your discipline, and see various ways you can extract machine-attested compliance evidences from the RSSD using SQL, depending on the <a href=/surveilr/reference/concepts/work-product-artifacts">Work Product Artifact (WPA)</a>. Here's an example of how
+<a href="/surveilr/disciplines/software-engineer">software engineers</a> extract compliance evidences from the <a href="/surveilr/reference/concepts/resource-surveillance">RSSD</a> file.</p>
+
+</details>
+
+<details class="details">
+
+<summary class="faq"><h6>While using the IMAP ingestion how can I exclude confidential email from getting ingested in the RSSDs?</h6></summary>
+
+<p>We are working to get this answered as soon as possible</p>
+
+</details>
+
+
+<details class="details">
+
+<summary class="faq"><h6>How does the tool perform under high data loads?</h6></summary>
+
+<p>We are working to get this answered as soon as possible</p>
+
+</details>
+
+<details class="details">
+
+<summary class="faq"><h6>How will we be using these RSSD files for auditing or compliance check?</h6></summary>
+
+<p>How the RSSD files will be used for auditing and compliance check is dependent on various disciplines and the their policies. To get started,  navigate to the <a href="/surveilr/disciplines/software-engineer">disciplines and WPAs</a> page, choose your discipline, and see various ways you can extract machine-attested compliance evidences from the RSSD using SQL, depending on the <a href=/surveilr/reference/concepts/work-product-artifacts">Work Product Artifact (WPA)</a>. Here's an example of how
+<a href="/surveilr/disciplines/software-engineer">software engineers</a> extract compliance evidences from the <a href="/surveilr/reference/concepts/resource-surveillance">RSSD</a> file.</p>
+
+</details>
+
+<details class="details">
+
+<summary class="faq"><h6>Will we be using this RSSD file in Opsfolio Suite for auditing or in some other way?</h6></summary>
+
+<p>We are working to get this answered as soon as possible</p>
+
+</details>
+
