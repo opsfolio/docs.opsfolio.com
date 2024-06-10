@@ -135,16 +135,16 @@ export default defineConfig({
                     {
                       label:
                         "Content Extensibility with Capturable Executables",
-                      link: "/surveilr/extend/content-extensibility",
+                      link: "/surveilr/reference/extend/content-extensibility",
                     },
                     {
                       label: "SQL DDL Extensibility with SQL Notebooks",
-                      link: "/surveilr/extend/sql-ddl-extensibility",
+                      link: "/surveilr/reference/extend/sql-ddl-extensibility",
                     },
                     {
                       label:
                         "Integrated TypeScript programmability and scriptability",
-                      link: "/surveilr/extend/integrated-ts",
+                      link: "/surveilr/reference/extend/integrated-ts",
                     },
                   ],
                 },
