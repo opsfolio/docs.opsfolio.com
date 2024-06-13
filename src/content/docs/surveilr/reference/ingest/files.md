@@ -27,7 +27,7 @@ $ export SURVEILR_STATEDB_FS_PATH="resource-surveillance-$(hostname).sqlite.db"
 
 # or
 # Set the custom path by passing it as a value to the `-d` argument
-$ surveilr ingest -d "resource-surveillance-$(hostname).sqlite.db" files
+$ surveilr ingest files -d "resource-surveillance-$(hostname).sqlite.db"
 ```
 
 ## Performing File Ingestions
