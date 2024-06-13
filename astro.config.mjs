@@ -18,15 +18,15 @@ export default defineConfig({
           label: "Resource Surveillance",
           items: [
             {
-              label: "Introduction",
-              link: "/surveilr/introduction",
+              label: "Getting Started",
+              link: "/surveilr/getting-started",
             },
             {
               label: "How-To",
               items: [
                 {
-                  label: "Installation",
-                  link: "/surveilr/how-to/installation",
+                  label: "Installation guide ",
+                  link: "/surveilr/how-to/installation-guide",
                 },
               ],
             },
