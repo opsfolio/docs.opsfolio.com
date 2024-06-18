@@ -47,8 +47,8 @@ export default defineConfig({
                       collapsed: true,
                       items: [
                         {
-                          label: "Schema",
-                          link: "/surveilr/reference/db/surveilr-state-schema/state-schema",
+                          label: "State Schema",
+                          link: "/surveilr/reference/db/surveilr-state-schema/state_schema",
                         },
                         {
                           label: "Device",
@@ -59,7 +59,7 @@ export default defineConfig({
                           link: "/surveilr/reference/db/surveilr-state-schema/behavior",
                         },
                         {
-                          label: "ingest Resource Path Match",
+                          label: "Ingest Resource Path Match",
                           link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_resource_path_match_rule",
                         },
                         {
@@ -93,8 +93,30 @@ export default defineConfig({
                       ],
                     },
                     {
-                      label: "Notebook Schema",
-                      link: "/surveilr/reference/db/notebook",
+                      label: "Notebooks Schema",
+                      collapsed: true,
+                      items: [
+                        {
+                          label: "Notebooks Schema",
+                          link: "/surveilr/reference/db/surveilr-code-notebooks-schema/notebooks_schema",
+                        },
+                        {
+                          label: "Assurance Schema",
+                          link: "/surveilr/reference/db/surveilr-code-notebooks-schema/assurance_schema",
+                        },
+                        {
+                          label: "Code Notebook Cell",
+                          link: "/surveilr/reference/db/surveilr-code-notebooks-schema/code_notebook_cell",
+                        },
+                        {
+                          label: "Code Notebook Kernel",
+                          link: "/surveilr/reference/db/surveilr-code-notebooks-schema/code_notebook_kernel",
+                        },
+                        {
+                          label: "Code Notebook State",
+                          link: "/surveilr/reference/db/surveilr-code-notebooks-schema/code_notebook_state",
+                        },
+                      ],
                     },
                   ],
                 },
@@ -208,7 +230,7 @@ export default defineConfig({
                 },
                 {
                   label: "Code Notebooks",
-                  link: "/surveilr/reference/notebooks/code",
+                  link: "/surveilr/reference/code-notebooks",
                 },
                 {
                   label: "Terminologies",
