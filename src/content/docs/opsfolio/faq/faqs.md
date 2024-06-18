@@ -178,6 +178,6 @@ tutorials, and troubleshooting tips.</p>
 
 <summary class="faq"><h6>Where can I find more information about Opsfolio?</h6></summary>
 
-<p>For more detailed information about Opsfolio, please visit their official website at [opsfolio.com](https://www.opsfolio.com/). There you can explore features, solutions offered, customer testimonials, and how Opsfolio can benefit your organization.</p>
+<p>For more detailed information about Opsfolio, please visit their official website at <a href="https://www.opsfolio.com/">opsfolio.com</a>. There you can explore features, solutions offered, customer testimonials, and how Opsfolio can benefit your organization.</p>
 
 </details>
