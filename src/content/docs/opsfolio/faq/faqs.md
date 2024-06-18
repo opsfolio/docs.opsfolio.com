@@ -157,3 +157,27 @@ tutorials, and troubleshooting tips.</p>
 <p>The Opsfolio Suite supports a wide range of compliance frameworks, including SOC 2, FedRAMP, HITRUST, and more.</p>
 
 </details>
+
+<details class="details">
+
+<summary class="faq"><h6>How can we update policies in Opsfolio Suite Application? Is there a UI for updating policies?</h6></summary>
+
+<p>You can update policies using markdown files. The UI for this feature is currently in our pipeline and will be available soon.</p>
+
+</details>
+
+<details class="details">
+
+<summary class="faq"><h6>Can Opsfolio provide real-time monitoring?</h6></summary>
+
+<p>Yes, Opsfolio provides real-time information as evidence in policies for auditing. It offers capabilities for continuous monitoring to keep you informed about the current state of your systems and compliance status.</p>
+
+</details>
+
+<details class="details">
+
+<summary class="faq"><h6>Where can I find more information about Opsfolio?</h6></summary>
+
+<p>For more detailed information about Opsfolio, please visit their official website at [opsfolio.com](https://www.opsfolio.com/). There you can explore features, solutions offered, customer testimonials, and how Opsfolio can benefit your organization.</p>
+
+</details>
