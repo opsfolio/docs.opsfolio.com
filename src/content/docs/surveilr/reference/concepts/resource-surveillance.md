@@ -35,5 +35,27 @@ $ surveilr ingest files -r <PATH>/my-files
 The outcome of the execution of this script above is a `resource-surveillance.sqlite.db` file ( known as `resource surveillance state database - RSSD` ) created in your root directory. The database consist of several tables which can you can learn about [here](/surveilr/reference/db/surveilr-state-schema/state-schema#tables).
 
 
+## Configuring Unique Identifiers for RSSD Databases
+
+`surveilr` uses a default SQLite database named `resource-surveillance.sqlite.db` for storing file system state data. However, in environments with multiple surveillance databases, it's beneficial to distinguish each `RSSD` by including unique identifiers in the filename, such as the hostname. This setup simplifies [merging](/surveilr/reference/admin/merge/) of databases. Unique identifiers can be configured for `RSSD` databases in two ways:
+
+1. **Using an environment variable**:
+   During a terminal session, you can set a custom `RSSD` path as an environment variable. This path will serve as an identifier for the generated SQLite database during ingestion. Note that the environment variable will be cleared once the terminal session is closed.
+
+   ```bash
+   export SURVEILR_STATEDB_FS_PATH="resource-surveillance-$(hostname).sqlite.db"
+   ```
+   :::note[Note]
+   - `SURVEILR_STATEDB_FS_PATH` can take the path you want the `RSSD` to be stored as value (`SURVEILR_STATEDB_FS_PATH="<path>/resource-surveillance-$(hostname).sqlite.db"`). If a path isn't specified, the `RSSD` will be stored in the current working directory.  
+   - `SURVEILR_STATEDB_FS_PATH` can take any string as the identifier as long it has `.db` extension (`SURVEILR_STATEDB_FS_PATH="my-identifier.db"`).
+   :::
+
+2. **Argument Passing**:
+   When performing an ingestion, you need to set the `RSSD`'s unique identifier by passing it as an argument with the `-d` flag, as shown below.
+   
+   ```bash
+   $ surveilr ingest files -d "resource-surveillance-$(hostname).sqlite.db"
+   ```
+    
 
 
