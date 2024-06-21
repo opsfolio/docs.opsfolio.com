@@ -3,6 +3,10 @@ title: Quality Assurance Engineers
 description: explanation on how quality assurance engineers make use of surveilr.
 ---
 
+:::tip[Tip]
+- **SQLite3 CLI Tool**: The example queries on this page use **`SQLite v3.45`**. There may be slight differences if you're using an older version.
+:::
+
 ## Introduction
 
 Quality Engineers play an essential role in ensuring that software products meet the highest quality standards. Their responsibilities include creating comprehensive test plans, designing test cases, setting up test environments, executing tests, and more. This document outlines the key activities and best practices for Quality Engineers to ensure thorough and efficient testing processes.
@@ -26,7 +30,9 @@ surveilr ingest files
 
 When running queries in [RSSDs](/surveilr/reference/concepts/resource-surveillance):
 
-    $ sqlite3 resource-surveillance.sqlite.db "SELECT * FROM..."
+```bash
+$ sqlite3 resource-surveillance.sqlite.db "SELECT * FROM..."
+```
 
 Below are examples of Work Product Artifacts ( `WPAs` ) associated with quality engineers that `surveilr` can help gather compliance evidences:
 

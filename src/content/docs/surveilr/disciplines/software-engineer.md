@@ -3,6 +3,10 @@ title: Software Engineers
 description: explanation on how how software engineers make use of surveilr.
 ---
 
+:::tip[Tip]
+- **SQLite3 CLI Tool**: The example queries on this page use **`SQLite v3.45`**. There may be slight differences if you're using an older version.
+:::
+
 ## Introduction
 
 Companies usually have security, privacy, safety and regulatory compliance policies that must be adhered to by their software engineering teams and the adherence to these policies can be validated by using `surveilr` agent to extract compliance evidence from machine attestation artifacts. `Surveilr` can help you retrieve compliance evidence from these artifacts without having to worry about filling compliance forms.

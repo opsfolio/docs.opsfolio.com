@@ -36,6 +36,14 @@ policy compliance, hence improving security and regulatory adherence.</p>
 
 <details class="details">
 
+<summary class="faq"><h6>What are the minimum system requirements to run Surveilr?</h6></summary>
+
+<p>While surveilr can run on low-performing systems, we recommend at least a dual-core processor, 2GB of RAM, and 8GB of available disk space for optimal performance.</p>
+
+</details>
+
+<details class="details">
+
 <summary class="faq"><h6>How do I use Surveilr?</h6></summary>
 
 <p>We have provided a comprehensive guide on how surveilr can be used to gather
