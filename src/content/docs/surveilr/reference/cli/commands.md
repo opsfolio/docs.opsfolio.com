@@ -3,74 +3,91 @@ title: Command-Line Help for Surveilr
 description: This document contains the help content for the `surveilr` command-line program.
 ---
 
+# Command-Line Help for `surveilr`
+
+This document contains the help content for the `surveilr` command-line program.
+
 **Command Overview:**
 
-- [`surveilr`](#surveilr)
-        - [**Subcommands:**](#subcommands)
-        - [**Options:**](#options)
-- [`surveilr admin`](#surveilr-admin)
-        - [**Subcommands:**](#subcommands-1)
-- [`surveilr admin init`](#surveilr-admin-init)
-        - [**Options:**](#options-1)
-- [`surveilr admin merge`](#surveilr-admin-merge)
-        - [**Options:**](#options-2)
-- [`surveilr admin cli-help-md`](#surveilr-admin-cli-help-md)
-- [`surveilr admin test`](#surveilr-admin-test)
-        - [**Subcommands:**](#subcommands-2)
-- [`surveilr admin test classifiers`](#surveilr-admin-test-classifiers)
-        - [**Options:**](#options-3)
-- [`surveilr admin credentials`](#surveilr-admin-credentials)
-        - [**Subcommands:**](#subcommands-3)
-- [`surveilr admin credentials microsoft-365`](#surveilr-admin-credentials-microsoft-365)
-        - [**Options:**](#options-4)
-- [`surveilr capturable-exec`](#surveilr-capturable-exec)
-        - [**Subcommands:**](#subcommands-4)
-- [`surveilr capturable-exec ls`](#surveilr-capturable-exec-ls)
-        - [**Options:**](#options-5)
-- [`surveilr capturable-exec test`](#surveilr-capturable-exec-test)
-        - [**Subcommands:**](#subcommands-5)
-- [`surveilr capturable-exec test file`](#surveilr-capturable-exec-test-file)
-        - [**Options:**](#options-6)
-- [`surveilr capturable-exec test task`](#surveilr-capturable-exec-test-task)
-        - [**Options:**](#options-7)
-- [`surveilr ingest`](#surveilr-ingest)
-        - [**Subcommands:**](#subcommands-6)
-- [`surveilr ingest files`](#surveilr-ingest-files)
-        - [**Options:**](#options-8)
-- [`surveilr ingest tasks`](#surveilr-ingest-tasks)
-        - [**Options:**](#options-9)
-- [`surveilr ingest imap`](#surveilr-ingest-imap)
-        - [**Subcommands:**](#subcommands-7)
-        - [**Options:**](#options-10)
-- [`surveilr ingest imap microsoft-365`](#surveilr-ingest-imap-microsoft-365)
-        - [**Options:**](#options-11)
-- [`surveilr notebooks`](#surveilr-notebooks)
-        - [**Subcommands:**](#subcommands-8)
-        - [**Options:**](#options-12)
-- [`surveilr notebooks cat`](#surveilr-notebooks-cat)
-        - [**Options:**](#options-13)
-- [`surveilr notebooks ls`](#surveilr-notebooks-ls)
-        - [**Options:**](#options-14)
-- [`surveilr sqlpage`](#surveilr-sqlpage)
-        - [**Options:**](#options-15)
-- [`surveilr udi`](#surveilr-udi)
-        - [**Subcommands:**](#subcommands-9)
-- [`surveilr udi pgp`](#surveilr-udi-pgp)
-        - [**Subcommands:**](#subcommands-10)
-        - [**Options:**](#options-16)
-- [`surveilr udi pgp osquery`](#surveilr-udi-pgp-osquery)
-        - [**Subcommands:**](#subcommands-11)
-- [`surveilr udi pgp osquery local`](#surveilr-udi-pgp-osquery-local)
-        - [**Options:**](#options-17)
-- [`surveilr udi pgp osquery remote`](#surveilr-udi-pgp-osquery-remote)
-        - [**Options:**](#options-18)
-- [`surveilr udi admin`](#surveilr-udi-admin)
-- [`surveilr transform`](#surveilr-transform)
-        - [**Subcommands:**](#subcommands-12)
-        - [**Options:**](#options-19)
-- [`surveilr transform html`](#surveilr-transform-html)
-        - [**Options:**](#options-20)
-- [`surveilr transform markdown`](#surveilr-transform-markdown)
+- [Command-Line Help for `surveilr`](#command-line-help-for-surveilr)
+  - [`surveilr`](#surveilr)
+          - [**Subcommands:**](#subcommands)
+          - [**Options:**](#options)
+  - [`surveilr admin`](#surveilr-admin)
+          - [**Subcommands:**](#subcommands-1)
+  - [`surveilr admin init`](#surveilr-admin-init)
+          - [**Options:**](#options-1)
+  - [`surveilr admin merge`](#surveilr-admin-merge)
+          - [**Options:**](#options-2)
+  - [`surveilr admin cli-help-md`](#surveilr-admin-cli-help-md)
+  - [`surveilr admin test`](#surveilr-admin-test)
+          - [**Subcommands:**](#subcommands-2)
+  - [`surveilr admin test classifiers`](#surveilr-admin-test-classifiers)
+          - [**Options:**](#options-3)
+  - [`surveilr admin credentials`](#surveilr-admin-credentials)
+          - [**Subcommands:**](#subcommands-3)
+  - [`surveilr admin credentials microsoft-365`](#surveilr-admin-credentials-microsoft-365)
+          - [**Options:**](#options-4)
+  - [`surveilr capturable-exec`](#surveilr-capturable-exec)
+          - [**Subcommands:**](#subcommands-4)
+  - [`surveilr capturable-exec ls`](#surveilr-capturable-exec-ls)
+          - [**Options:**](#options-5)
+  - [`surveilr capturable-exec test`](#surveilr-capturable-exec-test)
+          - [**Subcommands:**](#subcommands-5)
+  - [`surveilr capturable-exec test file`](#surveilr-capturable-exec-test-file)
+          - [**Options:**](#options-6)
+  - [`surveilr capturable-exec test task`](#surveilr-capturable-exec-test-task)
+          - [**Options:**](#options-7)
+  - [`surveilr ingest`](#surveilr-ingest)
+          - [**Subcommands:**](#subcommands-6)
+  - [`surveilr ingest files`](#surveilr-ingest-files)
+          - [**Options:**](#options-8)
+  - [`surveilr ingest tasks`](#surveilr-ingest-tasks)
+          - [**Options:**](#options-9)
+  - [`surveilr ingest imap`](#surveilr-ingest-imap)
+          - [**Subcommands:**](#subcommands-7)
+          - [**Options:**](#options-10)
+  - [`surveilr ingest imap microsoft-365`](#surveilr-ingest-imap-microsoft-365)
+          - [**Options:**](#options-11)
+  - [`surveilr ingest plm`](#surveilr-ingest-plm)
+          - [**Subcommands:**](#subcommands-8)
+          - [**Options:**](#options-12)
+  - [`surveilr ingest plm github`](#surveilr-ingest-plm-github)
+          - [**Options:**](#options-13)
+  - [`surveilr ingest plm jira`](#surveilr-ingest-plm-jira)
+          - [**Options:**](#options-14)
+  - [`surveilr ingest plm gitlab`](#surveilr-ingest-plm-gitlab)
+          - [**Options:**](#options-15)
+  - [`surveilr notebooks`](#surveilr-notebooks)
+          - [**Subcommands:**](#subcommands-9)
+          - [**Options:**](#options-16)
+  - [`surveilr notebooks cat`](#surveilr-notebooks-cat)
+          - [**Options:**](#options-17)
+  - [`surveilr notebooks ls`](#surveilr-notebooks-ls)
+          - [**Options:**](#options-18)
+  - [`surveilr sqlpage`](#surveilr-sqlpage)
+          - [**Options:**](#options-19)
+  - [`surveilr udi`](#surveilr-udi)
+          - [**Subcommands:**](#subcommands-10)
+  - [`surveilr udi pgp`](#surveilr-udi-pgp)
+          - [**Subcommands:**](#subcommands-11)
+          - [**Options:**](#options-20)
+  - [`surveilr udi pgp osquery`](#surveilr-udi-pgp-osquery)
+          - [**Subcommands:**](#subcommands-12)
+  - [`surveilr udi pgp osquery local`](#surveilr-udi-pgp-osquery-local)
+          - [**Options:**](#options-21)
+  - [`surveilr udi pgp osquery remote`](#surveilr-udi-pgp-osquery-remote)
+          - [**Options:**](#options-22)
+  - [`surveilr udi admin`](#surveilr-udi-admin)
+  - [`surveilr transform`](#surveilr-transform)
+          - [**Subcommands:**](#subcommands-13)
+          - [**Options:**](#options-23)
+  - [`surveilr transform html`](#surveilr-transform-html)
+          - [**Options:**](#options-24)
+  - [`surveilr transform csv`](#surveilr-transform-csv)
+  - [`surveilr transform markdown`](#surveilr-transform-markdown)
+  - [`surveilr upgrade`](#surveilr-upgrade)
+          - [**Options:**](#options-25)
 
 ## `surveilr`
 
@@ -85,12 +102,13 @@ description: This document contains the help content for the `surveilr` command-
 * `sqlpage` — Configuration to start the SQLPage webserver
 * `udi` — Universal Data Infrastructure
 * `transform` — Resource transformation utilities for data stored in the RSSD
+* `upgrade` — Update `surveilr` to latest or specific version
 
 ###### **Options:**
 
 * `--device-name <DEVICE_NAME>` — How to identify this device
 
-  Default value: `mf-elitemini-hx90-01`
+  Default value: `Abdulbaasit`
 * `-d`, `--debug` — Turn debugging information on (repeat for higher levels)
 * `--log-mode <LOG_MODE>` — Output logs in json format
 
@@ -160,6 +178,12 @@ merge multiple surveillance state databases into a single one
   Possible values: `true`, `false`
 
 * `--sql-only` — only generate SQL and emit to STDOUT (no actual merge)
+
+  Possible values: `true`, `false`
+
+* `--detach-on-exit` — Add `DETACH` statements to the SQL statements for the merge
+
+  Default value: `false`
 
   Possible values: `true`, `false`
 
@@ -322,7 +346,8 @@ Ingest content from device file system and other sources
 
 * `files` — Ingest content from device file system and other sources
 * `tasks` — Notebooks maintenance utilities
-* `imap` — Ingest content from email boxes
+* `imap` — Ingest content from email boxes When multiple filters (to, cc, bcc, subject, sent_on and status flags) are specified, the result is the intersection of all the messages that match those filters. Or, in other words, only messages that match all the filters
+* `plm` — Ingest content from issues
 
 
 
@@ -359,6 +384,14 @@ Ingest content from device file system and other sources
   Possible values: `true`, `false`
 
 * `--save-behavior <SAVE_BEHAVIOR>` — save the options as a new behavior
+* `--tenant-id <TENANT_ID>` — Tenant Identifier for multitenancy
+* `--tenant-name <TENANT_NAME>` — Tenant name for multitenancy
+* `--csv-transform-auto` — Auto Transfrom CSV ingested from files
+
+  Default value: `false`
+
+  Possible values: `true`, `false`
+
 
 
 
@@ -391,7 +424,8 @@ Notebooks maintenance utilities
 
 ## `surveilr ingest imap`
 
-Ingest content from email boxes
+Ingest content from email boxes. 
+**Note**: When multiple filters (to, cc, bcc, subject, sent_on and status flags) are specified, the result is the intersection of all the messages that match those filters. Or, in other words, only messages that match all the filters
 
 **Usage:** `surveilr ingest imap [OPTIONS] [COMMAND]`
 
@@ -416,19 +450,34 @@ Ingest content from email boxes
   Default value: `*`
 * `-s`, `--status <STATUS>` — Status of the messages to be ingested
 
-  Default value: `unread`
-
-  Possible values: `all`, `unread`, `read`, `starred`
+  Possible values: `all`, `unread`, `read`, `starred`, `deleted`, `draft`
 
 * `-b`, `--batch-size <BATCH_SIZE>` — Maximum number of messages to be ingested
 
   Default value: `1000`
-* `-e`, `--extract-attachments` — Extract Attachments
+* `-e`, `--extract-attachments <EXTRACT_ATTACHMENTS>` — Extract Attachments
 
-  Default value: `true`
+  Possible values:
+  - `no`:
+    Pass "no" or omit to skip extracting attachments
+  - `yes`:
+    Pass "yes" to extract to put into `ur_ingest_session_attachment table` only
+  - `uniform-resource`:
+    Pass "uniform-resource" to put into both `ur_ingest_session_attachment`` table and `uniform_resource`` table
+
+* `--progress` — Display progress animation for emails downloading and processing
+
+  Default value: `false`
 
   Possible values: `true`, `false`
 
+* `--subject <SUBJECT>` — Filter messages that contain the specified string in the SUBJECT field
+* `--cc <CC>` — Filter messages that contain the specified string in the CC field
+* `--bcc <BCC>` — Filter messages that contain the specified string in the BCC field
+* `--filter-text <FILTER_TEXT>` — Messages that contain the specified string in the header or body of the message
+* `--from <FROM>` — Filter messages that contain the specified string in the FROM field
+* `--to <TO>` — Filter messages that contain the specified string in the TO field
+* `--sent-on <SENT_ON>` — Messages whose [RFC-2822] Date: header (disregarding time and timezone) is within the specified date. Note: the format must be like: 1-Feb-1994. Check this RFC (https://datatracker.ietf.org/doc/html/rfc2822) for more details
 
 
 
@@ -455,6 +504,110 @@ Microsoft 365 Credentials
 * `-p`, `--port <PORT>` — Port to bind the server to
 
   Default value: `8000`
+
+
+
+## `surveilr ingest plm`
+
+Ingest content from issues
+
+**Usage:** `surveilr ingest plm [OPTIONS] <COMMAND>`
+
+###### **Subcommands:**
+
+* `github` — Github credentials
+* `jira` — Jira Instance
+* `gitlab` — A Gitlab instance
+
+###### **Options:**
+
+* `-d`, `--state-db-fs-path <STATE_DB_FS_PATH>` — target SQLite database
+
+  Default value: `resource-surveillance.sqlite.db`
+* `-I`, `--state-db-init-sql <STATE_DB_INIT_SQL>` — one or more globs to match as SQL files and batch execute them in alpha order
+* `-b`, `--batch-size <BATCH_SIZE>` — Maximum number of issues to be ingested
+
+  Default value: `1000`
+* `-e`, `--extract-attachments <EXTRACT_ATTACHMENTS>` — Extract Attachments
+
+  Possible values:
+  - `no`:
+    Pass "no" or omit to skip extracting attachments
+  - `yes`:
+    Pass "yes" to extract to put into `ur_ingest_session_attachment table` only
+  - `uniform-resource`:
+    Pass "uniform-resource" to put into both `ur_ingest_session_attachment`` table and `uniform_resource`` table
+
+* `--progress` — Display progress animation for PLM resources downloading and processing
+
+  Default value: `false`
+
+  Possible values: `true`, `false`
+
+
+
+
+## `surveilr ingest plm github`
+
+Github credentials
+
+**Usage:** `surveilr ingest plm github [OPTIONS] --org <ORG> --repo <REPO>`
+
+###### **Options:**
+
+* `-o`, `--org <ORG>` — Organisation Name
+* `-t`, `--token <TOKEN>` — Github PAT for accessing private repositiories
+* `-r`, `--repo <REPO>` — Name of the repository to fetch issues from
+* `-s`, `--state <STATE>` — Filter the github issues by state. Defaults to All
+
+  Possible values:
+  - `all`:
+    All Issues
+  - `open`:
+    Open issues only
+  - `closed`:
+    Closed Issues only
+
+
+
+
+## `surveilr ingest plm jira`
+
+Jira Instance
+
+**Usage:** `surveilr ingest plm jira [OPTIONS] --org <ORG> --project <PROJECT>`
+
+###### **Options:**
+
+* `-o`, `--org <ORG>` — The host to fetch projects from. e.g https://issues.redhat.com
+* `-k`, `--key <KEY>` — API Key for accessing private instances
+* `-u`, `--user <USER>` — Username for accessing private instances using the Basic Authentication mechanism
+* `-p`, `--project <PROJECT>` — Name of the project for fetch issues from
+
+
+
+## `surveilr ingest plm gitlab`
+
+A Gitlab instance
+
+**Usage:** `surveilr ingest plm gitlab [OPTIONS] --host <HOST> --organization <ORGANIZATION> --token <TOKEN> --project <PROJECT>`
+
+###### **Options:**
+
+* `--host <HOST>` — The Gitlab host. e.g., gitlab.com
+* `-o`, `--organization <ORGANIZATION>` — The organisation name in the host. e.g, gitlab-org
+* `-t`, `--token <TOKEN>` — Gitlab PAT for accessing private repositiories
+* `-p`, `--project <PROJECT>` — Name of the project to fetch issues from
+* `-s`, `--state <STATE>` — Filter the gitlab issues by state. Defaults to All
+
+  Possible values:
+  - `all`:
+    All Issues
+  - `open`:
+    Open issues only
+  - `closed`:
+    Closed Issues only
+
 
 
 
@@ -620,6 +773,7 @@ Resource transformation utilities for data stored in the RSSD
 ###### **Subcommands:**
 
 * `html` — Transform HTML content
+* `csv` — Tranform CSV Content into tables using the sqlite csv function
 * `markdown` — Transform markdown content
 
 ###### **Options:**
@@ -645,6 +799,20 @@ Transform HTML content
 ###### **Options:**
 
 * `-c`, `--css-select <CSS_SELECT>` — List of CSS selectors with names and values. e.g. -css-select="name_of_select_query:div > p" i.e, select all p tags in a div tag
+* `-f`, `--format <FORMAT>` — Format the content should be transformed into
+
+  Default value: `json`
+
+  Possible values: `json`
+
+
+
+
+## `surveilr transform csv`
+
+Tranform CSV Content into tables using the sqlite csv function
+
+**Usage:** `surveilr transform csv`
 
 
 
@@ -653,6 +821,25 @@ Transform HTML content
 Transform markdown content
 
 **Usage:** `surveilr transform markdown`
+
+
+
+## `surveilr upgrade`
+
+Update `surveilr` to latest or specific version
+
+**Usage:** `surveilr upgrade [OPTIONS]`
+
+###### **Options:**
+
+* `-v`, `--version <VERSION>` — The version to update to. If not present, it defaults to the latest
+* `-y`, `--yes` — Skip confirmation
+
+  Default value: `false`
+
+  Possible values: `true`, `false`
+
+* `-t`, `--token <TOKEN>` — An optional Github autehntication token to authenticate requests or to prevent rate limiting
 
 
 
