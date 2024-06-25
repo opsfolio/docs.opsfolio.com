@@ -402,6 +402,10 @@ export default defineConfig({
               label: "FAQs",
               link: "/surveilr/faq/faqs",
             },
+            {
+              label: "Roadmap",
+              link: "/surveilr/roadmap",
+            },
           ],
         },
 
@@ -415,6 +419,34 @@ export default defineConfig({
             {
               label: "FAQs",
               link: "/opsfolio/faq/faqs",
+            },
+          ],
+        },
+
+        {
+          label: "Portfolio",
+          items: [
+            {
+              label: "Portfolio",
+              link: "/portfolio",
+            },
+          ],
+        },
+        {
+          label: "Policies",
+          items: [
+            {
+              label: "Policies",
+              link: "/policies",
+            },
+          ],
+        },
+        {
+          label: "Controls",
+          items: [
+            {
+              label: "Controls",
+              link: "/controls",
             },
           ],
         },
