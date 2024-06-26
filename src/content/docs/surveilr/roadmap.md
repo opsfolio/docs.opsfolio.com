@@ -20,9 +20,11 @@ Welcome to the page for the Surveilr Roadmap! Our goal with this part is to give
     - [x] `--to`: Filter messages that contain the specified string in the TO field.
     - [x] `--sent-on`: Messages whose [RFC-2822] Date: header (disregarding time and timezone) is within the specified date. Note: the format must be like: 1-Feb-1994. Check this RFC (https://datatracker.ietf.org/doc/html/rfc2822) for more details.
     
-2. [ ] **`.tm7` File Ingestion and Transformation Support**: Add support for ingesting `tm7` files and automatically transforming them to XML files which can then also be transformed into JSON.
+2. [x] **`.tm7` File Ingestion and Transformation Support**: Add support for ingesting `tm7` files and automatically transforming them to XML files which can then also be transformed into JSON.
 
-3. [ ] **Fix `surveilr`'s Windows Release**
+3. [x] **Fix `surveilr`'s Windows Release**
+4. [x] **Fix MacOS Release**
+    - Address and resolve issues with the `surveilr` MacOS release to ensure compatibility and functionality.
 
 ### Week 2 (July 1 - 5, 2024)
 
@@ -36,9 +38,7 @@ Welcome to the page for the Surveilr Roadmap! Our goal with this part is to give
 
 1. **RSSD Schema Migration**
     - Utilize Atlas with `surveilr` SQL notebooks to create migrations for RSSDs, ensuring smooth transitions and updates.
-    
-2. **Fix MacOS Release**
-    - Address and resolve issues with the `surveilr` MacOS release to ensure compatibility and functionality.
+
 
 ### Week 4 (July 15 - 19, 2024)
 
