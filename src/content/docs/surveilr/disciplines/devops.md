@@ -10,9 +10,14 @@ description: explanation on how DevOps engineers  make use of surveilr.
 ## Introduction
 DevOps engineers play a crucial role in ensuring that a company's infrastructure, deployment processes, and operational practices are aligned with security, privacy, safety, and regulatory compliance policies. Resource surveillance (`surveilr`) helps DevOps engineers validate adherence to these policies by extracting compliance evidence from machine attestation artifacts, simplifying the process of maintaining compliance without the need for manual documentation.
 
-## Evidence Gathering with `surveilr` 
+## Capturing Compliance Evidence with `surveilr`
 
-`surveilr` provides several types of [ingestion](/surveilr/reference/ingest/files#ingest-files) [commands](/surveilr/reference/cli/commands/) for DevOps engineers to execute. These commands gather compliance evidence from [Work Product Artifacts (WPAs)](/surveilr/reference/concepts/work-product-artifacts/) and store them in a [Resource Surveillance State Database (RSSD)](/surveilr/reference/concepts/resource-surveillance) named `resource-surveillance.sqlite.db`, under the [uniform_resource](/surveilr/reference/db/surveilr-state-schema/uniform_resource) table. Below are some [common `surveilr` commands](/surveilr/disciplines/devops#common-commands) you might execute, depending on the WPA from which you want to gather evidence:
+`surveilr` provides several types of [ingestion](/surveilr/reference/ingest/files#ingest-files) [commands](/surveilr/reference/cli/commands/) for DevOps engineers to execute. These commands captures compliance evidence from [Work Product Artifacts (WPAs)](/surveilr/reference/concepts/work-product-artifacts/) and store them in a [Resource Surveillance State Database (RSSD)](/surveilr/reference/concepts/resource-surveillance) named `resource-surveillance.sqlite.db`, under the [uniform_resource](/surveilr/reference/db/surveilr-state-schema/uniform_resource) table. 
+
+### Evidence Types
+
+- **Compliance Evidence**: Shows adherence to policies.
+- **Non-Compliance Evidence**: Highlights deviations from policies.
 
 
 ### Common Commands
@@ -25,7 +30,7 @@ DevOps engineers play a crucial role in ensuring that a company's infrastructure
 - Testing shell [tasks](/surveilr/reference/ingest/tasks/)
 
   ```bash
-  $ cat filename | surveilr ingest tasks
+  $ cat <filename> | surveilr ingest tasks
   ```
 
 - To run queries in RSSDs:
@@ -34,16 +39,8 @@ DevOps engineers play a crucial role in ensuring that a company's infrastructure
   ```
 
 
-
-### Evidence Types
-
-- **Compliance Evidence**: Shows adherence to policies.
-- **Non-Compliance Evidence**: Highlights deviations from policies.
-
-
-
-### Examples of Work Product Artifacts (WPAs)
-#### Infrastructure Compliance
+## Examples of Work Product Artifacts (WPAs)
+### Infrastructure Compliance
 
 A company's policy might state: "All infrastructure must be provisioned and maintained according to best practices and regulatory standards." This policy includes the following requirements:
 
@@ -51,7 +48,7 @@ A company's policy might state: "All infrastructure must be provisioned and main
 - Regularly update infrastructure components to the latest versions.
 - Perform routine security audits and patches.
 
-##### Use of `surveilr` Commands
+#### Using `surveilr` for Policy Compliance and Evidence Capture
 To automate tasks related to security audits and updates, DevOps engineers can utilize `surveilr` commands to streamline compliance validation:
 
 1. Security Audits:
@@ -72,10 +69,10 @@ To automate tasks related to security audits and updates, DevOps engineers can u
         $ surveilr admin merge
         ```
 
-        This command merges data collected from various remote servers, creating an aggregated RSSD, which serves as evidence for compliance audits.
+        This command merges data collected from various remote servers, creating an aggregated RSSD, which can be queried for compliance evidence.
 
 
-##### SQL Query for Verification of Infrastructure Compliance
+#### SQL Query for Verification of Infrastructure Compliance
 ```sql
 SELECT 
     d.state_sysinfo -> 'host_name' AS 'Host Name',
@@ -111,10 +108,10 @@ A company's policy mandates that all code deployments pass through a CI/CD pipel
 - Ensure pipelines include testing and security scanning stages.
 - Automate deployment processes.
 
-##### Use of `surveilr` Commands
+#### Using `surveilr` for Policy Compliance and Evidence Capture
 Here are examples of how `surveilr` commands can be applied to enhance compliance and operational efficiency:
 
-1. Penetration Toolkit Integration:
+1. **Penetration Toolkit Integration:**
 
     - Automate security assessments using tools like Nmap via GitHub Actions:
         ```yaml
@@ -150,7 +147,7 @@ Here are examples of how `surveilr` commands can be applied to enhance complianc
 
         This workflow automates network scans using Nmap and uploads results to an S3 bucket, which can then be merged with the ARSSD for compliance evidence using `surveilr`.
 
-2. Assurance GitLab CI/CD Integration:
+2. **Assurance GitLab CI/CD Integration:**
 
    - Use GitLab CI/CD to manage and deploy assurance databases (`ATC assurance.db`) to `suite.opsfolio.com`:
         ```yaml
@@ -186,7 +183,8 @@ Here are examples of how `surveilr` commands can be applied to enhance complianc
 
         This GitLab CI/CD pipeline automates the generation and deployment of assurance databases (`aggregated-assurance.db`) to `suite.opsfolio.com`, leveraging `surveilr` to maintain compliance and generate evidence for audits.
 
-#### SQL Query for Verification of CI/CD Pipeline
+#### SQL Query for Verification of CI/CD Pipeline Compliance
+
 ```sql
 SELECT 
     d.name AS 'Host Name',
@@ -216,7 +214,7 @@ JOIN
 
 
 
-1. GitHub Integration:
+1. **GitHub Integration:**
 
     - Use `surveilr` to ingest configuration data from GitHub repositories:
         ```bash
@@ -224,7 +222,7 @@ JOIN
         ```
         This command imports configuration data (`plm`) from GitHub repositories (`organization_name/repository_name`) into the SQLite database (`dbname.sqlite.db`). It ensures configurations are captured and stored for compliance validation.
 
-2. Jira Integration:
+2. **Jira Integration:**
 
     - Similarly, integrate with Jira to manage configuration data:
         ```bash
@@ -242,17 +240,17 @@ A company's policy mandates that all systems must have monitoring and logging en
 - Implement centralized logging with tools like ELK stack.
 - Set up alerts for critical events.
 
-#### Use of `surveilr` Commands
+#### Using `surveilr` for Policy Compliance and Evidence Capture
 Integrate `surveilr` commands to gather alerts and ensure compliance with monitoring and logging policies:
 
-1. IMAP Integration for Alerts Collection:
+1. **IMAP Integration for Alerts Collection:**
     - Collect alerts from monitoring tools (e.g., Prometheus or Grafana) and send them to email addresses. Use `surveilr` to ingest these alerts into the RSSD:
         ```bash
         $ surveilr ingest imap -f "folder_name" -b 20 -e="<yes/no>" microsoft-365 -i="<client_id>" -s="<client_secret>" -m <mode>
         ```
         This command retrieves alerts from an IMAP mailbox (`folder_name`) associated with Microsoft 365 email service, using credentials (`client_id, client_secret`), and stores them in the RSSD. It facilitates compliance monitoring and evidence collection for alert management.
 
-2. GitHub Integration:
+2. **GitHub Integration:**
 
     - Use `surveilr` to ingest configuration data from GitHub repositories:
         ```bash
@@ -260,7 +258,7 @@ Integrate `surveilr` commands to gather alerts and ensure compliance with monito
         ```
         This command retrieves data from GitHub repositories (`organization_name/repository_name`) into the SQLite database (`dbname.sqlite.db`).It facilitates compliance monitoring and evidence collection of github tickets.
 
-3. Jira Integration:
+3. **Jira Integration:**
 
     - Similarly, integrate with Jira to manage configuration data:
         ```bash
@@ -271,7 +269,8 @@ Integrate `surveilr` commands to gather alerts and ensure compliance with monito
 
 
 
-#### SQL Query for Verification of Monitoring and Logging
+#### SQL Query for Verification of Monitoring and Logging Compliance
+
 ```sql
 
 SELECT 
@@ -306,22 +305,25 @@ A company's policy might state: "All systems must adhere to security best practi
 - Conduct regular vulnerability assessments and penetration tests.
 - Ensure compliance with security standards like ISO 27001 or NIST.
 
-##### Use of `surveilr` Commands
+#### Using `surveilr` for Policy Compliance and Evidence Capture
 Utilize `surveilr` commands to enforce and verify security compliance measures:
 
 1. UDI PGP:
     - UDI PostgreSQL Proxy for remote SQL is a CLI tool starts up a server which pretends to be PostgreSQL but proxies its SQL to other CLI commands (called SQL Suppliers).
+  
         ```bash
         $ surveilr udi pgp -c ./config-full.ncl
         ```
         This initiates the surveilr tool to perform operations related to UDI-PGP. You can now use psql to send a query to the daemon.
 
         for example:
-        ```
+
+        ```sql
         psql -h <hostname> -p <port> -U <username> -d <db_name> -c "select cpu_type, cpu_brand, hardware_vendor, hardware_model from system_info"
         ```
 
-#### SQL Query for Verification of Security Compliance
+#### SQL Query for Verification of Security Compliance Compliance
+
 ```sql
 
 SELECT 
