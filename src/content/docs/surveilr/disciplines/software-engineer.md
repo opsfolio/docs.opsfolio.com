@@ -46,7 +46,7 @@ A company's policy might state: **"All software engineers/developers who are not
 - Regularly update the OS and development environment for compatibility and security.
 
 #### Using `surveilr` for Policy Compliance and Evidence Capture
-The next step is to use `surveilr` to ensure compliance with these policies by [gathering evidence](/surveilr/disciplines/software-engineer#capturing-compliance-evidence-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
+The next step is to use `surveilr` to ensure compliance with these policies by [capturing evidence](/surveilr/disciplines/software-engineer#capturing-compliance-evidence-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
 
 
  #### SQL Query for Verification of Operating System Compliance
@@ -89,7 +89,7 @@ A company's policy might state: **"All Software engineers/developers across all 
 
 
 #### Using `surveilr` for Policy Compliance and Evidence Capture
-The next step is to use `surveilr` to ensure compliance with these policies by [gathering evidence](/surveilr/disciplines/software-engineer#capturing-compliance-evidence-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
+The next step is to use `surveilr` to ensure compliance with these policies by [capturing evidence](/surveilr/disciplines/software-engineer#capturing-compliance-evidence-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
 
 
 #### SQL Query for Verification of Packages Installation Compliance
@@ -168,7 +168,7 @@ A company's policy might state: **"All Software engineers/developers across all 
 - All React developers must ensure they are following React reference Project for React code quality.
 
 #### Using `surveilr` for Policy Compliance and Evidence Capture
-The next step is to use `surveilr` to ensure compliance with these policies by [gathering evidence](/surveilr/disciplines/software-engineer#capturing-compliance-evidence-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
+The next step is to use `surveilr` to ensure compliance with these policies by [capturing evidence](/surveilr/disciplines/software-engineer#capturing-compliance-evidence-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
 
 #### SQL Query for Verification of Packages Installation Compliance
 
@@ -246,7 +246,7 @@ A company's policy might state: **"All Software engineers/developers across all 
 - All developers who use ReactJS as programming language must use Playwright as the e2e testing tools.
 
 #### Using `surveilr` for Policy Compliance and Evidence Capture
-The next step is to use `surveilr` to ensure compliance with these policies by [gathering evidence](/surveilr/disciplines/software-engineer#capturing-compliance-evidence-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
+The next step is to use `surveilr` to ensure compliance with these policies by [capturing evidence](/surveilr/disciplines/software-engineer#capturing-compliance-evidence-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
 
 #### SQL Query for Verification of Packages Installation Compliance
 
@@ -363,7 +363,7 @@ A company's policy might state: **"All Software engineers/developers across all 
 - All developers who use Node.js as a runtime for their programming language must use Prettier as the formatting tool. 
   
 #### Using `surveilr` for Policy Compliance and Evidence Capture
-The next step is to use `surveilr` to ensure compliance with these policies by [gathering evidence](/surveilr/disciplines/software-engineer#capturing-compliance-evidence-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
+The next step is to use `surveilr` to ensure compliance with these policies by [capturing evidence](/surveilr/disciplines/software-engineer#capturing-compliance-evidence-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
 
 
 #### SQL Query for Verification of Code Formatter Installation Compliance
@@ -407,7 +407,7 @@ A company's policy might state: **"All Software engineers/developers across all 
 - All developers who use Node.js as a runtime for their programming language must use ESLint as the linting tool.
 
 #### Using `surveilr` for Policy Compliance and Evidence Capture 
-The next step is to use `surveilr` to ensure compliance with these policies by [gathering evidence](/surveilr/disciplines/software-engineer#capturing-compliance-evidence-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
+The next step is to use `surveilr` to ensure compliance with these policies by [capturing evidence](/surveilr/disciplines/software-engineer#capturing-compliance-evidence-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
 
 
 #### SQL Query for Verification of ESLint as Linting Tool Compliance
