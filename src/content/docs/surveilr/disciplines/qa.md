@@ -11,9 +11,9 @@ description: explanation on how quality assurance engineers make use of surveilr
 
 Quality Engineers play an essential role in ensuring that software products meet the highest quality standards. Their responsibilities include creating comprehensive test plans, designing test cases, setting up test environments, executing tests, and more. This document outlines the key activities and best practices for Quality Engineers to ensure thorough and efficient testing processes.
 
-## Evidence Gathering with `surveilr` 
+## Capturing Compliance Evidence with `surveilr` 
 
-Resource surveillance (`surveilr`)  provides the [file ingestion](/surveilr/reference/ingest/files#ingest-files) [command](/surveilr/reference/cli/commands/) for software engineers to execute. This command gathers compliance evidence from [Work Product Artifacts (WPAs)](/surveilr/reference/concepts/work-product-artifacts/) and store them in a [Resource Surveillance State Database (RSSD)](/surveilr/reference/concepts/resource-surveillance) named `resource-surveillance.sqlite.db`, under the [uniform_resource](/surveilr/reference/db/surveilr-state-schema/uniform_resource) table. 
+Resource surveillance (`surveilr`)  provides the [file ingestion](/surveilr/reference/ingest/files#ingest-files) [command](/surveilr/reference/cli/commands/) for software engineers to execute. This command captures compliance evidence from [Work Product Artifacts (WPAs)](/surveilr/reference/concepts/work-product-artifacts/) and store them in a [Resource Surveillance State Database (RSSD)](/surveilr/reference/concepts/resource-surveillance) named `resource-surveillance.sqlite.db`, under the [uniform_resource](/surveilr/reference/db/surveilr-state-schema/uniform_resource) table. 
 
 ### Evidence Types
 
@@ -43,9 +43,11 @@ A company’s policy might state: **“All quality engineers must create a detai
 - Outline the testing approach, objectives, scope, resources, and timelines.
 - Ensure the test plan is documented and accessible to all stakeholders.
 
-The next step is to use `surveilr` to ensure compliance with these policies by [gathering evidence](/surveilr/disciplines/software-engineer#evidence-gathering-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
 
-#### SQL Query for Verification of Test Plan
+#### Using `surveilr` for Policy Compliance and Evidence Capture
+The next step is to use `surveilr` to ensure compliance with these policies by [capturing evidence](/surveilr/disciplines/software-engineer#capturing-compliance-evidence-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
+
+#### SQL Query for Verification of Test Plan Compliance
 
 ```sql
 SELECT 
@@ -82,9 +84,10 @@ A company's policy might state: **“All quality engineers must design test case
 - Base test cases on user stories and acceptance criteria.
 - Ensure test cases cover all relevant functionalities.
 
-The next step is to use `surveilr` to ensure compliance with these policies by [gathering evidence](/surveilr/disciplines/software-engineer#evidence-gathering-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
+#### Using `surveilr` for Policy Compliance and Evidence Capture
+The next step is to use `surveilr` to ensure compliance with these policies by [capturing evidence](/surveilr/disciplines/software-engineer#capturing-compliance-evidence-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
 
-#### SQL Query for Verification of Test Cases
+#### SQL Query for Verification of Designing Test Cases 
 
 ```sql
 SELECT 
@@ -120,9 +123,10 @@ A company’s policy might state: **“All quality engineers must set up test en
 - Set up staging environments for testing activities.
 - Ensure environments are regularly updated and maintained.
 
-The next step is to use `surveilr` to ensure compliance with these policies by [gathering evidence](/surveilr/disciplines/software-engineer#evidence-gathering-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
+#### Using `surveilr` for Policy Compliance and Evidence Capture
+The next step is to use `surveilr` to ensure compliance with these policies by [capturing evidence](/surveilr/disciplines/software-engineer#capturing-compliance-evidence-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
 
-#### SQL Query for Verification of Test Environments
+#### SQL Query for Verification of Setting Test Environments
 
 ```sql
 SELECT 
@@ -158,7 +162,8 @@ A company’s policy might state: **“All quality engineers must manually execu
 - Execute test cases manually.
 - Document the results of each test execution.
   
-The next step is to use `surveilr` to ensure compliance with these policies by [gathering evidence](/surveilr/disciplines/software-engineer#evidence-gathering-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
+#### Using `surveilr` for Policy Compliance and Evidence Capture
+The next step is to use `surveilr` to ensure compliance with these policies by [capturing evidence](/surveilr/disciplines/software-engineer#capturing-compliance-evidence-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
 
 #### SQL Query for Verification of Manual Test Execution
 
@@ -195,7 +200,8 @@ A company’s policy might state: **“All quality engineers must develop and ex
 - Automate repetitive and time-consuming testing tasks.
 - Increase test coverage with automated scripts.
 
-The next step is to use `surveilr` to ensure compliance with these policies by [gathering evidence](/surveilr/disciplines/software-engineer#evidence-gathering-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
+#### Using `surveilr` for Policy Compliance and Evidence Capture
+The next step is to use `surveilr` to ensure compliance with these policies by [capturing evidence](/surveilr/disciplines/software-engineer#capturing-compliance-evidence-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
 
 #### SQL Query for Verification of Automated Test Scripts
 
@@ -232,7 +238,8 @@ A company’s policy might state: **“All quality engineers must perform regres
 - Execute regression tests after every code change.
 - Document any issues found during regression testing.
 
-The next step is to use `surveilr` to ensure compliance with these policies by [gathering evidence](/surveilr/disciplines/software-engineer#evidence-gathering-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
+#### Using `surveilr` for Policy Compliance and Evidence Capture
+The next step is to use `surveilr` to ensure compliance with these policies by [capturing evidence](/surveilr/disciplines/software-engineer#capturing-compliance-evidence-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
 
 #### SQL Query for Verification of Regression Testing
 
@@ -269,7 +276,8 @@ A company's policy might state: **“All quality engineers must conduct performa
 - Use appropriate tools for performance testing.
 - Document the performance benchmarks and test results.
 
-The next step is to use `surveilr` to ensure compliance with these policies by [gathering evidence](/surveilr/disciplines/software-engineer#evidence-gathering-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
+#### Using `surveilr` for Policy Compliance and Evidence Capture
+The next step is to use `surveilr` to ensure compliance with these policies by [capturing evidence](/surveilr/disciplines/software-engineer#capturing-compliance-evidence-with-surveilr). After gathering evidence, `surveilr` captures the machine's operating system information and stores it in the [device](/surveilr/reference/db/surveilr-state-schema/device) table.
 
 #### SQL Query for Verification of Performance Testing
 
