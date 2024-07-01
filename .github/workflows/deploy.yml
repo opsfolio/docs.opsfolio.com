@@ -23,11 +23,6 @@ jobs:
         with:
           deno-version: v1.x
 
-      - name: Install Playwright
-        run: npm install -D @playwright/test@latest
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-
       - name: Build step
         run: "pnpm install && pnpm run build"
 
