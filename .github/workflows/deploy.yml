@@ -25,6 +25,12 @@ jobs:
 
       - name: Build step
         run: "pnpm install && pnpm run build"
+      
+        - name: Install Playwright
+        run: npm install -D @playwright/test@latest
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+        
 
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
