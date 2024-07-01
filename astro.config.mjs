@@ -2,9 +2,14 @@ import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 
 import pageInsight from "astro-page-insight";
+import remarkMermaid from "remark-mermaidjs";
 
 // https://astro.build/config
 export default defineConfig({
+  markdown: {
+    // Applied to .md and .mdx files
+    remarkPlugins: [remarkMermaid],
+  },
   integrations: [
     starlight({
       title: "Opsfolio Docs",
@@ -14,6 +19,15 @@ export default defineConfig({
         discord: "https://discord.gg/TbfdKMDY",
       },
       sidebar: [
+        {
+          label: "Understanding Compliance Processes for Technical Staff",
+          items: [
+            {
+              label: "Introduction to Compliance Frameworks",
+              link: "/compliance-processes/introduction",
+            },
+          ],
+        },
         {
           label: "Resource Surveillance",
           items: [
@@ -417,36 +431,35 @@ export default defineConfig({
               link: "/opsfolio/",
             },
             {
-              label: "FAQs",
-              link: "/opsfolio/faq/faqs",
-            },
-          ],
-        },
-
-        {
-          label: "Portfolio",
-          items: [
-            {
               label: "Portfolio",
-              link: "/portfolio",
+              items: [
+                {
+                  label: "Portfolio",
+                  link: "/opsfolio/portfolio",
+                },
+              ],
             },
-          ],
-        },
-        {
-          label: "Policies",
-          items: [
             {
               label: "Policies",
-              link: "/policies",
+              items: [
+                {
+                  label: "Policies",
+                  link: "/opsfolio/policies",
+                },
+              ],
             },
-          ],
-        },
-        {
-          label: "Controls",
-          items: [
             {
               label: "Controls",
-              link: "/controls",
+              items: [
+                {
+                  label: "Controls",
+                  link: "/opsfolio/controls",
+                },
+              ],
+            },
+            {
+              label: "FAQs",
+              link: "/opsfolio/faq/faqs",
             },
           ],
         },
