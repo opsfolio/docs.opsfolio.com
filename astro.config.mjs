@@ -26,6 +26,10 @@ export default defineConfig({
               label: "Introduction to Compliance Frameworks",
               link: "/compliance-processes/introduction",
             },
+            {
+              label: "Key Concepts in Compliance",
+              link: "/compliance-processes/concepts",
+            },
           ],
         },
         {
