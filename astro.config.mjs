@@ -30,6 +30,22 @@ export default defineConfig({
               label: "Key Concepts in Compliance",
               link: "/compliance-processes/concepts",
             },
+            {
+              label: "Implementing Compliance Measures",
+              link: "/compliance-processes/implementing",
+            },
+            {
+              label: "Generating and Managing Evidence",
+              link: "/compliance-processes/generating-evidence",
+            },
+            {
+              label: "Auditing and Assurance",
+              link: "/compliance-processes/auditing",
+            },
+            {
+              label: "Case Studies and Practical Applications",
+              link: "/compliance-processes/case-studies",
+            },
           ],
         },
         {
