@@ -3,6 +3,7 @@ title: Auditing and Assurance
 description: auditing and assurance
 ---
 
+## Introduction
 Auditing and assurance are fundamental aspects of maintaining and verifying compliance within an organization. This module will cover the essentials of auditing, from understanding its purpose and types to preparing for audits and responding to findings. The content is designed to be comprehensive, providing detailed narratives and practical insights suitable for a technical audience.
 
 ## Overview of Auditing
