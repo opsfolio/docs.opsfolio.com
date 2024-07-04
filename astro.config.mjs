@@ -24,8 +24,34 @@ export default defineConfig({
           items: [
             {
               label: "Introduction to Compliance Frameworks",
-              link: "/compliance-processes/introduction",
+              items: [
+                {
+                  label: "Overview of Compliance Frameworks",
+                  link: "/compliance-processes/introduction/intro",
+                },
+                {
+                  label:
+                    "Regulatory and Industry-Specific Compliance Frameworks",
+                  link: "/compliance-processes/introduction/compliance-frameworks",
+                },
+                {
+                  label: "Implementing Compliance Frameworks in Organizations",
+                  link: "/compliance-processes/introduction/implement-comp-org",
+                },
+                {
+                  label: "Case Studies and Practical Applications",
+                  link: "/compliance-processes/introduction/case-studies",
+                },
+                {
+                  label: "Conclusion and Next Steps",
+                  link: "/compliance-processes/introduction/conclusion",
+                },
+              ],
             },
+            // {
+            //   label: "Introduction to Compliance Frameworks",
+            //   link: "/compliance-processes/introduction",
+            // },
             {
               label: "Key Concepts in Compliance",
               link: "/compliance-processes/concepts",
