@@ -54,8 +54,58 @@ export default defineConfig({
             // },
             {
               label: "Key Concepts in Compliance",
-              link: "/compliance-processes/concepts",
+              items: [
+                {
+                  label: "Understanding Controls",
+                  link: "/compliance-processes/key-concepts/concepts",
+                },
+                {
+                  label: "Policies and Procedures",
+                  link: "/compliance-processes/key-concepts/policies-and-procedures",
+                },
+                {
+                  label:
+                    "Human Attestation vs. Machine Attestation of Evidence",
+                  link: "/compliance-processes/key-concepts/attestation",
+                },
+                {
+                  label: "Documenting Compliance",
+                  link: "/compliance-processes/key-concepts/documenting-compliance",
+                },
+                {
+                  label: "Implementation of Technical Controls",
+                  link: "/compliance-processes/key-concepts/implement-technical-controls",
+                },
+                {
+                  label: "Automation in Compliance",
+                  link: "/compliance-processes/key-concepts/automation",
+                },
+                {
+                  label: "Continuous Compliance Monitoring",
+                  link: "/compliance-processes/key-concepts/compliance-monitoring",
+                },
+                {
+                  label: "Incident Response and Management",
+                  link: "/compliance-processes/key-concepts/incident-response",
+                },
+                {
+                  label: "Risk Management and Assessment",
+                  link: "/compliance-processes/key-concepts/risk-management",
+                },
+                {
+                  label: "Advanced Topics in Policies and Procedures",
+                  link: "/compliance-processes/key-concepts/advanced-topics-in-policies",
+                },
+                {
+                  label: "Practical Lab Exercises",
+                  link: "/compliance-processes/key-concepts/lab-exercises",
+                },
+              ],
             },
+            // {
+            //   label: "Key Concepts in Compliance",
+            //   link: "/compliance-processes/concepts",
+            // },
             {
               label: "Implementing Compliance Measures",
               link: "/compliance-processes/implementing",
