@@ -24,6 +24,7 @@ export default defineConfig({
           items: [
             {
               label: "Introduction to Compliance Frameworks",
+              collapsed: true,
               items: [
                 {
                   label: "Overview of Compliance Frameworks",
@@ -54,6 +55,7 @@ export default defineConfig({
             // },
             {
               label: "Key Concepts in Compliance",
+              collapsed: true,
               items: [
                 {
                   label: "Understanding Controls",
@@ -107,17 +109,86 @@ export default defineConfig({
             //   link: "/compliance-processes/concepts",
             // },
             {
-              label: "Implementing Compliance Measures",
-              link: "/compliance-processes/implementing",
+              label: "Implementing Compliance Frameworks in Organizations",
+              collapsed: true,
+              items: [
+                {
+                  label: "Implementing Controls",
+                  link: "/compliance-processes/compliance-frameworks/frameworks",
+                },
+                {
+                  label:
+                    "Integration of Controls into Software Development, Operations, and Quality Assurance Processes",
+                  link: "/compliance-processes/compliance-frameworks/integration",
+                },
+                {
+                  label:
+                    "Case Studies and Examples of Control Implementation in Real-World Scenarios",
+                  link: "/compliance-processes/compliance-frameworks/case-studies",
+                },
+                {
+                  label: "Developing Policies and Procedures",
+                  link: "/compliance-processes/compliance-frameworks/developing-policies",
+                },
+              ],
             },
+            // {
+            //   label: "Implementing Compliance Measures",
+            //   link: "/compliance-processes/implementing",
+            // },
             {
               label: "Generating and Managing Evidence",
-              link: "/compliance-processes/generating-evidence",
+              collapsed: true,
+              items: [
+                {
+                  label: "Types of Evidence",
+                  link: "/compliance-processes/generating-evidence/types-of-evidence",
+                },
+                {
+                  label: "Human Attestation vs. Machine Attestation",
+                  link: "/compliance-processes/generating-evidence/attestation",
+                },
+                {
+                  label: "Documenting Compliance",
+                  link: "/compliance-processes/generating-evidence/documenting-compliance",
+                },
+                {
+                  label: "Evidence Management Lifecycle",
+                  link: "/compliance-processes/generating-evidence/evidence-management",
+                },
+                {
+                  label:
+                    " Advanced Techniques for Collecting and Preserving Evidence",
+                  link: "/compliance-processes/generating-evidence/preserving-evidence",
+                },
+              ],
             },
+            // {
+            //   label: "Generating and Managing Evidence",
+            //   link: "/compliance-processes/generating-evidence",
+            // },
             {
               label: "Auditing and Assurance",
-              link: "/compliance-processes/auditing",
+              collapsed: true,
+              items: [
+                {
+                  label: "Overview of Auditing",
+                  link: "/compliance-processes/auditing-and-assurance/auditing",
+                },
+                {
+                  label: "Preparing for Audits",
+                  link: "/compliance-processes/auditing-and-assurance/preparing-for-audits",
+                },
+                {
+                  label: "Advanced Topics for a Technical Audience",
+                  link: "/compliance-processes/auditing-and-assurance/advanced-topics",
+                },
+              ],
             },
+            // {
+            //   label: "Auditing and Assurance",
+            //   link: "/compliance-processes/auditing",
+            // },
             {
               label: "Case Studies and Practical Applications",
               link: "/compliance-processes/case-studies",
