@@ -9,38 +9,26 @@ Welcome to the page for the Surveilr Roadmap! Our goal with this part is to give
 
 ## Weekly Releases (Next 4 Weeks)
 
-### Week 1 (June 24 - 28, 2024)
+### Week 1 (July 1 - 5, 2024)
 
-1. [x] **Implement Email Filtering Capabilities**: Support for multiple filters while ingesting content from email boxes through IMAP.
-    - [x] `--subject`: Filter messages that contain the specified string in the SUBJECT field.
-    - [x] `--cc`: Filter messages that contain the specified string in the CC field.
-    - [x] `--bcc`: Filter messages containing the specified BCC field string.
-    - [x] `--filter-text`: Messages that contain the specified string in the header or body of the message.
-    - [x] `--from`: Filter messages that contain the specified string in the FROM field.
-    - [x] `--to`: Filter messages that contain the specified string in the TO field.
-    - [x] `--sent-on`: Messages whose [RFC-2822] Date: header (disregarding time and timezone) is within the specified date. Note: the format must be like: 1-Feb-1994. Check this RFC (https://datatracker.ietf.org/doc/html/rfc2822) for more details.
-    
-2. [x] **`.tm7` File Ingestion and Transformation Support**: Add support for ingesting `tm7` files and automatically transforming them to XML files which can then also be transformed into JSON.
-
-3. [x] **Fix `surveilr`'s Windows Release**
-4. [x] **Fix MacOS Release**
-    - Address and resolve issues with the `surveilr` MacOS release to ensure compatibility and functionality.
-
-### Week 2 (July 1 - 5, 2024)
-
-1. **Remote Automated Osquery Setup for `surveilr`**
-    - Implement a remote automated setup for Osquery within `surveilr` using [`xxh`](https://github.com/xxh/xxh), enabling streamlined deployment and configuration.
+1. [ ] Saving space after `transform` and including transformed tables in `merge`
+    -  [ ] Add a new flag `--reduce-data-duplication` when transforming CSV or other files, which will NULL out the `uniform_resource` content table for transformed items. This should be logged in the `elaboration` field.
+    - [ ] Implement a SQLite VACUUM or equivalent when `--reduce-data-duplication` is used to effectively reduce the database size after NULL application. SQLite updates do not free up space; it is overwritten until a VACUUM is executed.
+    - [ ] Ensure that transformations of CSV or other files are recorded in the tables.
+    - [ ] During merges, verify if any tables were generated (as per the tracking method mentioned) and include those in the merge process.
 
 2. **Integrate DataFusion in Place of UDI PGP Custom Query Engine**
     - Replace the UDI PGP query engine with DataFusion to enhance query performance and capabilities.
   
-### Week 3 (July 8 - 12, 2024)
+### Week 2 (July 8 - 12, 2024)
 
-1. **RSSD Schema Migration**
+1. 1. **Remote Automated Osquery Setup for `surveilr`**
+    - Implement a remote automated setup for Osquery within `surveilr` using [`xxh`](https://github.com/xxh/xxh), enabling streamlined deployment and configuration.
+2. **RSSD Schema Migration**
     - Utilize Atlas with `surveilr` SQL notebooks to create migrations for RSSDs, ensuring smooth transitions and updates.
 
 
-### Week 4 (July 15 - 19, 2024)
+### Week 3 (July 15 - 19, 2024)
 
 1. **PII and PHI De-identification Strategy for "Edge" Data Ingestions**
     - Implement a robust de-identification process for PII and PHI data stored in our SQLite database. Use Rust and Rusqlite or consider DuckDB or other external tools if internal capabilities are insufficient.

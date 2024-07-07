@@ -587,6 +587,20 @@ export default defineConfig({
               label: "Roadmap",
               link: "/surveilr/roadmap",
             },
+            {
+              collapsed: true,
+              label: "Releases",
+              items: [
+                {
+                  label: "v0.9.9",
+                  link: "/surveilr/releases/v0_9_9",
+                },
+                {
+                  label: "v0.9.10",
+                  link: "/surveilr/releases/v0_9_10",
+                },
+              ],
+            },
           ],
         },
 
