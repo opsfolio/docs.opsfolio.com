@@ -196,6 +196,21 @@ export default defineConfig({
           ],
         },
         {
+          label: "Automating Compliance",
+          items: [
+            {
+              label: "Introduction to Automating Compliance Frameworks",
+              collapsed: true,
+              items: [
+                {
+                  label: "Overview of Automating Compliance Frameworks",
+                  link: "/automating-compliance/introduction/intro",
+                },
+              ],
+            },
+          ],
+        },
+        {
           label: "Resource Surveillance",
           items: [
             {
