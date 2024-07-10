@@ -196,6 +196,37 @@ export default defineConfig({
           ],
         },
         {
+          label: "Human Attestation vs Machine Attestation",
+          collapsed: true,
+          items: [
+            {
+              label:
+                "Introduction to Human Attestation vs. Machine Attestation",
+              link: "human-vs-machine-attestation/introduction",
+            },
+            {
+              label: "Understanding Human Attestation",
+              link: "human-vs-machine-attestation/human-attestation",
+            },
+            {
+              label: "Understanding Machine Attestation",
+              link: "human-vs-machine-attestation/machine-attestation",
+            },
+            {
+              label: "Transitioning from Human to Machine Attestation",
+              link: "human-vs-machine-attestation/transitioning",
+            },
+            {
+              label: "Practical Applications and Case Studies",
+              link: "human-vs-machine-attestation/practical-applications",
+            },
+            {
+              label: " Future Trends in Attestation",
+              link: "human-vs-machine-attestation/future-trends",
+            },
+          ],
+        },
+        {
           label: "Automating Compliance",
           items: [
             {
