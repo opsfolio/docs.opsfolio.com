@@ -9,18 +9,17 @@ Welcome to the page for the Surveilr Roadmap! Our goal with this part is to give
 
 ## Weekly Releases (Next 4 Weeks)
 
-### Week 1 (July 1 - 5, 2024)
+### Week 1 (July 8 - 12, 2024)
 
-1. [ ] Saving space after `transform` and including transformed tables in `merge`
-    -  [ ] Add a new flag `--reduce-data-duplication` when transforming CSV or other files, which will NULL out the `uniform_resource` content table for transformed items. This should be logged in the `elaboration` field.
-    - [ ] Implement a SQLite VACUUM or equivalent when `--reduce-data-duplication` is used to effectively reduce the database size after NULL application. SQLite updates do not free up space; it is overwritten until a VACUUM is executed.
-    - [ ] Ensure that transformations of CSV or other files are recorded in the tables.
-    - [ ] During merges, verify if any tables were generated (as per the tracking method mentioned) and include those in the merge process.
-
-2. **Integrate DataFusion in Place of UDI PGP Custom Query Engine**
-    - Replace the UDI PGP query engine with DataFusion to enhance query performance and capabilities.
+1. Non-Interactive Authentication for Microsoft 365 Integration
+   - [ ] Non-Interactive Authentication
+     - [ ] Automatic retrieval of access and refresh tokens.
+     - [ ] Secure cache for refresh tokens.
+     - [ ] Command: `surveilr ingest imap microsft-365 -i="<CLIENT_ID>" -s="<CLIENT SECRET>" -t="<TENANT_ID>"`
+    - [ ] Interactive Authentication
+       - [ ] Require either `-m auth-code` or `-m device-code` to initiate interactive authentication.
   
-### Week 2 (July 8 - 12, 2024)
+### Week 2 (July 15 - 19, 2024)
 
 1. 1. **Remote Automated Osquery Setup for `surveilr`**
     - Implement a remote automated setup for Osquery within `surveilr` using [`xxh`](https://github.com/xxh/xxh), enabling streamlined deployment and configuration.
@@ -28,7 +27,7 @@ Welcome to the page for the Surveilr Roadmap! Our goal with this part is to give
     - Utilize Atlas with `surveilr` SQL notebooks to create migrations for RSSDs, ensuring smooth transitions and updates.
 
 
-### Week 3 (July 15 - 19, 2024)
+### Week 3 (July 22 - 26, 2024)
 
 1. **PII and PHI De-identification Strategy for "Edge" Data Ingestions**
     - Implement a robust de-identification process for PII and PHI data stored in our SQLite database. Use Rust and Rusqlite or consider DuckDB or other external tools if internal capabilities are insufficient.
