@@ -18,9 +18,9 @@ Controls are measures implemented by organizations to manage risks, protect asse
 - **Compliance with Regulatory Standards:** Controls ensure that the organization adheres to laws, regulations, and industry standards, avoiding legal penalties and reputational damage.
 
 #### Classification of Controls
-- **Technical Controls:** Use technology to protect systems and data.
-- **Administrative Controls:** Involve policies, procedures, and guidelines that manage security and compliance.
-- **Physical Controls:** Protect the physical infrastructure of an organization.
+- **Technical Controls:** These involve technology-based solutions such as firewalls, encryption, access control mechanisms, intrusion detection systems, and antivirus software.
+- **Administrative Controls:** These include policies, training programs, risk assessments, and procedures that guide the behavior of people and processes within the organization.
+- **Physical Controls:** These are measures taken to protect the physical infrastructure of the organization, such as security guards, surveillance cameras, access control systems, and environmental controls like fire suppression systems.
 
 ```mermaid
 graph TD;
