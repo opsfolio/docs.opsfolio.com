@@ -6,10 +6,6 @@ description: introduction to compliance frameworks
 
 ## Overview of Compliance Frameworks
 
-### Understanding Regulatory and Industry-Specific Compliance
-Compliance frameworks are structured sets of guidelines, standards, and best practices that organizations follow to meet regulatory requirements, ensure data security, and protect privacy. These frameworks are essential in establishing a systematic approach to managing and mitigating risks.
-
-
 #### Definition of Compliance Frameworks
 
 Compliance frameworks are structured sets of guidelines, standards, and best practices that organizations follow to meet regulatory requirements, ensure data security, and protect privacy. These frameworks provide a systematic approach to managing and mitigating risks, ensuring that organizations operate within legal and ethical boundaries.
