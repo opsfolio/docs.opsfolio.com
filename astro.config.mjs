@@ -197,7 +197,7 @@ export default defineConfig({
         },
         {
           label: "Human Attestation vs Machine Attestation",
-          collapsed: true,
+
           items: [
             {
               label:
@@ -236,6 +236,55 @@ export default defineConfig({
                 {
                   label: "Overview of Automating Compliance Frameworks",
                   link: "/automating-compliance/introduction/intro",
+                },
+                {
+                  label: "Key Components of Automated Compliance Frameworks",
+                  link: "/automating-compliance/introduction/key-components",
+                },
+              ],
+            },
+            {
+              label: "Automating Key Concepts in Compliance",
+              collapsed: true,
+              items: [
+                {
+                  label: "Automating Controls",
+                  link: "/automating-compliance/automating-key-concepts/automating-controls",
+                },
+                {
+                  label: "Automating Policies and Procedures",
+                  link: "/automating-compliance/automating-key-concepts/automating-policies",
+                },
+              ],
+            },
+            {
+              label:
+                "Implementing Automated Compliance Frameworks in Organizations",
+              collapsed: true,
+              items: [
+                {
+                  label: "Implementing Automated Controls",
+                  link: "/automating-compliance/implementing-automated-compliance-framework/implementing-automated-controls",
+                },
+                {
+                  label:
+                    "Integration of Automated Controls into Software Development, Operations, and Quality Assurance Processes",
+                  link: "/automating-compliance/implementing-automated-compliance-framework/integration-of-automated-controls",
+                },
+              ],
+            },
+            {
+              label: "Generating and Managing Evidence in an Automated Context",
+              collapsed: true,
+              items: [
+                {
+                  label: "Types of Evidence in Automated Compliance",
+                  link: "/automating-compliance/generating-and-managing-evidence/types-of-evidence",
+                },
+                {
+                  label:
+                    "Techniques for Collecting and Preserving Automated Evidence",
+                  link: "/automating-compliance/generating-and-managing-evidence/techniques",
                 },
               ],
             },
