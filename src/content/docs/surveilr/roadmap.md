@@ -9,29 +9,39 @@ Welcome to the page for the Surveilr Roadmap! Our goal with this part is to give
 
 ## Weekly Releases (Next 4 Weeks)
 
-### Week 1 (July 8 - 12, 2024)
+### Week 1 (July 15 - 19, 2024)
+1. PII and PHI Deidentification Strategy: Implementation of a scriptable deidentification process through SQL scripts for PII and PHI data stored in the SQLite database. Listed below are the SQLite functions to be implemented.
+   - [x] `hash`: Hash data with the SHA256 algorithm.
+   - [x] `mask_address`: Mask address with asterisks "*".
+   - [x] `mask_dob`: Mask DOBs with "#".
+   - [x] `mask_phone`: Replace phone number characters with "#".
+   - [x] `anonymize_date`: Change a date to a random valid date.
+   - [x] `mask_financial`: Mask any financial data or number.
+   - [x] `anonymize_email`: Replaces the name part of the email while leaving the host intact. 
+   - [x] `generalize_age`: Generalize ages or numbers.
+   - [x] `mask`: Replace string characters with series of "*".
+   - [x] `anonymize_name`: Replace random numeric free strings with strings.
+   - [ ] `anonymize_ssn`
+   - [ ] 
+  
+### Week 2 (July 22 - 26, 2024)
 
-1. Non-Interactive Authentication for Microsoft 365 Integration
+1. **Remote Automated Osquery Setup for `surveilr`**
+    - Implement a remote automated setup for Osquery within `surveilr` using [`xxh`](https://github.com/xxh/xxh), enabling streamlined deployment and configuration.
+1. **RSSD Schema Migration**
+    - Utilize Atlas with `surveilr` SQL notebooks to create migrations for RSSDs, ensuring smooth transitions and updates.
+
+
+### Week 3 (July 22 - August 2, 2024)
+
+1. **PII and PHI De-identification Strategy for "Edge" Data Ingestions**
+    1. Non-Interactive Authentication for Microsoft 365 Integration
    - [ ] Non-Interactive Authentication
      - [ ] Automatic retrieval of access and refresh tokens.
      - [ ] Secure cache for refresh tokens.
      - [ ] Command: `surveilr ingest imap microsft-365 -i="<CLIENT_ID>" -s="<CLIENT SECRET>" -t="<TENANT_ID>"`
     - [ ] Interactive Authentication
        - [ ] Require either `-m auth-code` or `-m device-code` to initiate interactive authentication.
-  
-### Week 2 (July 15 - 19, 2024)
-
-1. 1. **Remote Automated Osquery Setup for `surveilr`**
-    - Implement a remote automated setup for Osquery within `surveilr` using [`xxh`](https://github.com/xxh/xxh), enabling streamlined deployment and configuration.
-2. **RSSD Schema Migration**
-    - Utilize Atlas with `surveilr` SQL notebooks to create migrations for RSSDs, ensuring smooth transitions and updates.
-
-
-### Week 3 (July 22 - 26, 2024)
-
-1. **PII and PHI De-identification Strategy for "Edge" Data Ingestions**
-    - Implement a robust de-identification process for PII and PHI data stored in our SQLite database. Use Rust and Rusqlite or consider DuckDB or other external tools if internal capabilities are insufficient.
-    - De-identification is crucial for protecting sensitive information and ensuring compliance with privacy regulations. This strategy will outline the methods and best practices for de-identifying PII and PHI within our application.
   
 ## Longer-term Projections (Next 3 Months)
 
