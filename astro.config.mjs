@@ -21,6 +21,7 @@ export default defineConfig({
       sidebar: [
         {
           label: "Understanding Compliance Processes for Technical Staff",
+          collapsed: true,
           items: [
             {
               label: "Introduction to Compliance Frameworks",
@@ -197,7 +198,7 @@ export default defineConfig({
         },
         {
           label: "Human Attestation vs Machine Attestation",
-
+          collapsed: true,
           items: [
             {
               label:
@@ -228,6 +229,7 @@ export default defineConfig({
         },
         {
           label: "Automating Compliance",
+          collapsed: true,
           items: [
             {
               label: "Introduction to Automating Compliance Frameworks",
@@ -285,6 +287,24 @@ export default defineConfig({
                   label:
                     "Techniques for Collecting and Preserving Automated Evidence",
                   link: "/automating-compliance/generating-and-managing-evidence/techniques",
+                },
+              ],
+            },
+            {
+              label: "Automating Auditing and Assurance",
+              collapsed: true,
+              items: [
+                {
+                  label: "Automating Auditing and Assurance",
+                  link: "/automating-compliance/automated-auditing-and-assurance/automated-auditing",
+                },
+                {
+                  label: "Preparing for Automated Audits",
+                  link: "/automating-compliance/automated-auditing-and-assurance/preparing-automated-audits",
+                },
+                {
+                  label: "Advanced Topics for a Technical Audience",
+                  link: "/automating-compliance/automated-auditing-and-assurance/advanced-topics",
                 },
               ],
             },
