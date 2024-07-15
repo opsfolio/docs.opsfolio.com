@@ -60,7 +60,7 @@ Non-compliance can result in severe penalties, including:
 - **Legal Action:** Organizations may face lawsuits from affected parties, leading to legal costs and potential settlements.
 - **Reputational Damage:** Non-compliance can damage an organization's reputation, leading to loss of customer trust and business opportunities.
 
-##### Role of Technical Staff in Maintaining and Ensuring Compliance:**
+##### Role of Technical Staff in Maintaining and Ensuring Compliance
 Technical staff play a crucial role in implementing and monitoring compliance controls. Their responsibilities include:
 - **Implementing Controls:** Deploying technical controls, such as firewalls, encryption, and access controls, to protect data and systems.
 - **Monitoring Systems:** Continuously monitoring systems for compliance with regulations and detecting potential security incidents.
@@ -95,7 +95,7 @@ The TSC provides a framework for organizations to design, implement, and assess 
 
 #### Common Controls Framework
 
-##### Overview of Common Controls Shared Across Multiple Compliance Frameworks:
+##### Overview of Common Controls Shared Across Multiple Compliance Frameworks
 Many compliance frameworks share common controls that address fundamental aspects of security, privacy, and operational integrity. These controls can be categorized into:
 
 - **Technical Controls:** Implemented through technology, such as encryption, firewalls, and intrusion detection systems.
