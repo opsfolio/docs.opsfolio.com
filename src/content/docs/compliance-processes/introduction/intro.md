@@ -56,7 +56,7 @@ Compliance requirements influence how technical teams design, implement, and mai
 
 Non-compliance can result in severe penalties, including:
 
-- **Fines:** Regulatory bodies can impose substantial fines for non-compliance. For example, GDPR fines can reach up to 4% of annual global turnover or €20 million, whichever is higher.
+- **Fines:** Regulatory bodies can impose substantial fines for non-compliance. For example, GDPR fines can reach up to 4% of annual global turnover or €20 million[^1], whichever is higher.
 - **Legal Action:** Organizations may face lawsuits from affected parties, leading to legal costs and potential settlements.
 - **Reputational Damage:** Non-compliance can damage an organization's reputation, leading to loss of customer trust and business opportunities.
 
@@ -135,6 +135,10 @@ Each compliance framework may have specific requirements for controls, but commo
 - **PCI-DSS:** Focuses on securing payment card information, requiring encryption, firewalls, and access controls.
 
 
+<br /><br /><br />
 
 
+---
+
+[^1]: "What are the GDPR Fines?," GDPR.EU, accessed July 17, 2024, https://gdpr.eu/fines/
 
