@@ -32,7 +32,7 @@ Welcome to the page for the Surveilr Roadmap! Our goal with this part is to give
     - Utilize Atlas with `surveilr` SQL notebooks to create migrations for RSSDs, ensuring smooth transitions and updates.
 
 
-### Week 2 (July 22 - August 2, 2024)
+### Week 2 (July 29 - August 2, 2024)
 
 1. **PII and PHI De-identification Strategy for "Edge" Data Ingestions**
     1. Non-Interactive Authentication for Microsoft 365 Integration
