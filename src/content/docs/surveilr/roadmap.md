@@ -270,10 +270,10 @@ Currently, `surveilr` handles attachments for each resource based on the `--extr
 
 
 
-### Month 2
+### September
 - In progress...
 
-### Month 3
+### October
 - In progress...
 
 
