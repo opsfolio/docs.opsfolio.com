@@ -722,6 +722,10 @@ export default defineConfig({
                   label: "v0.9.13",
                   link: "/surveilr/releases/v0_9_13",
                 },
+                {
+                  label: "v0.9.14",
+                  link: "/surveilr/releases/v0_9_14",
+                },
               ],
             },
           ],
