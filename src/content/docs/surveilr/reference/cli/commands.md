@@ -5,7 +5,6 @@ description: This document contains the help content for the `surveilr` command-
 
 This document contains the help content for the `surveilr` command-line program.
 
-**Command Overview:**
 
 - [`surveilr`](#surveilr)
         - [**Subcommands:**](#subcommands)
@@ -55,36 +54,40 @@ This document contains the help content for the `surveilr` command-line program.
         - [**Options:**](#options-14)
 - [`surveilr ingest plm gitlab`](#surveilr-ingest-plm-gitlab)
         - [**Options:**](#options-15)
+- [`surveilr ingest plm open-project`](#surveilr-ingest-plm-open-project)
+        - [**Options:**](#options-16)
 - [`surveilr notebooks`](#surveilr-notebooks)
         - [**Subcommands:**](#subcommands-9)
-        - [**Options:**](#options-16)
-- [`surveilr notebooks cat`](#surveilr-notebooks-cat)
         - [**Options:**](#options-17)
-- [`surveilr notebooks ls`](#surveilr-notebooks-ls)
+- [`surveilr notebooks cat`](#surveilr-notebooks-cat)
         - [**Options:**](#options-18)
-- [`surveilr sqlpage`](#surveilr-sqlpage)
+- [`surveilr notebooks ls`](#surveilr-notebooks-ls)
         - [**Options:**](#options-19)
+- [`surveilr sqlpage`](#surveilr-sqlpage)
+        - [**Options:**](#options-20)
 - [`surveilr udi`](#surveilr-udi)
         - [**Subcommands:**](#subcommands-10)
 - [`surveilr udi pgp`](#surveilr-udi-pgp)
         - [**Subcommands:**](#subcommands-11)
-        - [**Options:**](#options-20)
+        - [**Options:**](#options-21)
 - [`surveilr udi pgp osquery`](#surveilr-udi-pgp-osquery)
         - [**Subcommands:**](#subcommands-12)
 - [`surveilr udi pgp osquery local`](#surveilr-udi-pgp-osquery-local)
-        - [**Options:**](#options-21)
-- [`surveilr udi pgp osquery remote`](#surveilr-udi-pgp-osquery-remote)
         - [**Options:**](#options-22)
+- [`surveilr udi pgp osquery remote`](#surveilr-udi-pgp-osquery-remote)
+        - [**Options:**](#options-23)
 - [`surveilr udi admin`](#surveilr-udi-admin)
 - [`surveilr transform`](#surveilr-transform)
         - [**Subcommands:**](#subcommands-13)
-        - [**Options:**](#options-23)
-- [`surveilr transform html`](#surveilr-transform-html)
         - [**Options:**](#options-24)
+- [`surveilr transform html`](#surveilr-transform-html)
+        - [**Options:**](#options-25)
 - [`surveilr transform csv`](#surveilr-transform-csv)
 - [`surveilr transform markdown`](#surveilr-transform-markdown)
+- [`surveilr anonymize`](#surveilr-anonymize)
+        - [**Options:**](#options-26)
 - [`surveilr upgrade`](#surveilr-upgrade)
-        - [**Options:**](#options-25)
+        - [**Options:**](#options-27)
 
 ## `surveilr`
 
@@ -99,6 +102,7 @@ This document contains the help content for the `surveilr` command-line program.
 * `sqlpage` — Configuration to start the SQLPage webserver
 * `udi` — Universal Data Infrastructure
 * `transform` — Resource transformation utilities for data stored in the RSSD
+* `anonymize` — PII and PHI Deidentification StrategSerialize
 * `upgrade` — Update `surveilr` to latest or specific version
 
 ###### **Options:**
@@ -514,6 +518,7 @@ Ingest content from issues
 * `github` — Github credentials
 * `jira` — Jira Instance
 * `gitlab` — A Gitlab instance
+* `open-project` — An Open Project Instance
 
 ###### **Options:**
 
@@ -604,6 +609,20 @@ A Gitlab instance
   - `closed`:
     Closed Issues only
 
+
+
+
+## `surveilr ingest plm open-project`
+
+An Open Project Instance
+
+**Usage:** `surveilr ingest plm open-project --host <HOST> --token <TOKEN> --project <PROJECT>`
+
+###### **Options:**
+
+* `--host <HOST>` — The Open Project host. e.g., community.open-project.com
+* `-t`, `--token <TOKEN>` — Open Project Token for accessing private instances
+* `-p`, `--project <PROJECT>` — Name of the project to fetch issues from
 
 
 
@@ -785,7 +804,7 @@ Resource transformation utilities for data stored in the RSSD
 
 * `-m`, `--reduce-data-duplication` — Nulls out the `content` table in `uniform_resource` for those content which were transformed to tables
 
-  Default value: `false`
+  Default value: `true`
 
   Possible values: `true`, `false`
 
@@ -823,6 +842,21 @@ Tranform CSV Content into tables using the sqlite csv function
 Transform markdown content
 
 **Usage:** `surveilr transform markdown`
+
+
+
+## `surveilr anonymize`
+
+PII and PHI Deidentification StrategSerialize
+
+**Usage:** `surveilr anonymize [OPTIONS] --sql <SQL>`
+
+###### **Options:**
+
+* `-d`, `--state-db-fs-path <STATE_DB_FS_PATH>` — target SQLite database
+
+  Default value: `resource-surveillance.sqlite.db`
+* `-s`, `--sql <SQL>` — Path to SQL Script to deidentify data
 
 
 
