@@ -8,29 +8,14 @@ Welcome to the page for the Surveilr Roadmap! Our goal with this part is to give
 
 
 ## Weekly Releases (Next 4 Weeks)
-<!-- 
-### Week 1 (July 15 - 19, 2024)
-1. PII and PHI Deidentification Strategy: Implementation of a scriptable deidentification process through SQL scripts for PII and PHI data stored in the SQLite database. Listed below are the SQLite functions to be implemented.
-   - [x] `hash`: Hash data with the SHA256 algorithm.
-   - [x] `mask_address`: Mask address with asterisks "*".
-   - [x] `mask_dob`: Mask DOBs with "#".
-   - [x] `mask_phone`: Replace phone number characters with "#".
-   - [x] `anonymize_date`: Change a date to a random valid date.
-   - [x] `mask_financial`: Mask any financial data or number.
-   - [x] `anonymize_email`: Replaces the name part of the email while leaving the host intact. 
-   - [x] `generalize_age`: Generalize ages or numbers.
-   - [x] `mask`: Replace string characters with series of "*".
-   - [x] `anonymize_name`: Replace random numeric free strings with strings.
-   - [ ] `anonymize_ssn` 
-   -->
 
 ### Week 1 (July 22 - 26, 2024)
-
-1. **Remote Automated Osquery Setup for `surveilr`**
-    - Implement a remote automated setup for Osquery within `surveilr` using [`xxh`](https://github.com/xxh/xxh), enabling streamlined deployment and configuration.
-1. **RSSD Schema Migration**
-    - Utilize Atlas with `surveilr` SQL notebooks to create migrations for RSSDs, ensuring smooth transitions and updates.
-
+1. **Open Project PLM Integration**: Collect and prepare surveillance evidence from Open Project.
+This will be done by introducing a `surveilr ingest plm open-project` command to the current iteration of resource surveillance.
+    - [ ] Work Package and childred tracking: Tracking of work packages and their sub work packages, including nested conversations and detailed threading.
+    - [ ] Attachments: Ability to track and manage attachments for both projects and work packages.
+    - [ ] Activities: Comprehensive timeline tracking for work package activities.
+    - [ ] Roadmaps: Support for roadmap tracking to visualize project timelines and future planning.
 
 ### Week 2 (July 29 - August 2, 2024)
 
@@ -44,6 +29,13 @@ Welcome to the page for the Surveilr Roadmap! Our goal with this part is to give
      - [ ] Require either `-m auth-code` or `-m device-code` to initiate interactive authentication.
 
 ### Week 3 (August 5 - August 9, 2024)
+
+1. **Remote Automated Osquery Setup for `surveilr`**
+    - Implement a remote automated setup for Osquery within `surveilr` using [`xxh`](https://github.com/xxh/xxh), enabling streamlined deployment and configuration.
+1. **RSSD Schema Migration**
+    - Utilize Atlas with `surveilr` SQL notebooks to create migrations for RSSDs, ensuring smooth transitions and updates.
+
+### Week 4 (August 12 - August 16, 2024)
 1. **Integrate DuckDB Library to Orchestrate Ingestion Center Functionality**
    -  [ ] Develop a new `surveilr transform` command with options for `--csv`, `--excel`, `--parquet`, and `--all`. This command will process all `uniform_resource` entries that match the specified file formats requested by the user. Currently, `surveilr` performs some transformations like converting `*.xml` to JSON and also `*.csv` with the `transform csv` command, but this currently uses the inbuilt `csv` conversion in `rusqlite`. The major aim of this new `transform tabular` feature will be to  perform ETL/ELT to tables.
    -  [ ]  When the `--sql` flag is used, generate DuckDB SQL to `STDOUT`. When the `--attach` flag is used, include `ATTACH` to the RSSD.
@@ -53,48 +45,6 @@ Welcome to the page for the Surveilr Roadmap! Our goal with this part is to give
 ## Longer-term Projections (Next 3 Months)
 
 ### August
-
-<!-- ##### Integrate DuckDB Library to Orchestrate Ingestion Center Functionality
-
- - Develop a new `surveilr transform` command with options for `--csv`, `--excel`, `--parquet`, and `--all`. This command will process all `uniform_resource` entries that match the specified file formats requested by the user. Currently, `surveilr` performs some transformations like converting `*.xml` to JSON and also `*.csv` with the `transform csv` command, but this currently uses the inbuilt `csv` conversion in `rusqlite`. The major aim of this new `transform tabular` feature will be to  perform ETL/ELT to tables.
-- When the `--sql` flag is used, generate DuckDB SQL to `STDOUT`. When the `--attach` flag is used, include `ATTACH` to the RSSD.
-- Ensure all code functions correctly with an external DuckDB call. If the `--sql` flag is not used, generate DuckDB SQL and utilize the Rust crate to execute the DuckDB SQL via `ATTACH` for the actual ETL/ELT process. -->
-  
-
-
-<!-- ##### Open Project PLM Integration
-  
-- **Objective:**  
-    To enhance the current resource surveillance system by integrating Open Project for evidence collection and surveillance, using a new command `surveilr ingest plm open-project`. This will facilitate capturing detailed engineering and compliance lifecycle content, particularly focusing on Software Development Life Cycle (SDLC) evidence.
-
-- **Key Tasks:**
-
-    1. **Introduce New Command:**
-        - `surveilr ingest plm open-project`
-        - Integrate this command into the existing resource surveillance iteration.
-
-    2. **Priority List of Providers:**
-        - Specific providers to be supported in a priority order (detailed list not provided).
-
-    3. **Features to Track:**
-        - **Lineage:** Track system details, authentication, etc.
-        - **Projects and Subprojects:** Capture project hierarchy.
-        - **Issues and Subissues:** Monitor tickets and their sub-issues.
-        - **Threading of Issues:** Document nested conversations.
-        - **Issue Reactions:** Track reactions over time.
-        - **Issue Assignments:** Monitor assignments over time.
-        - **Labels:** Capture labels at both project and ticket levels.
-        - **Relationships:** Document relationships between projects and tickets.
-        - **Attachments:** Collect attachments for projects and issues.
-        - **Time Tracking:** Monitor time spent on projects and issues.
-        - **Issue Tracking Activities:** Document activity timelines, particularly for GitHub.
-        - **Milestone Tracking:** Capture milestones.
-        - **Roadmaps:** Monitor project roadmaps.
-        - **Custom Fields:** Track custom fields defined in tickets.
-
-    4. **Goal:**
-        - Create a queryable storage system for evidence ingested from Open Project issues.
-        - Focus on capturing SDLC and other engineering and compliance lifecycle content. -->
 
 ##### Create an NPM Package for Installing `surveilr`
 
