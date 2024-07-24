@@ -12,7 +12,7 @@ Welcome to the page for the Surveilr Roadmap! Our goal with this part is to give
 ### Week 1 (July 22 - 26, 2024)
 1. **Open Project PLM Integration**: Collect and prepare surveillance evidence from Open Project.
 This will be done by introducing a `surveilr ingest plm open-project` command to the current iteration of resource surveillance.
-    - [ ] Work Package and childred tracking: Tracking of work packages and their sub work packages, including nested conversations and detailed threading.
+    - [ ] Work Package and children tracking: Tracking of work packages and their sub work packages, including nested conversations and detailed threading.
     - [ ] Attachments: Ability to track and manage attachments for both projects and work packages.
     - [ ] Activities: Comprehensive timeline tracking for work package activities.
     - [ ] Roadmaps: Support for roadmap tracking to visualize project timelines and future planning.
