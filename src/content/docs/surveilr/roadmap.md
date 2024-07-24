@@ -12,10 +12,14 @@ Welcome to the page for the Surveilr Roadmap! Our goal with this part is to give
 ### Week 1 (July 22 - 26, 2024)
 1. **Open Project PLM Integration**: Collect and prepare surveillance evidence from Open Project.
 This will be done by introducing a `surveilr ingest plm open-project` command to the current iteration of resource surveillance.
-    - [ ] Work Package and children tracking: Tracking of work packages and their sub work packages, including nested conversations and detailed threading.
     - [ ] Attachments: Ability to track and manage attachments for both projects and work packages.
-    - [ ] Activities: Comprehensive timeline tracking for work package activities.
     - [ ] Roadmaps: Support for roadmap tracking to visualize project timelines and future planning.
+
+2. **Orchestration Infrastructure**: "Verification and Validation" (V&V) tables need to be incorporated into the SQL "orchestration infrastructure" to enable RSSDs to execute SQL-based validation and log "issues," "warnings," and other notifications into the orchestration tables.
+   - [ ] Add orchestration models to `surveilr` RSSD generation.
+   - [ ] Implement orchestration sub commands
+   - [ ] Add custom SQL functions to help with orchestration
+   - [ ] Convert all `transformation` commands to orchestration commands
 
 ### Week 2 (July 29 - August 2, 2024)
 
