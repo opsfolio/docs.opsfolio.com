@@ -10,9 +10,9 @@ description: Implementing Automated Compliance Frameworks in Organizations
 
 ### Requirement Analysis
 - **Identifying Regulatory Requirements**
-  - Determine which regulations and standards apply to the organization (e.g., GDPR, HIPAA, PCI-DSS, NIST).
+  - Determine which regulations and standards apply to the organization (e.g., [GDPR](https://gdpr-info.eu/), [HIPAA](https://www.hhs.gov/hipaa/index.html), [PCI-DSS](https://www.pcisecuritystandards.org/), [NIST](https://www.nist.gov/)).
   - Understand the specific requirements of these regulations.
-  - **Example:** For a healthcare provider, identify HIPAA requirements such as patient data protection and privacy rules.
+  - **Example:** For a healthcare provider, identify [HIPAA](https://www.hhs.gov/hipaa/index.html) requirements such as patient data protection and privacy rules.
 
 - **Assessing Existing Controls and Gaps**
   - Evaluate current controls to determine their effectiveness.

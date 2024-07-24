@@ -730,6 +730,17 @@ export default defineConfig({
             },
           ],
         },
+        {
+          label:
+            'PII and PHI De-Identification Strategy for "edge" Data Ingestions',
+          collapsed: true,
+          items: [
+            {
+              label: "Introduction",
+              link: "/pii-and-phi-deidentification/introduction",
+            },
+          ],
+        },
 
         {
           label: "Opsfolio Suite",
