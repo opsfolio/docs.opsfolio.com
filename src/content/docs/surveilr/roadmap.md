@@ -16,7 +16,7 @@ This will be done by introducing a `surveilr ingest plm open-project` command to
     - [ ] Roadmaps: Support for roadmap tracking to visualize project timelines and future planning.
 
 2. **Orchestration Infrastructure**: "Verification and Validation" (V&V) tables need to be incorporated into the SQL "orchestration infrastructure" to enable RSSDs to execute SQL-based validation and log "issues," "warnings," and other notifications into the orchestration tables.
-   - [ ] Add orchestration models to `surveilr` RSSD generation.
+   - [x] Add orchestration models to `surveilr` RSSD generation.
    - [ ] Implement orchestration sub commands
    - [ ] Add custom SQL functions to help with orchestration
    - [ ] Convert all `transformation` commands to orchestration commands
