@@ -318,11 +318,32 @@ export default defineConfig({
               link: "/surveilr/getting-started",
             },
             {
-              label: "How-To",
+              label: "How-to",
               items: [
                 {
-                  label: "Installation guide ",
+                  label: "Installation Guide",
                   link: "/surveilr/how-to/installation-guide",
+                },
+                {
+                  label: "How to Collect Evidence",
+                  link: "/surveilr/how-to/evidence-collection",
+                },
+                {
+                  label: "How to Ingest and Query Large JSON Files",
+                  link: "/surveilr/how-to/ingest-and-query-json-files",
+                },
+                {
+                  label: "How to Prepare Evidence at The-Edge",
+                  link: "/surveilr/how-to/prepare-evidence-at-the-edge",
+                },
+                {
+                  label: "How to Orchestrate Evidence",
+                  link: "/surveilr/how-to/orchestrate-evidence",
+                },
+                {
+                  label:
+                    "How to Preview Evidence via surveilr SQLPage Integration",
+                  link: "/surveilr/how-to/preview-evidence",
                 },
               ],
             },
@@ -739,6 +760,15 @@ export default defineConfig({
                   link: "/surveilr/releases/v0_10_0",
                 },
               ],
+            },
+          ],
+        },
+        {
+          label: "Ecosystem Tools",
+          items: [
+            {
+              label: "Microsoft Threat Modeling (MTM) Tool",
+              link: "/ecosystem-tools/microsoft-threat-modeling",
             },
           ],
         },

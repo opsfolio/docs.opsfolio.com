@@ -1,4 +1,4 @@
 ---
 title: Tutorials
-description: tutorial guides
+description: tutorials
 ---
