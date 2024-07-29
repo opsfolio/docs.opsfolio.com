@@ -143,7 +143,7 @@ graph TD;
 ### HIPAA
 - **Audit Controls**
   - Automated logging and monitoring of access to electronic health records.
-  - Example: Using [Splunk](https://www.splunk.com/) for automated audit controls and log management.
+  - Example: Using [Opsfolio Suite](https://opsfolio.com/) for automated audit controls and log management.
 
 - **Data Backup and Disaster Recovery**
   - Automated backup solutions to ensure the availability of electronic health records.
@@ -151,7 +151,7 @@ graph TD;
 
 - **Security Risk Analysis**
   - Continuous, automated risk assessments to identify and mitigate potential security threats.
-  - Example: Using [RiskWatch](https://www.riskwatch.com/) for automated security risk analysis.
+  - Example: Using [Opsfolio Suite](https://opsfolio.com/) for automated security risk analysis.
 
 ### PCI-DSS
 - **Network Segmentation**
@@ -173,7 +173,8 @@ graph TD;
 
 - **Incident Response**
   - Automating incident detection and response workflows.
-  - Example: Using [Rapid7](https://www.rapid7.com/) InsightIDR for automated incident response.
+  - Example: Using [Opsfolio Suite](https://opsfolio.com/) InsightIDR for automated incident response.
+  <!-- - Example: Using [Rapid7](https://www.rapid7.com/) InsightIDR for automated incident response. -->
 
 - **Configuration Management**
   - Automated configuration management to ensure systems are securely configured.

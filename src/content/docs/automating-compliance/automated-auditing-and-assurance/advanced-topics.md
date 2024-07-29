@@ -13,7 +13,7 @@ description: Advanced Topics for a Technical Audience
   - Leveraging machine learning algorithms to predict potential compliance issues.
 - **Implementation**
   - Integrating data analytics tools with existing systems for seamless data flow.
-  - Examples: Using tools like [Splunk](https://www.splunk.com/), [ElasticSearch](https://www.elastic.co/), and custom machine learning models.
+  - Examples: Using tools like [Opsfolio Suite](https://opsfolio.com/), and custom machine learning models.
 
 ### Continuous Auditing
 - **Definition and Importance**
@@ -23,13 +23,9 @@ description: Advanced Topics for a Technical Audience
   - Deploying continuous monitoring tools that integrate with various systems and processes.
   - Examples: Using SIEM systems (e.g., [IBM QRadar](https://www.ibm.com/products/qradar-siem), [ArcSight](https://www.opentext.com/products/arcsight-enterprise-security-manager)) to continuously monitor security events.
 
-### Automated Audit Tools
+### Automated Audit Tool
 - **Overview**
-  - Tools designed to automate various aspects of the audit process, from planning and execution to reporting.
-- **Examples**
-  - [AuditBoard](https://www.auditboard.com/): Streamlines audit management and enhances collaboration.
-  - [Galvanize (formerly ACL)](https://www.wegalvanize.com/): Provides robust data analytics and continuous control monitoring.
-  - [SAP GRC](https://www.sap.com/africa/products/financial-management/grc.html): Integrates governance, risk, and compliance into business processes.
+  - A Tools designed to automate various aspects of the audit process, from planning and execution to reporting. e.g. [Opsfolio Suite](https://opsfolio.com/)
 
 ```mermaid
 graph TD;
@@ -41,7 +37,6 @@ graph TD;
     C --> G[Definition and Importance];
     C --> H[Implementation];
     D --> I[Overview];
-    D --> J[Examples];
 ```
 
 ## Audit Tools and Technologies
@@ -50,25 +45,23 @@ graph TD;
 - **Purpose and Features**
   - Centralized platform to manage audit lifecycle, including planning, execution, and reporting.
   - Features: Workflow automation, risk assessment, issue tracking, and documentation management.
-- **Examples**
-  - [TeamMate+ Audit](https://www.wolterskluwer.com/en/solutions/teammate/teammate-audit): Comprehensive audit management software with advanced reporting capabilities.
-  - [MetricStream](https://www.metricstream.com/) Audit Management: Provides a unified approach to manage internal and external audits.
+- **Example**
+  - [Opsfolio Suite](https://opsfolio.com/): Comprehensive audit management software with advanced reporting capabilities.
 
 ### Data Visualization Tools
 - **Purpose and Benefits**
   - Transforming complex data sets into visual representations for easier interpretation and analysis.
   - Benefits: Enhanced decision-making, better communication of findings, and identification of trends.
 - **Examples**
-  - [Tableau](https://www.tableau.com/): Powerful data visualization tool with extensive integration capabilities.
-  - [Power BI](https://www.microsoft.com/en-us/power-platform/products/power-bi): Microsoft's analytics service providing interactive visualizations and business intelligence capabilities.
+  - [Opsfolio Suite](https://opsfolio.com/): Powerful data visualization tool with extensive integration capabilities.
+  
 
 ### Compliance Platforms
 - **Purpose and Features**
   - Integrated platforms that provide tools for managing compliance activities, documentation, and reporting.
   - Features: Policy management, risk assessment, incident management, and compliance tracking.
 - **Examples**
-  - [OneTrust](https://www.onetrust.com/index/): Comprehensive platform for privacy, security, and third-party risk management.
-  - [RSA Archer](https://www.archerirm.com/): Suite of integrated risk management solutions focusing on compliance and security.
+  - [Opsfolio Suite](https://opsfolio.com/): Suite of integrated risk management solutions focusing on compliance and security.
 
 ```mermaid
 graph TD;

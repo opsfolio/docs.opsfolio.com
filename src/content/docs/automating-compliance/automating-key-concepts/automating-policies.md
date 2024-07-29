@@ -13,7 +13,7 @@ description:  Automating Policies and Procedures
 #### Compliance Management Platforms
 - **Overview**
   - These platforms centralize and streamline the management of compliance-related tasks, ensuring that policies and procedures are consistently applied across the organization.
-  - Example: [MetricStream](https://www.metricstream.com/), [RSA Archer](https://www.archerirm.com/).
+  - Example: [Opsfolio Suite](https://opsfolio.com/).
 
 #### Document Management Systems (DMS)
 - **Overview**
@@ -31,8 +31,7 @@ description:  Automating Policies and Procedures
 graph TD;
     A[Automating Policy and Procedure Management] --> B[Compliance Management Platforms];
     A --> C[Document Management Systems];
-    B --> D[MetricStream];
-    B --> E[RSA Archer];
+    B --> D[Opsfolio Suite];
     C --> F[Version Control];
     C --> G[Access Management];
     F --> H[Using Git];
@@ -42,11 +41,11 @@ graph TD;
 #### Audit Management Systems
 - **Overview**
   - These systems automate the planning, execution, and documentation of audits, ensuring compliance with internal policies and external regulations.
-  - Example: [AuditBoard](https://www.auditboard.com/), [Wolters Kluwer TeamMate](https://www.wolterskluwer.com/en/solutions/teammate).
+  - Example: [Opsfolio Suite](https://opsfolio.com/)
 - **Automated Features**
   - **Audit Planning and Scheduling**
     - Automates the creation of audit plans and schedules, ensuring that audits are conducted regularly and on time.
-    - Example: Using [AuditBoard](https://www.auditboard.com/) to automate the audit schedule.
+    - Example: Using [Opsfolio Suite](https://opsfolio.com/) to automate the audit schedule.
   - **Issue Tracking and Resolution**
     - Tracks identified issues and their resolution status, ensuring that all compliance gaps are addressed promptly.
     - Example: Implementing [JIRA](https://www.atlassian.com/software/jira) for automated issue tracking and resolution.
@@ -54,11 +53,10 @@ graph TD;
 ```mermaid
 graph TD;
     A[Automating Policy and Procedure Management] --> B[Audit Management Systems];
-    B --> C[AuditBoard];
-    B --> D[Wolters Kluwer TeamMate];
+    B --> C[Opsfolio Suite];
     B --> E[Audit Planning and Scheduling];
     B --> F[Issue Tracking and Resolution];
-    E --> G[Using AuditBoard];
+    E --> G[Using Opsfolio Suite];
     F --> H[Using JIRA];
 ```
 
