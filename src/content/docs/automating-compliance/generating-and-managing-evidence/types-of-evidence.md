@@ -46,7 +46,8 @@ graph TD;
 - **Automation Benefits**
   - Efficiency: Automated tools can quickly generate comprehensive security audit reports.
   - Consistency: Reduces the risk of human error and ensures that reports are consistently accurate.
-  - Example: Using tools like [Nessus](https://www.tenable.com/products/nessus) or [Qualys](https://www.qualys.com/) to automatically scan for vulnerabilities and generate detailed reports.
+  - Example: Using tools like [Opsfolio Suite](https://opsfolio.com/) to automatically scan for vulnerabilities and generate detailed reports.
+  <!-- - Example: Using tools like [Nessus](https://www.tenable.com/products/nessus) or [Qualys](https://www.qualys.com/) to automatically scan for vulnerabilities and generate detailed reports. -->
 
 ### Vulnerability Assessment Reports
 - **Definition and Purpose**
@@ -64,7 +65,8 @@ graph TD;
 - **Automation Benefits**
   - Up-to-Date Information: Automated tools ensure that compliance status is always current.
   - Simplified Reporting: Streamlines the process of compiling data from various sources to produce comprehensive reports.
-  - Example: Using compliance management platforms like [MetricStream](https://www.metricstream.com/) or [RSA Archer](https://www.archerirm.com/) to automate the generation of compliance status reports.
+  - Example: Using compliance management platforms like [Opsfolio Suite](https://opsfolio.com/) to automate the generation of compliance status reports.
+  <!-- - Example: Using compliance management platforms like [MetricStream](https://www.metricstream.com/) or [RSA Archer](https://www.archerirm.com/) to automate the generation of compliance status reports. -->
 
 ```mermaid
 graph TD;
@@ -88,7 +90,8 @@ graph TD;
 - **Automation Benefits**
   - Centralized Management: Automated tools allow for centralized management and updating of policies.
   - Version Control: Ensures that the most current policies are in use and that changes are tracked.
-  - Example: Using document management systems like [SharePoint](https://www.microsoft.com/en-us/microsoft-365/sharepoint/collaboration) or [Confluence](https://www.atlassian.com/software/confluence) to automate the management of compliance policies.
+  - Example: Using document management systems like [Opsfolio Suite](https://opsfolio.com/) to automate the management of compliance policies.
+  <!-- - Example: Using document management systems like [SharePoint](https://www.microsoft.com/en-us/microsoft-365/sharepoint/collaboration) or [Confluence](https://www.atlassian.com/software/confluence) to automate the management of compliance policies. -->
 
 ### Procedures
 - **Definition and Importance**
@@ -97,7 +100,8 @@ graph TD;
 - **Automation Benefits**
   - Standardization: Ensures procedures are applied consistently across the organization.
   - Accessibility: Makes procedures easily accessible to all employees, regardless of location.
-  - Example: Implementing workflow automation tools like [ServiceNow](https://www.servicenow.com/) or [JIRA](https://www.atlassian.com/software/jira) to manage and update compliance procedures.
+  - Example: Implementing workflow automation tools like [Opsfolio Suite](https://opsfolio.com/) to manage and update compliance procedures.
+  <!-- - Example: Implementing workflow automation tools like [ServiceNow](https://www.servicenow.com/) or [JIRA](https://www.atlassian.com/software/jira) to manage and update compliance procedures. -->
 
 ### Training Materials
 - **Definition and Importance**
@@ -106,7 +110,8 @@ graph TD;
 - **Automation Benefits**
   - Consistent Training: Automated training platforms ensure that all employees receive the same information.
   - Tracking and Reporting: Tracks employee progress and completion of training programs.
-  - Example: Using learning management systems (LMS) like [Moodle](https://moodle.org/) or [Cornerstone](https://www.cornerstoneondemand.com/platform/learning-management-lms/) to automate compliance training.
+  - Example: Using learning management systems (LMS) like [Opsfolio Suite](https://opsfolio.com/) to automate compliance training.
+  <!-- - Example: Using learning management systems (LMS) like [Moodle](https://moodle.org/) or [Cornerstone](https://www.cornerstoneondemand.com/platform/learning-management-lms/) to automate compliance training. -->
 
 ```mermaid
 graph TD;

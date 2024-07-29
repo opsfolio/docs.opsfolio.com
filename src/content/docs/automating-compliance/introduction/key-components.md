@@ -137,7 +137,7 @@ Automated controls can be tailored to meet the specific requirements of various 
 3. **PCI-DSS (Payment Card Industry Data Security Standard)**
    - **Network Segmentation**: Automated network configuration tools to segment payment card data environments.
    - **Vulnerability Management**: Continuous automated vulnerability scanning and remediation tools.
-   - **Strong Access Control Measures**: Automated access control systems to enforce [PCI-DSS](https://www.pcisecuritystandards.org/) access requirements.
+   - **Strong Access Control Measures**: Automated access control systems to enforce [PCI-DSS](https://www.pcisecuritystandards.org/document_library/?document=pci_dss) access requirements.
 
 4. **NIST (National Institute of Standards and Technology)**
    - **Continuous Monitoring**: Automated monitoring tools to continuously assess and report on security posture.
@@ -184,9 +184,7 @@ Mapping automated controls to specific compliance frameworks helps organizations
   - **Automated Access Control Systems**: Enforces access controls to meet PCI-DSS requirements.
 
 - **NIST**:
-  - **Automated Continuous Monitoring**: Continuously assesses and reports on security
-
- posture.
+  - **Automated Continuous Monitoring**: Continuously assesses and reports on security posture.
   - **Automated Incident Response**: Detects and responds to security incidents in real-time.
   - **Automated Configuration Management**: Ensures systems are securely configured and maintained.
 
@@ -215,14 +213,14 @@ graph TD;
 
 ---
 
-[^1]: "2023 Trust Services Criteria for SOC 2," Secureframe, accessed July 23, 2024, https://secureframe.com/hub/soc-2/trust-services-criteria
-[^2]: "2023 Trust Services Criteria for SOC 2," Secureframe, accessed July 23, 2024, https://secureframe.com/hub/soc-2/trust-services-criteria
-[^3]: "2023 Trust Services Criteria for SOC 2," Secureframe, accessed July 23, 2024, https://secureframe.com/hub/soc-2/trust-services-criteria
-[^4]: "2023 Trust Services Criteria for SOC 2," Secureframe, accessed July 23, 2024, https://secureframe.com/hubsoc-2/trust-services-criteria
-[^5]: "2023 Trust Services Criteria for SOC 2," Secureframe, accessed July 23, 2024, https://secureframe.com/hub/soc-2/trust-services-criteria
-[^6]: "2023 Trust Services Criteria for SOC 2," Secureframe, accessed July 23, 2024, https://secureframe.com/hub/soc-2/trust-services-criteria
-[^7]: "2023 Trust Services Criteria for SOC 2," Secureframe, accessed July 23, 2024, https://secureframe.com/hub/soc-2/trust-services-criteria
+[^1]: "System and Organization Controls," Wikipedia, accessed July 29, 2024, https://en.wikipedia.org/wiki/System_and_Organization_Controls#Trust_Service_Criteria
+[^2]: "System and Organization Controls," Wikipedia, accessed July 29, 2024, https://en.wikipedia.org/wiki/System_and_Organization_Controls#Trust_Service_Criteria
+[^3]: "System and Organization Controls," Wikipedia, accessed July 29, 2024, https://en.wikipedia.org/wiki/System_and_Organization_Controls#Trust_Service_Criteria
+[^4]: "System and Organization Controls," Wikipedia, accessed July 29, 2024, https://en.wikipedia.org/wiki/System_and_Organization_Controls#Trust_Service_Criteria
+[^5]: "System and Organization Controls," Wikipedia, accessed July 29, 2024, https://en.wikipedia.org/wiki/System_and_Organization_Controls#Trust_Service_Criteria
+[^6]: "System and Organization Controls," Wikipedia, accessed July 29, 2024, https://en.wikipedia.org/wiki/System_and_Organization_Controls#Trust_Service_Criteria
+[^7]: "System and Organization Controls," Wikipedia, accessed July 29, 2024, https://en.wikipedia.org/wiki/System_and_Organization_Controls#Trust_Service_Criteria
 [^8]: "What are 6 types of common controls and why do you need them?," Trust Community, accessed July 23, 2024, https://community.trustcloud.ai/docs/grc-launchpad/grc-101/compliance/what-are-common-controls-and-why-do-you-need-one.
-[^9]: "Technical Controls," Cybersecurity Resilience, accessed July 23, 2024, https://resilient-energy.org/cybersecurity-resilience/building-blocks/technical-controls
-[^10]: Michael Swanagan, "Types Of Security Controls Explained," PurpleSec, published December 07, 2023, https://purplesec.us/security-controls/
-[^11]: Michael Swanagan, "Types Of Security Controls Explained," PurpleSec, published December 07, 2023, https://purplesec.us/security-controls/
+[^9]: "Technical Controls — Cybersecurity Resilience," Resilient Energy Platform, accessed July 23, 2024, https://resilient-energy.org/cybersecurity-resilience/building-blocks/technical-controls 
+[^10]: Michael Swanagan, "Types Of Security Controls Explained," PurpleSec, published December 07, 2023, https://purplesec.us/security-controls/#Admin
+[^11]: Michael Swanagan, "Types Of Security Controls Explained," PurpleSec, published December 07, 2023, https://purplesec.us/security-controls/#Physical

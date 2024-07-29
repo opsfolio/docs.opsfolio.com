@@ -76,7 +76,7 @@ Many regulatory bodies recognize the benefits of automation and have incorporate
 
 Automating compliance has a significant impact on software development processes. Developers must integrate compliance requirements into their workflows, using tools and practices that ensure code is secure, documented, and compliant from the start. This includes:
 
-- **Automated Code Analysis**: Tools that scan code for security vulnerabilities and compliance issues during development.
+- **Automated Implementation**: Verifying real-time evidence to identify any security breach or vulnerability that has occurred through dashboards and notifications and rectify it as quickly as possible.
 - **Continuous Integration/Continuous Deployment (CI/CD)**: Pipelines that automate the testing and deployment of code, ensuring compliance checks are performed at each stage.
 - **Secure Coding Practices**: Guidelines and training for developers to write secure and compliant code.
 
@@ -122,7 +122,7 @@ Technical staff are essential for the successful implementation and maintenance 
 ---
 
 [^1]: "Art. 32 GDPR – Security of processing - General Data Protection Regulation (GDPR)," InterSoft Consulting, accessed July 22, 2024, https://gdpr-info.eu/art-32-gdpr/
-[^2]: "What is GDPR, the EU’s new data protection law? - GDPR.eu," GDPR.EU, accessed July 22, 2024, https://gdpr.eu/what-is-gdpr/
+[^2]: "Health Insurance Portability and Accountability Act," Wikipedia, accessed July 29, 2024, https://en.wikipedia.org/wiki/Health_Insurance_Portability_and_Accountability_Act
 [^3]: "PCI Security Standards Council – Protect Payment Data with Industry-driven Security Standards, Training, and Programs," PCI Security Standards Council, accessed July 22, 2024, https://www.pcisecuritystandards.org/
-[^4]: "U.S. Food and Drug Administration, Training, and Programs," U.S Food & Drug Administration, accessed July 22, 2024, https://www.fda.gov/
+[^4]: "U.S. Food and Drug Administration," U.S Food & Drug Administration, accessed July 22, 2024, https://www.fda.gov/
 [^5]: "National Institute of Standards and Technology," National Institute of Standards and Technology, accessed July 22, 2024, https://www.nist.gov/

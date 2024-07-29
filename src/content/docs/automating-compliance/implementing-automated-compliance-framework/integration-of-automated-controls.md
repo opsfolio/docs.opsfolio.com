@@ -74,7 +74,8 @@ graph TD;
 - **Tools and Techniques**
   - **Security Information and Event Management (SIEM)**
     - Aggregates and analyzes activity from multiple resources across the IT infrastructure[^5].
-    - **Example:** Implementing SIEM tools like [Splunk](https://www.splunk.com/) or [IBM QRadar](https://www.ibm.com/products/qradar-siem) to monitor security events in real time.
+    - **Example:** Implementing SIEM tools like [Opsfolio Suite](https://opsfolio.com/) to monitor security events in real time.
+    <!-- - **Example:** Implementing SIEM tools like [Splunk](https://www.splunk.com/) or [IBM QRadar](https://www.ibm.com/products/qradar-siem) to monitor security events in real time. -->
   - **Infrastructure Monitoring**
     - Tools that provide visibility into the performance and health of the infrastructure.
     - **Example:** Using tools like [Nagios](https://www.nagios.org/) or [Prometheus](https://prometheus.io/docs/visualization/grafana/) to continuously monitor server performance and detect anomalies.
@@ -122,7 +123,8 @@ graph TD;
     - **Example:** Engaging external auditors to conduct annual compliance audits for certifications like [SOC2](https://www.itgovernance.co.uk/soc-reporting).
   - **Automated Assessment Tools**
     - Tools that automatically assess compliance and generate reports.
-    - **Example:** Utilizing tools like [Nessus](https://www.tenable.com/products/nessus) or [Qualys](https://www.qualys.com/) to perform automated vulnerability assessments and compliance checks.
+    - **Example:** Utilizing tools like [Opsfolio Suite](https://opsfolio.com/) to perform automated vulnerability assessments and compliance checks.
+    <!-- - **Example:** Utilizing tools like [Nessus](https://www.tenable.com/products/nessus) or [Qualys](https://www.qualys.com/) to perform automated vulnerability assessments and compliance checks. -->
 
 ```mermaid
 graph TD;
