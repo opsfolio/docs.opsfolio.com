@@ -9,19 +9,14 @@ Welcome to the page for the Surveilr Roadmap! Our goal with this part is to give
 
 ## Weekly Releases (Next 4 Weeks)
 
-### Week 1 (July 22 - 26, 2024)
-1. **Open Project PLM Integration**: Collect and prepare surveillance evidence from Open Project.
-This will be done by introducing a `surveilr ingest plm open-project` command to the current iteration of resource surveillance.
-    - [ ] Attachments: Ability to track and manage attachments for both projects and work packages.
-    - [ ] Roadmaps: Support for roadmap tracking to visualize project timelines and future planning.
-
-2. **Orchestration Infrastructure**: "Verification and Validation" (V&V) tables need to be incorporated into the SQL "orchestration infrastructure" to enable RSSDs to execute SQL-based validation and log "issues," "warnings," and other notifications into the orchestration tables.
+### Week 1 (July 29 - August 2, 2024)
+1. **Orchestration Infrastructure**: "Verification and Validation" (V&V) tables need to be incorporated into the SQL "orchestration infrastructure" to enable RSSDs to execute SQL-based validation and log "issues," "warnings," and other notifications into the orchestration tables.
    - [x] Add orchestration models to `surveilr` RSSD generation.
    - [ ] Implement orchestration sub commands
    - [ ] Add custom SQL functions to help with orchestration
    - [ ] Convert all `transformation` commands to orchestration commands
 
-### Week 2 (July 29 - August 2, 2024)
+### Week 2 (August 5 - August 9, 2024)
 
 1. **PII and PHI De-identification Strategy for "Edge" Data Ingestions**
     1. Non-Interactive Authentication for Microsoft 365 Integration
@@ -32,14 +27,14 @@ This will be done by introducing a `surveilr ingest plm open-project` command to
    - [ ] Interactive Authentication
      - [ ] Require either `-m auth-code` or `-m device-code` to initiate interactive authentication.
 
-### Week 3 (August 5 - August 9, 2024)
+### Week 3 (August 12 - August 16, 2024)
 
 1. **Remote Automated Osquery Setup for `surveilr`**
     - Implement a remote automated setup for Osquery within `surveilr` using [`xxh`](https://github.com/xxh/xxh), enabling streamlined deployment and configuration.
 1. **RSSD Schema Migration**
     - Utilize Atlas with `surveilr` SQL notebooks to create migrations for RSSDs, ensuring smooth transitions and updates.
 
-### Week 4 (August 12 - August 16, 2024)
+### Week 4 (August 19 - 23, 2024)
 1. **Integrate DuckDB Library to Orchestrate Ingestion Center Functionality**
    -  [ ] Develop a new `surveilr transform` command with options for `--csv`, `--excel`, `--parquet`, and `--all`. This command will process all `uniform_resource` entries that match the specified file formats requested by the user. Currently, `surveilr` performs some transformations like converting `*.xml` to JSON and also `*.csv` with the `transform csv` command, but this currently uses the inbuilt `csv` conversion in `rusqlite`. The major aim of this new `transform tabular` feature will be to  perform ETL/ELT to tables.
    -  [ ]  When the `--sql` flag is used, generate DuckDB SQL to `STDOUT`. When the `--attach` flag is used, include `ATTACH` to the RSSD.
@@ -48,7 +43,13 @@ This will be done by introducing a `surveilr ingest plm open-project` command to
 
 ## Longer-term Projections (Next 3 Months)
 
-### August
+### September
+
+#### Open Project PLM Integration: 
+Collect and prepare surveillance evidence from Open Project.
+This will be done by introducing a `surveilr ingest plm open-project` command to the current iteration of resource surveillance.
+    - [ ] Attachments: Ability to track and manage attachments for both projects and work packages.
+    - [ ] Roadmaps: Support for roadmap tracking to visualize project timelines and future planning.
 
 ##### Create an NPM Package for Installing `surveilr`
 
