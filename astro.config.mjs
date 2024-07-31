@@ -368,28 +368,76 @@ export default defineConfig({
                           link: "/surveilr/reference/db/surveilr-state-schema/state_schema",
                         },
                         {
-                          label: "Device",
-                          link: "/surveilr/reference/db/surveilr-state-schema/device",
-                        },
-                        {
                           label: "Behavior",
                           link: "/surveilr/reference/db/surveilr-state-schema/behavior",
                         },
                         {
-                          label: "Ingest Resource Path Match",
-                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_resource_path_match_rule",
+                          label: "Device",
+                          link: "/surveilr/reference/db/surveilr-state-schema/device",
                         },
                         {
-                          label: "ingest Resource Path Rewrite",
-                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_resource_path_rewrite_rule",
+                          label: "Device Party Relationship",
+                          link: "/surveilr/reference/db/surveilr-state-schema/device_party_relationship",
                         },
                         {
-                          label: "Ingest Session",
-                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session",
+                          label: "Gender Type",
+                          link: "/surveilr/reference/db/surveilr-state-schema/gender_type",
                         },
                         {
-                          label: "Ingest Session Fs Path",
-                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_fs_path",
+                          label: "Orchestration Nature",
+                          link: "/surveilr/reference/db/surveilr-state-schema/orchestration_nature",
+                        },
+                        {
+                          label: "Orchestration Session",
+                          link: "/surveilr/reference/db/surveilr-state-schema/orchestration_session",
+                        },
+                        {
+                          label: "Orchestration Session Entry",
+                          link: "/surveilr/reference/db/surveilr-state-schema/orchestration_session_entry",
+                        },
+                        {
+                          label: "Orchestration Session Exec",
+                          link: "/surveilr/reference/db/surveilr-state-schema/orchestration_session_exec",
+                        },
+                        {
+                          label: "Orchestration Session Issue",
+                          link: "/surveilr/reference/db/surveilr-state-schema/orchestration_session_issue",
+                        },
+                        {
+                          label: "Orchestration Session State",
+                          link: "/surveilr/reference/db/surveilr-state-schema/orchestration_session_state",
+                        },
+                        {
+                          label: "Organization",
+                          link: "/surveilr/reference/db/surveilr-state-schema/organization",
+                        },
+                        {
+                          label: "Organization Role",
+                          link: "/surveilr/reference/db/surveilr-state-schema/organization_role",
+                        },
+                        {
+                          label: "Organization Role Type",
+                          link: "/surveilr/reference/db/surveilr-state-schema/organization_role_type",
+                        },
+                        {
+                          label: "Party",
+                          link: "/surveilr/reference/db/surveilr-state-schema/party",
+                        },
+                        {
+                          label: "Party Type",
+                          link: "/surveilr/reference/db/surveilr-state-schema/party_type",
+                        },
+                        {
+                          label: "Party Relation",
+                          link: "/surveilr/reference/db/surveilr-state-schema/party_relation",
+                        },
+                        {
+                          label: "Party Relation Type",
+                          link: "/surveilr/reference/db/surveilr-state-schema/party_relation_type",
+                        },
+                        {
+                          label: "Person",
+                          link: "/surveilr/reference/db/surveilr-state-schema/person",
                         },
                         {
                           label: "Uniform Resource",
@@ -400,12 +448,104 @@ export default defineConfig({
                           link: "/surveilr/reference/db/surveilr-state-schema/uniform_resource_transform",
                         },
                         {
-                          label: "Ingest Session Fs Path Entry",
+                          label:
+                            "Uniform Resource Ingest Resource Path Match Rule ",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_resource_path_match_rule",
+                        },
+                        {
+                          label:
+                            "Uniform Resource Ingest Resource Path Rewrite Rule ",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_resource_path_rewrite_rule",
+                        },
+                        {
+                          label: "Uniform Resource Ingest Session",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session",
+                        },
+                        {
+                          label: "Uniform Resource Ingest Session Attachment",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_attachment",
+                        },
+                        {
+                          label: "Uniform Resource Ingest Session Fs Path",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_fs_path",
+                        },
+                        {
+                          label:
+                            "Uniform Resource Ingest Session Fs Path Entry",
                           link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_fs_path_entry",
                         },
                         {
-                          label: "Ingest Session Task",
+                          label: "Uniform Resource Ingest Session IMAP Account",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_imap_account",
+                        },
+                        {
+                          label:
+                            "Uniform Resource Ingest Session IMAP Account Folder",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_imap_acct_folder",
+                        },
+                        {
+                          label:
+                            "Uniform Resource Ingest Session IMAP Account Folder Message",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_imap_acct_folder_message",
+                        },
+                        {
+                          label: "Uniform Resource Ingest Session PLM Account",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_plm_account",
+                        },
+                        {
+                          label:
+                            "Uniform Resource Ingest Session PLM Account Label",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_plm_acct_label",
+                        },
+                        {
+                          label:
+                            "Uniform Resource Ingest Session PLM Account Project",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_plm_acct_project",
+                        },
+                        {
+                          label:
+                            "Uniform Resource Ingest Session PLM Account Project Issue",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_plm_acct_project_issue",
+                        },
+                        {
+                          label:
+                            "Uniform Resource Ingest Session PLM Account Relationship",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_plm_acct_relationship",
+                        },
+                        {
+                          label: "Uniform Resource Ingest Session PLM Comment",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_plm_comment",
+                        },
+                        {
+                          label:
+                            "Uniform Resource Ingest Session PLM Issue Reaction",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_plm_issue_reaction",
+                        },
+                        {
+                          label:
+                            "Uniform Resource Ingest Session PLM Issue Type",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_plm_issue_type",
+                        },
+                        {
+                          label:
+                            "Uniform Resource Ingest Session PLM Milestone",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_plm_milestone",
+                        },
+                        {
+                          label: "Uniform Resource Ingest Session PLM Reaction",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_plm_reaction",
+                        },
+                        {
+                          label: "Uniform Resource Ingest Session PLM User",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_plm_user",
+                        },
+                        {
+                          label: "Uniform Resource Ingest Session Task",
                           link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_task",
+                        },
+                        {
+                          label: "Uniform Resource Ingest Session UDI-PGP SQL",
+                          link: "/surveilr/reference/db/surveilr-state-schema/ur_ingest_session_udi_pgp_sql",
                         },
                       ],
                     },

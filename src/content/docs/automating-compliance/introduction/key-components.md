@@ -11,35 +11,35 @@ description: Key Components of Automated Compliance Frameworks
 The Trust Service Criteria (TSC) are a set of principles and criteria developed to guide organizations in ensuring the security, availability, processing integrity, confidentiality, and privacy of their systems and data[^1]. Automating these criteria involves using technology to consistently and accurately meet these standards, reducing the reliance on manual processes and minimizing human error.
 
 1. **Security**
-   - **Definition**: Protecting information and systems against unauthorized access, breaches, and attacks[^2].
+   - **Definition**: Protecting information and systems against unauthorized access, breaches, and attacks[^1].
    - **Automation Examples**: 
      - Implementing automated access controls to ensure only authorized individuals can access sensitive data.
      - Using automated intrusion detection systems (IDS) to monitor network traffic for suspicious activity.
      - Employing automated patch management tools to keep systems up-to-date with security patches.
 
 2. **Availability**
-   - **Definition**: Ensuring that information and systems are available for operation and use as committed or agreed[^3].
+   - **Definition**: Ensuring that information and systems are available for operation and use as committed or agreed[^1].
    - **Automation Examples**: 
      - Using automated monitoring tools to track system uptime and performance.
      - Implementing redundancy and failover mechanisms to ensure continuous availability.
      - Deploying automated backup solutions to maintain data availability in case of failures.
 
 3. **Processing Integrity**
-   - **Definition**: Ensuring that system processing is complete, valid, accurate, timely, and authorized[^4].
+   - **Definition**: Ensuring that system processing is complete, valid, accurate, timely, and authorized[^1].
    - **Automation Examples**: 
      - Implementing automated data validation checks to ensure data integrity.
      - Using workflow automation to enforce process integrity and consistency.
      - Employing automated logging to track and verify processing activities.
 
 4. **Confidentiality**
-   - **Definition**: Protecting information designated as confidential from unauthorized access and disclosure[^5].
+   - **Definition**: Protecting information designated as confidential from unauthorized access and disclosure[^1].
    - **Automation Examples**: 
      - Using encryption to protect data at rest and in transit.
      - Implementing automated data classification tools to identify and protect sensitive information.
      - Deploying automated access control systems to enforce confidentiality policies.
 
 5. **Privacy**
-   - **Definition**: Ensuring the collection, use, retention, and disposal of personal information conforms with commitments in the entity’s privacy notice[^6].
+   - **Definition**: Ensuring the collection, use, retention, and disposal of personal information conforms with commitments in the entity’s privacy notice[^1].
    - **Automation Examples**: 
      - Using automated consent management systems to track and manage user consent for data processing.
      - Implementing automated data anonymization and pseudonymization tools to protect personal data.
@@ -71,16 +71,16 @@ graph TD;
 
 ### Role of Automation in Meeting TSC Requirements Across Different Frameworks
 
-Automation plays a crucial role in ensuring organizations meet the Trust Service Criteria by providing consistent, reliable, and efficient mechanisms to enforce security, availability, processing integrity, confidentiality, and privacy across various compliance frameworks[^7]. This ensures that organizations can meet their regulatory requirements while reducing the burden on manual processes.
+Automation plays a crucial role in ensuring organizations meet the Trust Service Criteria by providing consistent, reliable, and efficient mechanisms to enforce security, availability, processing integrity, confidentiality, and privacy across various compliance frameworks[^1]. This ensures that organizations can meet their regulatory requirements while reducing the burden on manual processes.
 
 ## Common Controls Framework in Automation
 
 ### Overview of Common Automated Controls Shared Across Multiple Compliance Frameworks
 
-Common controls are standardized practices and procedures that can be applied across multiple compliance frameworks to ensure regulatory requirements are met[^8]. Automating these controls can significantly enhance their effectiveness and efficiency.
+Common controls are standardized practices and procedures that can be applied across multiple compliance frameworks to ensure regulatory requirements are met[^2]. Automating these controls can significantly enhance their effectiveness and efficiency.
 
 1. **Technical Controls**
-   - **Definition**: Controls implemented through technical means to protect information systems and data[^9].
+   - **Definition**: Controls implemented through technical means to protect information systems and data[^3].
    - **Examples**:
      - **Firewalls**: Automated configuration and management of firewalls to block unauthorized access.
      - **Intrusion Detection Systems (IDS)**: Continuous monitoring and automated alerting for suspicious activities.
@@ -88,7 +88,7 @@ Common controls are standardized practices and procedures that can be applied ac
      - **Access Control Mechanisms**: Automated management of user access rights and privileges.
 
 2. **Administrative Controls**
-   - **Definition**: Policies, procedures, and practices designed to manage and control an organization’s compliance efforts[^10].
+   - **Definition**: Policies, procedures, and practices designed to manage and control an organization’s compliance efforts[^4].
    - **Examples**:
      - **Policies and Procedures**: Automated policy management systems to ensure up-to-date and enforced policies.
      - **Risk Assessments**: Automated risk assessment tools to identify and evaluate compliance risks.
@@ -214,13 +214,7 @@ graph TD;
 ---
 
 [^1]: "System and Organization Controls," Wikipedia, accessed July 29, 2024, https://en.wikipedia.org/wiki/System_and_Organization_Controls#Trust_Service_Criteria
-[^2]: "System and Organization Controls," Wikipedia, accessed July 29, 2024, https://en.wikipedia.org/wiki/System_and_Organization_Controls#Trust_Service_Criteria
-[^3]: "System and Organization Controls," Wikipedia, accessed July 29, 2024, https://en.wikipedia.org/wiki/System_and_Organization_Controls#Trust_Service_Criteria
-[^4]: "System and Organization Controls," Wikipedia, accessed July 29, 2024, https://en.wikipedia.org/wiki/System_and_Organization_Controls#Trust_Service_Criteria
-[^5]: "System and Organization Controls," Wikipedia, accessed July 29, 2024, https://en.wikipedia.org/wiki/System_and_Organization_Controls#Trust_Service_Criteria
-[^6]: "System and Organization Controls," Wikipedia, accessed July 29, 2024, https://en.wikipedia.org/wiki/System_and_Organization_Controls#Trust_Service_Criteria
-[^7]: "System and Organization Controls," Wikipedia, accessed July 29, 2024, https://en.wikipedia.org/wiki/System_and_Organization_Controls#Trust_Service_Criteria
-[^8]: "What are 6 types of common controls and why do you need them?," Trust Community, accessed July 23, 2024, https://community.trustcloud.ai/docs/grc-launchpad/grc-101/compliance/what-are-common-controls-and-why-do-you-need-one.
-[^9]: "Technical Controls — Cybersecurity Resilience," Resilient Energy Platform, accessed July 23, 2024, https://resilient-energy.org/cybersecurity-resilience/building-blocks/technical-controls 
-[^10]: Michael Swanagan, "Types Of Security Controls Explained," PurpleSec, published December 07, 2023, https://purplesec.us/security-controls/#Admin
-[^11]: Michael Swanagan, "Types Of Security Controls Explained," PurpleSec, published December 07, 2023, https://purplesec.us/security-controls/#Physical
+[^2]: "What are 6 types of common controls and why do you need them?," Trust Community, accessed July 23, 2024, https://community.trustcloud.ai/docs/grc-launchpad/grc-101/compliance/what-are-common-controls-and-why-do-you-need-one.
+[^3]: "Technical Controls — Cybersecurity Resilience," Resilient Energy Platform, accessed July 23, 2024, https://resilient-energy.org/cybersecurity-resilience/building-blocks/technical-controls 
+[^4]: Michael Swanagan, "Types Of Security Controls Explained," PurpleSec,s published December 07, 2023, https://purplesec.us/security-controls/#Admin
+[^5]: Michael Swanagan, "Types Of Security Controls Explained," PurpleSec, published December 07, 2023, https://purplesec.us/security-controls/#Physical
