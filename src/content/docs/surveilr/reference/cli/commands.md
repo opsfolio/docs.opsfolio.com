@@ -63,7 +63,7 @@ This document contains the help content for the `surveilr` command-line program.
         - [**Options:**](#options-18)
 - [`surveilr notebooks ls`](#surveilr-notebooks-ls)
         - [**Options:**](#options-19)
-- [`surveilr sqlpage`](#surveilr-sqlpage)
+- [`surveilr web-ui`](#surveilr-web-ui)
         - [**Options:**](#options-20)
 - [`surveilr udi`](#surveilr-udi)
         - [**Subcommands:**](#subcommands-10)
@@ -88,6 +88,8 @@ This document contains the help content for the `surveilr` command-line program.
         - [**Options:**](#options-26)
 - [`surveilr upgrade`](#surveilr-upgrade)
         - [**Options:**](#options-27)
+- [`surveilr orchestrate`](#surveilr-orchestrate)
+        - [**Options:**](#options-28)
 
 ## `surveilr`
 
@@ -99,11 +101,12 @@ This document contains the help content for the `surveilr` command-line program.
 * `capturable-exec` — Capturable Executables (CE) maintenance tools
 * `ingest` — Ingest content from device file system and other sources
 * `notebooks` — Notebooks maintenance utilities
-* `sqlpage` — Configuration to start the SQLPage webserver
+* `web-ui` — Configuration to start the SQLPage webserver
 * `udi` — Universal Data Infrastructure
 * `transform` — Resource transformation utilities for data stored in the RSSD
 * `anonymize` — PII and PHI Deidentification StrategSerialize
 * `upgrade` — Update `surveilr` to latest or specific version
+* `orchestrate` — Enable RSSDs to execute SQL-based validation and log "issues," "warnings," and other notifications into the orchestration tables
 
 ###### **Options:**
 
@@ -678,11 +681,11 @@ list all notebooks
 
 
 
-## `surveilr sqlpage`
+## `surveilr web-ui`
 
 Configuration to start the SQLPage webserver
 
-**Usage:** `surveilr sqlpage [OPTIONS] --port <PORT>`
+**Usage:** `surveilr web-ui [OPTIONS] --port <PORT>`
 
 ###### **Options:**
 
@@ -695,6 +698,12 @@ Configuration to start the SQLPage webserver
 * `-p`, `--port <PORT>` — Port to bind sqplage webserver to
 * `-o`, `--otel <OTEL>` — Port that any OTEL compatible service is running on
 * `-m`, `--metrics <METRICS>` — Metrics port. Used for scraping metrics with tools like OpenObserve or Prometheus
+* `--open` — Open the SQLPage webpage in the default browser
+
+  Default value: `true`
+
+  Possible values: `true`, `false`
+
 
 
 
@@ -876,6 +885,31 @@ Update `surveilr` to latest or specific version
   Possible values: `true`, `false`
 
 * `-t`, `--token <TOKEN>` — An optional Github autehntication token to authenticate requests or to prevent rate limiting
+
+
+
+## `surveilr orchestrate`
+
+Enable RSSDs to execute SQL-based validation and log "issues," "warnings," and other notifications into the orchestration tables
+
+**Usage:** `surveilr orchestrate [OPTIONS] --nature <NATURE>`
+
+###### **Options:**
+
+* `-s`, `--sql <SCRIPTS>` — one or more globs to match as SQL files and batch execute them in alpha order
+* `-d`, `--state-db-fs-path <STATE_DB_FS_PATH>` — target SQLite database
+
+  Default value: `resource-surveillance.sqlite.db`
+* `-n`, `--nature <NATURE>` — Nature of the orchestration
+
+  Possible values: `v&v`
+
+* `--save-script` — Save script content to RSSD
+
+  Default value: `true`
+
+  Possible values: `true`, `false`
+
 
 
 
