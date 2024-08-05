@@ -47,6 +47,12 @@ graph TD;
     C --> I[Efficiency]
 ```
 
+
+
+:::tip[Tip]
+Even if a compliant system exists, without incorporating machine attestation, it lacks true security. Machine attestation ensures consistency and reliability that human attestation cannot match. [Learn more](https://compliantinsecurity.com/) about **Compliant Insecurity**.
+:::
+
 #### Relevance to Automating Compliance Processes
 Automating compliance processes involves leveraging machine attestation to enhance the efficiency, accuracy, and scalability of compliance activities. This shift reduces the dependency on manual efforts and allows for continuous monitoring and real-time response to compliance issues.
 

@@ -75,6 +75,10 @@ graph TD;
     C --> J[Rapid7]
 ```
 
+:::tip[Tip]
+Even if a compliant system exists, without incorporating machine attestation, it lacks true security. Machine attestation ensures consistency and reliability that human attestation cannot match. [Learn more](https://compliantinsecurity.com/) about **Compliant Insecurity**.
+:::
+
 ## Advantages and Challenges of Machine Attestation
 
 ### Advantages

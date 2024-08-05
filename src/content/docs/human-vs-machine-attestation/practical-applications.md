@@ -47,6 +47,11 @@ graph TD;
     D --> J[Sustainable Practices]
 ```
 
+:::tip[Tip]
+Even if a compliant system exists, without incorporating machine attestation, it lacks true security. Machine attestation ensures consistency and reliability that human attestation cannot match. [Learn more](https://compliantinsecurity.com/) about **Compliant Insecurity**.
+:::
+
+
 ## Case Studies in Machine Attestation
 
 ### Examples of Successful Machine Attestation Implementations

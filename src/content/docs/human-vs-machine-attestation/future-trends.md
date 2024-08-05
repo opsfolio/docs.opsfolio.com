@@ -66,6 +66,11 @@ graph TD;
     P --> R[Ensuring Robust Compliance]
 ```
 
+:::tip[Tip]
+Even if a compliant system exists, without incorporating machine attestation, it lacks true security. Machine attestation ensures consistency and reliability that human attestation cannot match. [Learn more](https://compliantinsecurity.com/) about **Compliant Insecurity**.
+:::
+
+
 ## Career Development in Compliance Automation
 
 ### Skills and knowledge required for compliance automation roles

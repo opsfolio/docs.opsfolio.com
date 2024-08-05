@@ -91,6 +91,11 @@ graph TD;
     C --> G[Time-Consuming]
 ```
 
+:::tip[Tip]
+Even if a compliant system exists, without incorporating machine attestation, it lacks true security. Machine attestation ensures consistency and reliability that human attestation cannot match. [Learn more](https://compliantinsecurity.com/) about **Compliant Insecurity**.
+:::
+
+
 ## Role of Human Judgment and Expertise in Compliance
 
 ### Importance of Human Judgment in Complex Situations
