@@ -1,6 +1,5 @@
 ---
 title: behavior
-description: Behaviors are configuration "presets" that can be used to drive application operations at runtime.
 ---
 
 ## Description
@@ -9,8 +8,8 @@ Behaviors are configuration "presets" that can be used to drive
 application operations at runtime. For example, ingest behaviors  
 include configs that indicate which files to ignore, which to  
 scan, when to load content, etc. This is more convenient than  
-creating
-
+creating  
+  
 behavior has a foreign key reference to the device table since  
 behaviors might be device-specific.
 
@@ -25,11 +24,11 @@ CREATE TABLE "behavior" (
     "behavior_conf_json" TEXT CHECK(json_valid(behavior_conf_json)) NOT NULL,
     "assurance_schema_id" VARCHAR,
     "governance" TEXT CHECK(json_valid(governance) OR governance IS NULL),
-    "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     "created_by" TEXT DEFAULT 'UNKNOWN',
-    "updated_at" TIMESTAMP,
+    "updated_at" TIMESTAMPTZ,
     "updated_by" TEXT,
-    "deleted_at" TIMESTAMP,
+    "deleted_at" TIMESTAMPTZ,
     "deleted_by" TEXT,
     "activity_log" TEXT,
     FOREIGN KEY("device_id") REFERENCES "device"("device_id"),
@@ -42,21 +41,21 @@ CREATE TABLE "behavior" (
 
 ## Columns
 
-| Name                | Type      | Default           | Nullable | Children                               | Parents          | Comment                                                                                      |
-| ------------------- | --------- | ----------------- | -------- | -------------------------------------- | ---------------- | -------------------------------------------------------------------------------------------- |
-| behavior_id         | VARCHAR   |                   | false    | [ur_ingest_session](/surveilr/reference/db/surveilr-state-schema/ur_ingest_session) |                  | {"isSqlDomainZodDescrMeta":true,"isVarChar":true}                                            |
-| device_id           | VARCHAR   |                   | false    |                                        | [device](/surveilr/reference/db/surveilr-state-schema/device) | {"isSqlDomainZodDescrMeta":true,"isVarChar":true}                                            |
-| behavior_name       | TEXT      |                   | false    |                                        |                  | Arbitrary but unique per-device behavior name (e.g. ingest::xyz)                             |
-| behavior_conf_json  | TEXT      |                   | false    |                                        |                  | Configuration, settings, parameters, etc. describing the behavior (JSON, behavior-dependent) |
-| assurance_schema_id | VARCHAR   |                   | true     |                                        |                  | {"isSqlDomainZodDescrMeta":true,"isVarChar":true}                                            |
-| governance          | TEXT      |                   | true     |                                        |                  | Descriptions or other "governance" details (JSON, behavior-dependent)                        |
-| created_at          | TIMESTAMP | CURRENT_TIMESTAMP | true     |                                        |                  |                                                                                              |
-| created_by          | TEXT      | 'UNKNOWN'         | true     |                                        |                  |                                                                                              |
-| updated_at          | TIMESTAMP |                   | true     |                                        |                  |                                                                                              |
-| updated_by          | TEXT      |                   | true     |                                        |                  |                                                                                              |
-| deleted_at          | TIMESTAMP |                   | true     |                                        |                  |                                                                                              |
-| deleted_by          | TEXT      |                   | true     |                                        |                  |                                                                                              |
-| activity_log        | TEXT      |                   | true     |                                        |                  | {"isSqlDomainZodDescrMeta":true,"isJsonSqlDomain":true}                                      |
+| Name                | Type        | Default           | Nullable | Children                                  | Parents             | Comment                                                                                      |
+| ------------------- | ----------- | ----------------- | -------- | ----------------------------------------- | ------------------- | -------------------------------------------------------------------------------------------- |
+| behavior_id         | VARCHAR     |                   | false    | [ur_ingest_session](/surveilr/reference/db/surveilr-state-schema/ur_ingest_session) |                     | {"isSqlDomainZodDescrMeta":true,"isVarChar":true}                                            |
+| device_id           | VARCHAR     |                   | false    |                                           | [device](/surveilr/reference/db/surveilr-state-schema/device) | {"isSqlDomainZodDescrMeta":true,"isVarChar":true}                                            |
+| behavior_name       | TEXT        |                   | false    |                                           |                     | Arbitrary but unique per-device behavior name (e.g. ingest::xyz)                             |
+| behavior_conf_json  | TEXT        |                   | false    |                                           |                     | Configuration, settings, parameters, etc. describing the behavior (JSON, behavior-dependent) |
+| assurance_schema_id | VARCHAR     |                   | true     |                                           |                     | {"isSqlDomainZodDescrMeta":true,"isVarChar":true}                                            |
+| governance          | TEXT        |                   | true     |                                           |                     | Descriptions or other "governance" details (JSON, behavior-dependent)                        |
+| created_at          | TIMESTAMPTZ | CURRENT_TIMESTAMP | true     |                                           |                     |                                                                                              |
+| created_by          | TEXT        | 'UNKNOWN'         | true     |                                           |                     |                                                                                              |
+| updated_at          | TIMESTAMPTZ |                   | true     |                                           |                     |                                                                                              |
+| updated_by          | TEXT        |                   | true     |                                           |                     |                                                                                              |
+| deleted_at          | TIMESTAMPTZ |                   | true     |                                           |                     |                                                                                              |
+| deleted_by          | TEXT        |                   | true     |                                           |                     |                                                                                              |
+| activity_log        | TEXT        |                   | true     |                                           |                     | {"isSqlDomainZodDescrMeta":true,"isJsonSqlDomain":true}                                      |
 
 ## Constraints
 

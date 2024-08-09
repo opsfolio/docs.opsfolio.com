@@ -43,19 +43,19 @@
 <text text-anchor="start" x="126.1332" y="-266.9" font-family="Arial" font-size="14.00" fill="#666666">[TEXT]</text>
 <polygon fill="none" stroke="#000000" points="46,-225.5 46,-255.5 430,-255.5 430,-225.5 46,-225.5"/>
 <text text-anchor="start" x="53" y="-236.9" font-family="Arial" font-size="14.00" fill="#000000">created_at </text>
-<text text-anchor="start" x="123.028" y="-236.9" font-family="Arial" font-size="14.00" fill="#666666">[TIMESTAMP]</text>
+<text text-anchor="start" x="123.028" y="-236.9" font-family="Arial" font-size="14.00" fill="#666666">[TIMESTAMPTZ]</text>
 <polygon fill="none" stroke="#000000" points="46,-195.5 46,-225.5 430,-225.5 430,-195.5 46,-195.5"/>
 <text text-anchor="start" x="53" y="-206.9" font-family="Arial" font-size="14.00" fill="#000000">created_by </text>
 <text text-anchor="start" x="126.1374" y="-206.9" font-family="Arial" font-size="14.00" fill="#666666">[TEXT]</text>
 <polygon fill="none" stroke="#000000" points="46,-165.5 46,-195.5 430,-195.5 430,-165.5 46,-165.5"/>
 <text text-anchor="start" x="53" y="-176.9" font-family="Arial" font-size="14.00" fill="#000000">updated_at </text>
-<text text-anchor="start" x="126.9326" y="-176.9" font-family="Arial" font-size="14.00" fill="#666666">[TIMESTAMP]</text>
+<text text-anchor="start" x="126.9326" y="-176.9" font-family="Arial" font-size="14.00" fill="#666666">[TIMESTAMPTZ]</text>
 <polygon fill="none" stroke="#000000" points="46,-135.5 46,-165.5 430,-165.5 430,-135.5 46,-135.5"/>
 <text text-anchor="start" x="53" y="-146.9" font-family="Arial" font-size="14.00" fill="#000000">updated_by </text>
 <text text-anchor="start" x="130.042" y="-146.9" font-family="Arial" font-size="14.00" fill="#666666">[TEXT]</text>
 <polygon fill="none" stroke="#000000" points="46,-105.5 46,-135.5 430,-135.5 430,-105.5 46,-105.5"/>
 <text text-anchor="start" x="53" y="-116.9" font-family="Arial" font-size="14.00" fill="#000000">deleted_at </text>
-<text text-anchor="start" x="122.2566" y="-116.9" font-family="Arial" font-size="14.00" fill="#666666">[TIMESTAMP]</text>
+<text text-anchor="start" x="122.2566" y="-116.9" font-family="Arial" font-size="14.00" fill="#666666">[TIMESTAMPTZ]</text>
 <polygon fill="none" stroke="#000000" points="46,-75.5 46,-105.5 430,-105.5 430,-75.5 46,-75.5"/>
 <text text-anchor="start" x="53" y="-86.9" font-family="Arial" font-size="14.00" fill="#000000">deleted_by </text>
 <text text-anchor="start" x="125.366" y="-86.9" font-family="Arial" font-size="14.00" fill="#666666">[TEXT]</text>

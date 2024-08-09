@@ -1,7 +1,6 @@
 ---
 title: orchestration_nature
 ---
-
 ## Description
 
 Entity to define relationships between multiple tenants to multiple devices
@@ -57,7 +56,7 @@ CREATE TABLE "orchestration_nature" (
 | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | idx_orchestration_nature__orchestration_nature_id__nature | CREATE INDEX "idx_orchestration_nature__orchestration_nature_id__nature" ON "orchestration_nature"("orchestration_nature_id", "nature") |
 | sqlite_autoindex_orchestration_nature_2                   | UNIQUE (orchestration_nature_id, nature)                                                                                                |
-| sqlite_autoindex_orchestration_nature_1                   | PRIMARY KEY (orchestration_nature_id)                                                                                                   |
+| sqlite_autoindex_orchestration_nature_1                   | PRIMARY KEY (orchestration_nature_id)                                                                                                     |
 
 ## Relations
 
