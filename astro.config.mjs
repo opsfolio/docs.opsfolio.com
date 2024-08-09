@@ -392,6 +392,10 @@ export default defineConfig({
                           link: "/surveilr/reference/db/surveilr-state-schema/orchestration_session",
                         },
                         {
+                          label: "Orchestration Session Log",
+                          link: "/surveilr/reference/db/surveilr-state-schema/orchestration_session_log",
+                        },
+                        {
                           label: "Orchestration Session Entry",
                           link: "/surveilr/reference/db/surveilr-state-schema/orchestration_session_entry",
                         },
@@ -402,6 +406,10 @@ export default defineConfig({
                         {
                           label: "Orchestration Session Issue",
                           link: "/surveilr/reference/db/surveilr-state-schema/orchestration_session_issue",
+                        },
+                        {
+                          label: "Orchestration Session Issue Relation",
+                          link: "/surveilr/reference/db/surveilr-state-schema/orchestration_session_issue_relation",
                         },
                         {
                           label: "Orchestration Session State",

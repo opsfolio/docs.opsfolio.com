@@ -1,7 +1,9 @@
 ---
 title: device
-description: Identity, network segmentation, and sysinfo for devices on which uniform_resource are found
 ---
+## Description
+
+Identity, network segmentation, and sysinfo for devices on which uniform_resource are found
 
 <details>
 <summary><strong>Table Definition</strong></summary>
@@ -15,11 +17,11 @@ CREATE TABLE "device" (
     "segmentation" TEXT CHECK(json_valid(segmentation) OR segmentation IS NULL),
     "state_sysinfo" TEXT CHECK(json_valid(state_sysinfo) OR state_sysinfo IS NULL),
     "elaboration" TEXT CHECK(json_valid(elaboration) OR elaboration IS NULL),
-    "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     "created_by" TEXT DEFAULT 'UNKNOWN',
-    "updated_at" TIMESTAMP,
+    "updated_at" TIMESTAMPTZ,
     "updated_by" TEXT,
-    "deleted_at" TIMESTAMP,
+    "deleted_at" TIMESTAMPTZ,
     "deleted_by" TEXT,
     "activity_log" TEXT,
     UNIQUE("name", "state", "boundary")
@@ -30,22 +32,22 @@ CREATE TABLE "device" (
 
 ## Columns
 
-| Name          | Type      | Default           | Nullable | Children                                                                                         | Comment                                                                                          |
-| ------------- | --------- | ----------------- | -------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
-| device_id     | VARCHAR   |                   | false    | [behavior](/surveilr/reference/db/surveilr-state-schema/behavior) [ur_ingest_session](/surveilr/reference/db/surveilr-state-schema/ur_ingest_session) [uniform_resource](/surveilr/reference/db/surveilr-state-schema/uniform_resource) | {"isSqlDomainZodDescrMeta":true,"isVarChar":true}                                                |
-| name          | TEXT      |                   | false    |                                                                                                  | unique device identifier (defaults to hostname)                                                  |
-| state         | TEXT      |                   | false    |                                                                                                  | should be "SINGLETON" if only one state is allowed, or other tags if multiple states are allowed |
-| boundary      | TEXT      |                   | false    |                                                                                                  | can be IP address, VLAN, or any other device name differentiator                                 |
-| segmentation  | TEXT      |                   | true     |                                                                                                  | zero trust or other network segmentation                                                         |
-| state_sysinfo | TEXT      |                   | true     |                                                                                                  | any sysinfo or other state data that is specific to this device (mutable)                        |
-| elaboration   | TEXT      |                   | true     |                                                                                                  | any elaboration needed for the device (mutable)                                                  |
-| created_at    | TIMESTAMP | CURRENT_TIMESTAMP | true     |                                                                                                  |                                                                                                  |
-| created_by    | TEXT      | 'UNKNOWN'         | true     |                                                                                                  |                                                                                                  |
-| updated_at    | TIMESTAMP |                   | true     |                                                                                                  |                                                                                                  |
-| updated_by    | TEXT      |                   | true     |                                                                                                  |                                                                                                  |
-| deleted_at    | TIMESTAMP |                   | true     |                                                                                                  |                                                                                                  |
-| deleted_by    | TEXT      |                   | true     |                                                                                                  |                                                                                                  |
-| activity_log  | TEXT      |                   | true     |                                                                                                  | {"isSqlDomainZodDescrMeta":true,"isJsonSqlDomain":true}                                          |
+| Name          | Type        | Default           | Nullable | Children                                                                                                                                                                                                              | Comment                                                                                          |
+| ------------- | ----------- | ----------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| device_id     | VARCHAR     |                   | false    | [device_party_relationship](/surveilr/reference/db/surveilr-state-schema/device_party_relationship) [behavior](/surveilr/reference/db/surveilr-state-schema/behavior) [ur_ingest_session](ur_ingest_session) [uniform_resource](/surveilr/reference/db/surveilr-state-schema/uniform_resource) [orchestration_session](/surveilr/reference/db/surveilr-state-schema/orchestration_session) | {"isSqlDomainZodDescrMeta":true,"isVarChar":true}                                                |
+| name          | TEXT        |                   | false    |                                                                                                                                                                                                                       | unique device identifier (defaults to hostname)                                                  |
+| state         | TEXT        |                   | false    |                                                                                                                                                                                                                       | should be "SINGLETON" if only one state is allowed, or other tags if multiple states are allowed |
+| boundary      | TEXT        |                   | false    |                                                                                                                                                                                                                       | can be IP address, VLAN, or any other device name differentiator                                 |
+| segmentation  | TEXT        |                   | true     |                                                                                                                                                                                                                       | zero trust or other network segmentation                                                         |
+| state_sysinfo | TEXT        |                   | true     |                                                                                                                                                                                                                       | any sysinfo or other state data that is specific to this device (mutable)                        |
+| elaboration   | TEXT        |                   | true     |                                                                                                                                                                                                                       | any elaboration needed for the device (mutable)                                                  |
+| created_at    | TIMESTAMPTZ | CURRENT_TIMESTAMP | true     |                                                                                                                                                                                                                       |                                                                                                  |
+| created_by    | TEXT        | 'UNKNOWN'         | true     |                                                                                                                                                                                                                       |                                                                                                  |
+| updated_at    | TIMESTAMPTZ |                   | true     |                                                                                                                                                                                                                       |                                                                                                  |
+| updated_by    | TEXT        |                   | true     |                                                                                                                                                                                                                       |                                                                                                  |
+| deleted_at    | TIMESTAMPTZ |                   | true     |                                                                                                                                                                                                                       |                                                                                                  |
+| deleted_by    | TEXT        |                   | true     |                                                                                                                                                                                                                       |                                                                                                  |
+| activity_log  | TEXT        |                   | true     |                                                                                                                                                                                                                       | {"isSqlDomainZodDescrMeta":true,"isJsonSqlDomain":true}                                          |
 
 ## Constraints
 
@@ -63,9 +65,9 @@ CREATE TABLE "device" (
 
 | Name                      | Definition                                                          |
 | ------------------------- | ------------------------------------------------------------------- |
-| idx_device**name**state   | CREATE INDEX "idx_device**name**state" ON "device"("name", "state") |
+| idx_device__name__state   | CREATE INDEX "idx_device__name__state" ON "device"("name", "state") |
 | sqlite_autoindex_device_2 | UNIQUE (name, state, boundary)                                      |
-| sqlite_autoindex_device_1 | PRIMARY KEY (device_id)                                             |
+| sqlite_autoindex_device_1 | PRIMARY KEY (device_id)                                              |
 
 ## Relations
 
