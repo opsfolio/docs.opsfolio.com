@@ -22,8 +22,7 @@ CREATE TABLE "party" (
     "deleted_at" TIMESTAMPTZ,
     "deleted_by" TEXT,
     "activity_log" TEXT,
-    FOREIGN KEY("party_type_id") REFERENCES "party_type"("code"),
-    UNIQUE("party_type_id", "party_name")
+    FOREIGN KEY("party_type_id") REFERENCES "party_type"("code")
 )
 ```
 
@@ -51,7 +50,6 @@ CREATE TABLE "party" (
 | ------------------------ | ----------- | ----------------------------------------------------------------------------------------------------------- |
 | party_id                 | PRIMARY KEY | PRIMARY KEY (party_id)                                                                                      |
 | - (Foreign key ID: 0)    | FOREIGN KEY | FOREIGN KEY (party_type_id) REFERENCES party_type (code) ON UPDATE NO ACTION ON DELETE NO ACTION MATCH NONE |
-| sqlite_autoindex_party_2 | UNIQUE      | UNIQUE (party_type_id, party_name)                                                                          |
 | sqlite_autoindex_party_1 | PRIMARY KEY | PRIMARY KEY (party_id)                                                                                      |
 | -                        | CHECK       | CHECK(json_valid(elaboration) OR elaboration IS NULL)                                                       |
 
@@ -60,7 +58,6 @@ CREATE TABLE "party" (
 | Name                                 | Definition                                                                                    |
 | ------------------------------------ | --------------------------------------------------------------------------------------------- |
 | idx_party__party_type_id__party_name | CREATE INDEX "idx_party__party_type_id__party_name" ON "party"("party_type_id", "party_name") |
-| sqlite_autoindex_party_2             | UNIQUE (party_type_id, party_name)                                                            |
 | sqlite_autoindex_party_1             | PRIMARY KEY (party_id)                                                                        |
 
 ## Relations

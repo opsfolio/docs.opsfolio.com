@@ -70,6 +70,7 @@ CREATE TABLE "organization_role" (
 | sqlite_autoindex_organization_role_2                                         | UNIQUE (person_id, organization_id, organization_role_type_id)                                                                                                                  |
 | sqlite_autoindex_organization_role_1                                         | PRIMARY KEY (organization_role_id)                                                                                                                                              |
 
+
 ## Relations
 
 ![er](../../../../../../assets/organization_role.svg)

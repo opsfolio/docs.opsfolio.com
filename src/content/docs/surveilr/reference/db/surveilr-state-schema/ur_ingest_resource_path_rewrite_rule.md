@@ -19,11 +19,11 @@ CREATE TABLE "ur_ingest_resource_path_rewrite_rule" (
     "priority" TEXT,
     "description" TEXT,
     "elaboration" TEXT CHECK(json_valid(elaboration) OR elaboration IS NULL),
-    "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     "created_by" TEXT DEFAULT 'UNKNOWN',
-    "updated_at" TIMESTAMP,
+    "updated_at" TIMESTAMPTZ,
     "updated_by" TEXT,
-    "deleted_at" TIMESTAMP,
+    "deleted_at" TIMESTAMPTZ,
     "deleted_by" TEXT,
     "activity_log" TEXT,
     UNIQUE("namespace", "regex", "replace")
@@ -34,22 +34,22 @@ CREATE TABLE "ur_ingest_resource_path_rewrite_rule" (
 
 ## Columns
 
-| Name                                    | Type      | Default           | Nullable | Comment                                                 |
-| --------------------------------------- | --------- | ----------------- | -------- | ------------------------------------------------------- |
-| ur_ingest_resource_path_rewrite_rule_id | VARCHAR   |                   | false    | {"isSqlDomainZodDescrMeta":true,"isVarChar":true}       |
-| namespace                               | TEXT      |                   | false    |                                                         |
-| regex                                   | TEXT      |                   | false    |                                                         |
-| replace                                 | TEXT      |                   | false    |                                                         |
-| priority                                | TEXT      |                   | true     |                                                         |
-| description                             | TEXT      |                   | true     |                                                         |
-| elaboration                             | TEXT      |                   | true     | {"isSqlDomainZodDescrMeta":true,"isJsonText":true}      |
-| created_at                              | TIMESTAMP | CURRENT_TIMESTAMP | true     |                                                         |
-| created_by                              | TEXT      | 'UNKNOWN'         | true     |                                                         |
-| updated_at                              | TIMESTAMP |                   | true     |                                                         |
-| updated_by                              | TEXT      |                   | true     |                                                         |
-| deleted_at                              | TIMESTAMP |                   | true     |                                                         |
-| deleted_by                              | TEXT      |                   | true     |                                                         |
-| activity_log                            | TEXT      |                   | true     | {"isSqlDomainZodDescrMeta":true,"isJsonSqlDomain":true} |
+| Name                                    | Type        | Default           | Nullable | Comment                                                 |
+| --------------------------------------- | ----------- | ----------------- | -------- | ------------------------------------------------------- |
+| ur_ingest_resource_path_rewrite_rule_id | VARCHAR     |                   | false    | {"isSqlDomainZodDescrMeta":true,"isVarChar":true}       |
+| namespace                               | TEXT        |                   | false    |                                                         |
+| regex                                   | TEXT        |                   | false    |                                                         |
+| replace                                 | TEXT        |                   | false    |                                                         |
+| priority                                | TEXT        |                   | true     |                                                         |
+| description                             | TEXT        |                   | true     |                                                         |
+| elaboration                             | TEXT        |                   | true     | {"isSqlDomainZodDescrMeta":true,"isJsonText":true}      |
+| created_at                              | TIMESTAMPTZ | CURRENT_TIMESTAMP | true     |                                                         |
+| created_by                              | TEXT        | 'UNKNOWN'         | true     |                                                         |
+| updated_at                              | TIMESTAMPTZ |                   | true     |                                                         |
+| updated_by                              | TEXT        |                   | true     |                                                         |
+| deleted_at                              | TIMESTAMPTZ |                   | true     |                                                         |
+| deleted_by                              | TEXT        |                   | true     |                                                         |
+| activity_log                            | TEXT        |                   | true     | {"isSqlDomainZodDescrMeta":true,"isJsonSqlDomain":true} |
 
 ## Constraints
 

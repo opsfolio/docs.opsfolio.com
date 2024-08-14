@@ -69,6 +69,7 @@ CREATE TABLE "party_relation" (
 | sqlite_autoindex_party_relation_2                                | UNIQUE (party_id, related_party_id, relation_type_id)                                                                                                   |
 | sqlite_autoindex_party_relation_1                                | PRIMARY KEY (party_relation_id)                                                                                                                         |
 
+
 ## Relations
 
 ![er](../../../../../../assets/party_relation.svg)

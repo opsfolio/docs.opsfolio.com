@@ -19,11 +19,11 @@ CREATE TABLE "uniform_resource_transform" (
     "nature" TEXT,
     "size_bytes" INTEGER,
     "elaboration" TEXT CHECK(json_valid(elaboration) OR elaboration IS NULL),
-    "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     "created_by" TEXT DEFAULT 'UNKNOWN',
-    "updated_at" TIMESTAMP,
+    "updated_at" TIMESTAMPTZ,
     "updated_by" TEXT,
-    "deleted_at" TIMESTAMP,
+    "deleted_at" TIMESTAMPTZ,
     "deleted_by" TEXT,
     "activity_log" TEXT,
     FOREIGN KEY("uniform_resource_id") REFERENCES "uniform_resource"("uniform_resource_id"),
@@ -35,23 +35,23 @@ CREATE TABLE "uniform_resource_transform" (
 
 ## Columns
 
-| Name                          | Type      | Default           | Nullable | Parents                              | Comment                                                 |
-| ----------------------------- | --------- | ----------------- | -------- | ------------------------------------ | ------------------------------------------------------- |
-| uniform_resource_transform_id | VARCHAR   |                   | false    |                                      | uniform_resource_transform ULID primary key             |
-| uniform_resource_id           | VARCHAR   |                   | false    | [uniform_resource](/surveilr/reference/db/surveilr-state-schema/uniform_resource) | uniform_resource row ID of original content             |
-| uri                           | TEXT      |                   | false    |                                      |                                                         |
-| content_digest                | TEXT      |                   | false    |                                      | transformed content hash                                |
-| content                       | BLOB      |                   | true     |                                      | transformed content                                     |
-| nature                        | TEXT      |                   | true     |                                      | file extension or MIME                                  |
-| size_bytes                    | INTEGER   |                   | true     |                                      |                                                         |
-| elaboration                   | TEXT      |                   | true     |                                      | anything that doesn't fit in other columns (JSON)       |
-| created_at                    | TIMESTAMP | CURRENT_TIMESTAMP | true     |                                      |                                                         |
-| created_by                    | TEXT      | 'UNKNOWN'         | true     |                                      |                                                         |
-| updated_at                    | TIMESTAMP |                   | true     |                                      |                                                         |
-| updated_by                    | TEXT      |                   | true     |                                      |                                                         |
-| deleted_at                    | TIMESTAMP |                   | true     |                                      |                                                         |
-| deleted_by                    | TEXT      |                   | true     |                                      |                                                         |
-| activity_log                  | TEXT      |                   | true     |                                      | {"isSqlDomainZodDescrMeta":true,"isJsonSqlDomain":true} |
+| Name                          | Type        | Default           | Nullable | Parents                                 | Comment                                                 |
+| ----------------------------- | ----------- | ----------------- | -------- | --------------------------------------- | ------------------------------------------------------- |
+| uniform_resource_transform_id | VARCHAR     |                   | false    |                                         | uniform_resource_transform ULID primary key             |
+| uniform_resource_id           | VARCHAR     |                   | false    | [uniform_resource](/surveilr/reference/db/surveilr-state-schema/uniform_resource) | uniform_resource row ID of original content             |
+| uri                           | TEXT        |                   | false    |                                         |                                                         |
+| content_digest                | TEXT        |                   | false    |                                         | transformed content hash                                |
+| content                       | BLOB        |                   | true     |                                         | transformed content                                     |
+| nature                        | TEXT        |                   | true     |                                         | file extension or MIME                                  |
+| size_bytes                    | INTEGER     |                   | true     |                                         |                                                         |
+| elaboration                   | TEXT        |                   | true     |                                         | anything that doesn't fit in other columns (JSON)       |
+| created_at                    | TIMESTAMPTZ | CURRENT_TIMESTAMP | true     |                                         |                                                         |
+| created_by                    | TEXT        | 'UNKNOWN'         | true     |                                         |                                                         |
+| updated_at                    | TIMESTAMPTZ |                   | true     |                                         |                                                         |
+| updated_by                    | TEXT        |                   | true     |                                         |                                                         |
+| deleted_at                    | TIMESTAMPTZ |                   | true     |                                         |                                                         |
+| deleted_by                    | TEXT        |                   | true     |                                         |                                                         |
+| activity_log                  | TEXT        |                   | true     |                                         | {"isSqlDomainZodDescrMeta":true,"isJsonSqlDomain":true} |
 
 ## Constraints
 
@@ -67,7 +67,7 @@ CREATE TABLE "uniform_resource_transform" (
 
 | Name                                                                | Definition                                                                                                                                                  |
 | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| idx_uniform_resource_transform**uniform_resource_id**content_digest | CREATE INDEX "idx_uniform_resource_transform**uniform_resource_id**content_digest" ON "uniform_resource_transform"("uniform_resource_id", "content_digest") |
+| idx_uniform_resource_transform__uniform_resource_id__content_digest | CREATE INDEX "idx_uniform_resource_transform__uniform_resource_id__content_digest" ON "uniform_resource_transform"("uniform_resource_id", "content_digest") |
 | sqlite_autoindex_uniform_resource_transform_2                       | UNIQUE (uniform_resource_id, content_digest, nature, size_bytes)                                                                                            |
 | sqlite_autoindex_uniform_resource_transform_1                       | PRIMARY KEY (uniform_resource_transform_id)                                                                                                                 |
 
