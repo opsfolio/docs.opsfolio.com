@@ -9,32 +9,30 @@ Welcome to the page for the Surveilr Roadmap! Our goal with this part is to give
 
 ## Weekly Releases (Next 4 Weeks)
 
-### Week 1 (August 5 - August 9, 2024)
+### Week 1 (August 19 - August 23, 2024)
 1. **Orchestration Infrastructure**: "Verification and Validation" (V&V) tables need to be incorporated into the SQL "orchestration infrastructure" to enable RSSDs to execute SQL-based validation and log "issues," "warnings," and other notifications into the orchestration tables.
    - [x] Add orchestration models to `surveilr` RSSD generation.
    - [ ] Implement orchestration sub commands
-   - [ ] Add custom SQL functions to help with orchestration
-   - [ ] Convert all `transformation` commands to orchestration commands
+   - [x] Add custom SQL functions to help with orchestration
+   - [x] Convert all `transformation` commands to orchestration commands
 
-### Week 2 (August 12 - August 16)
+### Week 2 (August 26 - 30, 2024)
+  1. **Non-Interactive Authentication for Microsoft 365 Integration**
+ - [ ] Non-Interactive Authentication
+   - [ ] Automatic retrieval of access and refresh tokens.
+   - [ ] Secure cache for refresh tokens.
+   - [ ] Command: `surveilr ingest imap microsft-365 -i="<CLIENT_ID>" -s="<CLIENT SECRET>" -t="<TENANT_ID>"`
+ - [ ] Interactive Authentication
+   - [ ] Require either `-m auth-code` or `-m device-code` to initiate interactive authentication.
 
-1. **PII and PHI De-identification Strategy for "Edge" Data Ingestions**
-    1. Non-Interactive Authentication for Microsoft 365 Integration
-   - [ ] Non-Interactive Authentication
-     - [ ] Automatic retrieval of access and refresh tokens.
-     - [ ] Secure cache for refresh tokens.
-     - [ ] Command: `surveilr ingest imap microsft-365 -i="<CLIENT_ID>" -s="<CLIENT SECRET>" -t="<TENANT_ID>"`
-   - [ ] Interactive Authentication
-     - [ ] Require either `-m auth-code` or `-m device-code` to initiate interactive authentication.
-
-### Week 3 (August 19 - August 23, 2024)
+### Week 3 (September 2 - September 6, 2024)
 
 1. **Remote Automated Osquery Setup for `surveilr`**
     - Implement a remote automated setup for Osquery within `surveilr` using [`xxh`](https://github.com/xxh/xxh), enabling streamlined deployment and configuration.
 1. **RSSD Schema Migration**
     - Utilize Atlas with `surveilr` SQL notebooks to create migrations for RSSDs, ensuring smooth transitions and updates.
 
-### Week 4 (August 26 - 30, 2024)
+### Week 3 (September 9 - September 13, 2024)
 1. **Integrate DuckDB Library to Orchestrate Ingestion Center Functionality**
    -  [ ] Develop a new `surveilr transform` command with options for `--csv`, `--excel`, `--parquet`, and `--all`. This command will process all `uniform_resource` entries that match the specified file formats requested by the user. Currently, `surveilr` performs some transformations like converting `*.xml` to JSON and also `*.csv` with the `transform csv` command, but this currently uses the inbuilt `csv` conversion in `rusqlite`. The major aim of this new `transform tabular` feature will be to  perform ETL/ELT to tables.
    -  [ ]  When the `--sql` flag is used, generate DuckDB SQL to `STDOUT`. When the `--attach` flag is used, include `ATTACH` to the RSSD.
@@ -43,13 +41,7 @@ Welcome to the page for the Surveilr Roadmap! Our goal with this part is to give
 
 ## Longer-term Projections (Next 3 Months)
 
-### September
-
-#### Open Project PLM Integration: 
-Collect and prepare surveillance evidence from Open Project.
-This will be done by introducing a `surveilr ingest plm open-project` command to the current iteration of resource surveillance.
-    - [ ] Attachments: Ability to track and manage attachments for both projects and work packages.
-    - [ ] Roadmaps: Support for roadmap tracking to visualize project timelines and future planning.
+### October
 
 ##### Create an NPM Package for Installing `surveilr`
 
@@ -222,14 +214,6 @@ Currently, `surveilr` handles attachments for each resource based on the `--extr
      - Prepare the updated version of `surveilr` with the new `--extract-attachments-filter` argument for release.
      - Announce the release and provide support channels for user feedback and issues.
 
-
-
-
-### September
-- In progress...
-
-### October
-- In progress...
 
 
 
