@@ -77,19 +77,22 @@ This document contains the help content for the `surveilr` command-line program.
 - [`surveilr udi pgp osquery remote`](#surveilr-udi-pgp-osquery-remote)
         - [**Options:**](#options-23)
 - [`surveilr udi admin`](#surveilr-udi-admin)
-- [`surveilr transform`](#surveilr-transform)
-        - [**Subcommands:**](#subcommands-13)
-        - [**Options:**](#options-24)
-- [`surveilr transform html`](#surveilr-transform-html)
-        - [**Options:**](#options-25)
-- [`surveilr transform csv`](#surveilr-transform-csv)
-- [`surveilr transform markdown`](#surveilr-transform-markdown)
 - [`surveilr anonymize`](#surveilr-anonymize)
-        - [**Options:**](#options-26)
+        - [**Options:**](#options-24)
 - [`surveilr upgrade`](#surveilr-upgrade)
-        - [**Options:**](#options-27)
+        - [**Options:**](#options-25)
 - [`surveilr orchestrate`](#surveilr-orchestrate)
+        - [**Subcommands:**](#subcommands-13)
+        - [**Options:**](#options-26)
+- [`surveilr orchestrate sessions`](#surveilr-orchestrate-sessions)
+- [`surveilr orchestrate transform-csv`](#surveilr-orchestrate-transform-csv)
+        - [**Options:**](#options-27)
+- [`surveilr orchestrate transform-html`](#surveilr-orchestrate-transform-html)
         - [**Options:**](#options-28)
+- [`surveilr orchestrate transform-xml`](#surveilr-orchestrate-transform-xml)
+        - [**Options:**](#options-29)
+- [`surveilr orchestrate transform-markdown`](#surveilr-orchestrate-transform-markdown)
+- [`surveilr doctor`](#surveilr-doctor)
 
 ## `surveilr`
 
@@ -103,10 +106,10 @@ This document contains the help content for the `surveilr` command-line program.
 * `notebooks` — Notebooks maintenance utilities
 * `web-ui` — Configuration to start the SQLPage webserver
 * `udi` — Universal Data Infrastructure
-* `transform` — Resource transformation utilities for data stored in the RSSD
 * `anonymize` — PII and PHI Deidentification StrategSerialize
 * `upgrade` — Update `surveilr` to latest or specific version
 * `orchestrate` — Enable RSSDs to execute SQL-based validation and log "issues," "warnings," and other notifications into the orchestration tables
+* `doctor` — Print out the versions of external dependencies that `surveilr` as per the current host
 
 ###### **Options:**
 
@@ -696,11 +699,14 @@ Configuration to start the SQLPage webserver
 
   Default value: `/`
 * `-p`, `--port <PORT>` — Port to bind sqplage webserver to
+* `--host <HOST>` — Host to bind the server to
+
+  Default value: `localhost`
 * `-o`, `--otel <OTEL>` — Port that any OTEL compatible service is running on
 * `-m`, `--metrics <METRICS>` — Metrics port. Used for scraping metrics with tools like OpenObserve or Prometheus
 * `--open` — Open the SQLPage webpage in the default browser
 
-  Default value: `true`
+  Default value: `false`
 
   Possible values: `true`, `false`
 
@@ -788,72 +794,6 @@ execute osquery on remote hosts
 
 
 
-## `surveilr transform`
-
-Resource transformation utilities for data stored in the RSSD
-
-**Usage:** `surveilr transform [OPTIONS] <COMMAND>`
-
-###### **Subcommands:**
-
-* `html` — Transform HTML content
-* `csv` — Tranform CSV Content into tables using the sqlite csv function
-* `markdown` — Transform markdown content
-
-###### **Options:**
-
-* `-d`, `--state-db-fs-path <STATE_DB_FS_PATH>` — target SQLite database
-
-  Default value: `resource-surveillance.sqlite.db`
-* `-r`, `--reset-transforms` — Indicates if all current transforms should be deleted before running the transform
-
-  Default value: `false`
-
-  Possible values: `true`, `false`
-
-* `-m`, `--reduce-data-duplication` — Nulls out the `content` table in `uniform_resource` for those content which were transformed to tables
-
-  Default value: `true`
-
-  Possible values: `true`, `false`
-
-
-
-
-## `surveilr transform html`
-
-Transform HTML content
-
-**Usage:** `surveilr transform html [OPTIONS]`
-
-###### **Options:**
-
-* `-c`, `--css-select <CSS_SELECT>` — List of CSS selectors with names and values. e.g. -css-select="name_of_select_query:div > p" i.e, select all p tags in a div tag
-* `-f`, `--format <FORMAT>` — Format the content should be transformed into
-
-  Default value: `json`
-
-  Possible values: `json`
-
-
-
-
-## `surveilr transform csv`
-
-Tranform CSV Content into tables using the sqlite csv function
-
-**Usage:** `surveilr transform csv`
-
-
-
-## `surveilr transform markdown`
-
-Transform markdown content
-
-**Usage:** `surveilr transform markdown`
-
-
-
 ## `surveilr anonymize`
 
 PII and PHI Deidentification StrategSerialize
@@ -892,7 +832,15 @@ Update `surveilr` to latest or specific version
 
 Enable RSSDs to execute SQL-based validation and log "issues," "warnings," and other notifications into the orchestration tables
 
-**Usage:** `surveilr orchestrate [OPTIONS] --nature <NATURE>`
+**Usage:** `surveilr orchestrate [OPTIONS] [COMMAND]`
+
+###### **Subcommands:**
+
+* `sessions` — 
+* `transform-csv` — Resource transformation utilities for CSV data stored in the RSSD
+* `transform-html` — Resource transformation utilities for CSV data stored in the RSSD
+* `transform-xml` — Resource transformation utilities for CSV data stored in the RSSD
+* `transform-markdown` — 
 
 ###### **Options:**
 
@@ -902,7 +850,7 @@ Enable RSSDs to execute SQL-based validation and log "issues," "warnings," and o
   Default value: `resource-surveillance.sqlite.db`
 * `-n`, `--nature <NATURE>` — Nature of the orchestration
 
-  Possible values: `v&v`
+  Possible values: `v&v`, `deidentification`, `surveilr-transform-csv`, `surveilr-transform-html`, `surveilr-transform-xml`
 
 * `--save-script` — Save script content to RSSD
 
@@ -910,6 +858,102 @@ Enable RSSDs to execute SQL-based validation and log "issues," "warnings," and o
 
   Possible values: `true`, `false`
 
+
+
+
+## `surveilr orchestrate sessions`
+
+**Usage:** `surveilr orchestrate sessions`
+
+
+
+## `surveilr orchestrate transform-csv`
+
+Resource transformation utilities for CSV data stored in the RSSD
+
+**Usage:** `surveilr orchestrate transform-csv [OPTIONS]`
+
+###### **Options:**
+
+* `-r`, `--reset-transforms` — Indicates if all current transforms should be deleted before running the transform
+
+  Default value: `false`
+
+  Possible values: `true`, `false`
+
+* `-m`, `--reduce-data-duplication` — Nulls out the `content` table in `uniform_resource` for those content which were transformed to tables
+
+  Default value: `true`
+
+  Possible values: `true`, `false`
+
+
+
+
+## `surveilr orchestrate transform-html`
+
+Resource transformation utilities for CSV data stored in the RSSD
+
+**Usage:** `surveilr orchestrate transform-html [OPTIONS]`
+
+###### **Options:**
+
+* `-r`, `--reset-transforms` — Indicates if all current transforms should be deleted before running the transform
+
+  Default value: `false`
+
+  Possible values: `true`, `false`
+
+* `-m`, `--reduce-data-duplication` — Nulls out the `content` table in `uniform_resource` for those content which were transformed to tables
+
+  Default value: `true`
+
+  Possible values: `true`, `false`
+
+* `-c`, `--css-select <CSS_SELECT>` — List of CSS selectors with names and values. e.g. -css-select="name_of_select_query:div > p" i.e, select all p tags in a div tag
+* `-f`, `--format <FORMAT>` — Format the content should be transformed into
+
+  Default value: `json`
+
+  Possible values: `json`
+
+
+
+
+## `surveilr orchestrate transform-xml`
+
+Resource transformation utilities for CSV data stored in the RSSD
+
+**Usage:** `surveilr orchestrate transform-xml [OPTIONS]`
+
+###### **Options:**
+
+* `-r`, `--reset-transforms` — Indicates if all current transforms should be deleted before running the transform
+
+  Default value: `false`
+
+  Possible values: `true`, `false`
+
+* `-m`, `--reduce-data-duplication` — Nulls out the `content` table in `uniform_resource` for those content which were transformed to tables
+
+  Default value: `true`
+
+  Possible values: `true`, `false`
+
+
+
+
+## `surveilr orchestrate transform-markdown`
+
+**Usage:** `surveilr orchestrate transform-markdown`
+
+
+
+## `surveilr doctor`
+
+Print out the versions of external dependencies that `surveilr` as per the current host
+
+**Usage:** `surveilr doctor`
 
 
 
