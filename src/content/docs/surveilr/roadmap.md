@@ -15,6 +15,7 @@ Welcome to the page for the Surveilr Roadmap! Our goal with this part is to give
    - [ ] Implement orchestration sub commands
    - [x] Add custom SQL functions to help with orchestration
    - [x] Convert all `transformation` commands to orchestration commands
+   - [x] Notebook Orchestration
 
 ### Week 2 (August 26 - 30, 2024)
   1. **Non-Interactive Authentication for Microsoft 365 Integration**
