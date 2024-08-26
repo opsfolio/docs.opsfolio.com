@@ -9,15 +9,7 @@ Welcome to the page for the Surveilr Roadmap! Our goal with this part is to give
 
 ## Weekly Releases (Next 4 Weeks)
 
-### Week 1 (August 19 - August 23, 2024)
-1. **Orchestration Infrastructure**: "Verification and Validation" (V&V) tables need to be incorporated into the SQL "orchestration infrastructure" to enable RSSDs to execute SQL-based validation and log "issues," "warnings," and other notifications into the orchestration tables.
-   - [x] Add orchestration models to `surveilr` RSSD generation.
-   - [ ] Implement orchestration sub commands
-   - [x] Add custom SQL functions to help with orchestration
-   - [x] Convert all `transformation` commands to orchestration commands
-   - [x] Notebook Orchestration
-
-### Week 2 (August 26 - 30, 2024)
+### Week 1 (August 26 - 30, 2024)
   1. **Non-Interactive Authentication for Microsoft 365 Integration**
  - [ ] Non-Interactive Authentication
    - [ ] Automatic retrieval of access and refresh tokens.
@@ -25,8 +17,13 @@ Welcome to the page for the Surveilr Roadmap! Our goal with this part is to give
    - [ ] Command: `surveilr ingest imap microsft-365 -i="<CLIENT_ID>" -s="<CLIENT SECRET>" -t="<TENANT_ID>"`
  - [ ] Interactive Authentication
    - [ ] Require either `-m auth-code` or `-m device-code` to initiate interactive authentication.
+2. **Orchestration Infrastructure**
+   - [x] CSV Transformation Bug
+   - [x] Introduced a new argument `-table-name-patterns` (or shorthand `-p`) to the `surveilr admin merge` command.
+3. **End To End Tests**
 
-### Week 3 (September 2 - September 6, 2024)
+
+### Week 2 (September 2 - September 6, 2024)
 
 1. **Remote Automated Osquery Setup for `surveilr`**
     - Implement a remote automated setup for Osquery within `surveilr` using [`xxh`](https://github.com/xxh/xxh), enabling streamlined deployment and configuration.
