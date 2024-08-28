@@ -85,14 +85,15 @@ This document contains the help content for the `surveilr` command-line program.
         - [**Subcommands:**](#subcommands-13)
         - [**Options:**](#options-26)
 - [`surveilr orchestrate sessions`](#surveilr-orchestrate-sessions)
-- [`surveilr orchestrate transform-csv`](#surveilr-orchestrate-transform-csv)
+- [`surveilr orchestrate notebooks`](#surveilr-orchestrate-notebooks)
         - [**Options:**](#options-27)
-- [`surveilr orchestrate transform-html`](#surveilr-orchestrate-transform-html)
+- [`surveilr orchestrate transform-csv`](#surveilr-orchestrate-transform-csv)
         - [**Options:**](#options-28)
-- [`surveilr orchestrate transform-xml`](#surveilr-orchestrate-transform-xml)
+- [`surveilr orchestrate transform-html`](#surveilr-orchestrate-transform-html)
         - [**Options:**](#options-29)
+- [`surveilr orchestrate transform-xml`](#surveilr-orchestrate-transform-xml)
+        - [**Options:**](#options-30)
 - [`surveilr orchestrate transform-markdown`](#surveilr-orchestrate-transform-markdown)
-- [`surveilr doctor`](#surveilr-doctor)
 
 ## `surveilr`
 
@@ -109,7 +110,7 @@ This document contains the help content for the `surveilr` command-line program.
 * `anonymize` — PII and PHI Deidentification StrategSerialize
 * `upgrade` — Update `surveilr` to latest or specific version
 * `orchestrate` — Enable RSSDs to execute SQL-based validation and log "issues," "warnings," and other notifications into the orchestration tables
-* `doctor` — Print out the versions of external dependencies that `surveilr` as per the current host
+* `doctor` — Print out the versions of external dependencies that `surveilr` uses on the current host
 
 ###### **Options:**
 
@@ -194,6 +195,9 @@ merge multiple surveillance state databases into a single one
 
   Possible values: `true`, `false`
 
+* `-p`, `--table-name-patterns <TABLE_NAME_PATTERNS>` — List of table name in SQL like pattern to match
+
+  Default value: `uniform_resource_%`
 
 
 
@@ -837,6 +841,7 @@ Enable RSSDs to execute SQL-based validation and log "issues," "warnings," and o
 ###### **Subcommands:**
 
 * `sessions` — 
+* `notebooks` — 
 * `transform-csv` — Resource transformation utilities for CSV data stored in the RSSD
 * `transform-html` — Resource transformation utilities for CSV data stored in the RSSD
 * `transform-xml` — Resource transformation utilities for CSV data stored in the RSSD
@@ -864,6 +869,18 @@ Enable RSSDs to execute SQL-based validation and log "issues," "warnings," and o
 ## `surveilr orchestrate sessions`
 
 **Usage:** `surveilr orchestrate sessions`
+
+
+
+## `surveilr orchestrate notebooks`
+
+**Usage:** `surveilr orchestrate notebooks [OPTIONS]`
+
+###### **Options:**
+
+* `-n`, `--notebook <NOTEBOOK>` — search for these notebooks (include % for LIKE otherwise =)
+* `-c`, `--cell <CELL>` — search for these cells (include % for LIKE otherwise =)
+* `-a`, `--arg <ARG>` — create a temp table called surveilr_orchestration_session_arg with columns session_id, key and value which will simple insert all args as rows in the temp table that the code_notebook_cell SQL code can rely on
 
 
 
@@ -946,21 +963,4 @@ Resource transformation utilities for CSV data stored in the RSSD
 ## `surveilr orchestrate transform-markdown`
 
 **Usage:** `surveilr orchestrate transform-markdown`
-
-
-
-## `surveilr doctor`
-
-Print out the versions of external dependencies that `surveilr` as per the current host
-
-**Usage:** `surveilr doctor`
-
-
-
-<hr/>
-
-<small><i>
-    This document was generated automatically by
-    <a href="https://crates.io/crates/clap-markdown"><code>clap-markdown</code></a>.
-</i></small>
 
