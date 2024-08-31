@@ -25,7 +25,7 @@ To use the `surveilr ingest imap` command with Microsoft 365 authentication meth
 5. Choose the appropriate **Supported account types** for your app by clicking on Authentication and selecting "Accounts in any organizational directory." 
  ![Authentication](/images/Authentication.png)
 
-6. Set the **Redirect URI** as application's redirect URL (e.g., https://your-redirect-uri.com/redirect). 
+6. Set the **Redirect URI** as application's redirect URL (e.g., `https://your-redirect-uri.com/redirect`). 
  ![redirect URL](/images/redirect_url.png)
 
 
