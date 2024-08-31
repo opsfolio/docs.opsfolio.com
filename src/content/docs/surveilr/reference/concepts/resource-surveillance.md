@@ -32,7 +32,7 @@ if you prefer not `cd` into `my-files` before performing file ingestion, there i
 $ surveilr ingest files -r <PATH>/my-files
 ```
 
-The outcome of the execution of this script above is a `resource-surveillance.sqlite.db` file ( known as `resource surveillance state database - RSSD` ) created in your root directory. The database consist of several tables which can you can learn about [here](/surveilr/reference/db/surveilr-state-schema/state-schema#tables).
+The outcome of the execution of this script above is a `resource-surveillance.sqlite.db` file ( known as `resource surveillance state database - RSSD` ) created in your root directory. The database consist of several tables which can you can learn about [here](/surveilr/reference/db/surveilr-state-schema/state_schema/#tables).
 
 
 ## Configuring Unique Identifiers for RSSD Databases
