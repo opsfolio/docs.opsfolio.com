@@ -183,7 +183,7 @@ Click on "New registration" to create a new application registration.
 
 - **Name:** Provide a name for your application.
 - **Supported account types:**  Accounts in this organizational directory only (Single tenant)
-- **Redirect URI:** Enter the redirect URI for your application.(http://localhost:53682/)
+- **Redirect URI:** Enter the redirect URI for your application.(`http://localhost:53682/`)
 - **Certificates & secrets:**  Under manage select Certificates & secrets, click New client secret. Enter a description (can be anything) and set Expires to 24 months. Copy and keep that secret Value for later use (you won't be able to see this value afterwards).
 - **Search and select the following permissions:** Files.Read, Files.ReadWrite, Files.Read.All, Files.ReadWrite.All, offline_access, User.Read and Sites.Read.All (if custom access scopes are configured, select the permissions accordingly). Once selected click Add permissions at the bottom.
 
