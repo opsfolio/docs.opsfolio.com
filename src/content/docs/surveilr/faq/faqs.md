@@ -30,7 +30,7 @@ policy compliance, hence improving security and regulatory adherence.</p>
 <summary class="faq"><h6>How do I install Surveilr?</h6></summary>
 
 <p>We have provided a detailed guide on how to install `surveilr` on your machine
-(Linux, Windows, and MacOS ), find it <a href="/surveilr/how-to/installation">here</a>.</p>
+(Linux, Windows, and MacOS ), find it <a href="/surveilr/how-to/installation-guide">here</a>.</p>
 
 </details>
 
@@ -78,7 +78,7 @@ cloud databases.</p>
 
 <summary class="faq"><h6>I have generated the RSSD files, now what's the next step from this?</h6></summary>
 
-<p>The next step is to navigate to the <a href="/surveilr/disciplines/software-engineer">disciplines and WPAs</a> page, choose your discipline, and see various ways you can extract machine-attested compliance evidences from the RSSD using SQL, depending on the <a href=/surveilr/reference/concepts/work-product-artifacts">Work Product Artifact (WPA)</a>. Here's an example of how
+<p>The next step is to navigate to the <a href="/surveilr/disciplines/software-engineer">disciplines and WPAs</a> page, choose your discipline, and see various ways you can extract machine-attested compliance evidences from the RSSD using SQL, depending on the <a href="/surveilr/reference/concepts/work-product-artifacts">Work Product Artifact (WPA)</a>. Here's an example of how
 <a href="/surveilr/disciplines/software-engineer">software engineers</a> extract compliance evidences from the <a href="/surveilr/reference/concepts/resource-surveillance">RSSD</a> file.</p>
 
 </details>
@@ -104,7 +104,7 @@ cloud databases.</p>
 
 <summary class="faq"><h6>How will we be using these RSSD files for auditing or compliance check?</h6></summary>
 
-<p>How the RSSD files will be used for auditing and compliance check is dependent on various disciplines and the their policies. To get started,  navigate to the <a href="/surveilr/disciplines/software-engineer">disciplines and WPAs</a> page, choose your discipline, and see various ways you can extract machine-attested compliance evidences from the RSSD using SQL, depending on the <a href=/surveilr/reference/concepts/work-product-artifacts">Work Product Artifact (WPA)</a>. Here's an example of how
+<p>How the RSSD files will be used for auditing and compliance check is dependent on various disciplines and the their policies. To get started,  navigate to the <a href="/surveilr/disciplines/software-engineer">disciplines and WPAs</a> page, choose your discipline, and see various ways you can extract machine-attested compliance evidences from the RSSD using SQL, depending on the <a href="/surveilr/reference/concepts/work-product-artifacts">Work Product Artifact (WPA)</a>. Here's an example of how
 <a href="/surveilr/disciplines/software-engineer">software engineers</a> extract compliance evidences from the <a href="/surveilr/reference/concepts/resource-surveillance">RSSD</a> file.</p>
 
 </details>
