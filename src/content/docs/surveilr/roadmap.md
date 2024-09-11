@@ -37,6 +37,15 @@ Welcome to the page for the Surveilr Roadmap! Our goal with this part is to give
    -  [ ]  Ensure all code functions correctly with an external DuckDB call. If the `--sql` flag is not used, generate DuckDB SQL and utilize the Rust crate to execute the DuckDB SQL via `ATTACH` for the actual ETL/ELT process.
 
 
+2. **Implement VFS Strategy Using rclone for Multi-source File Acquisition**
+   -  [ ] Develop a new `surveilr ingest vfs` command that utilizes rclone to source files from various locations (e.g., S3, SFTP, local).
+   -  [ ] Implement `surveilr vfs` as an alias for rclone commands, enabling virtual file system operations without requiring separate rclone installation.
+   -  [ ] Ensure `surveilr ingest vfs` stages files from multiple locations (clouds, file systems, WebDAV, etc.) using rclone and then processes the staged files with `surveilr ingest files`.
+   -  [ ] Coordinate with the RSIE team to document the multi-source acquisition strategy into the RSIE pattern specification.
+
+
+
+
 ## Longer-term Projections (Next 3 Months)
 
 ### October
