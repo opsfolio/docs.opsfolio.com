@@ -1,3 +1,5 @@
+### July 9, 2024 - August 9, 2024
+
 - 25c6dec - ci: updated build step script (2024-08-09)
 - d8d9f29 - docs: updated the surveilr-state-schema docs (2024-08-09)
 - 2b42456 - chore: added new top-level links to homepage (2024-07-31)
@@ -18,3 +20,11 @@
 - 0056a10 - chore: modify content on compliance-processes/intro to improve clarity (2024-07-11)
 - cb546d9 - docs: add human vs machine attestation section (2024-07-10)
 - f5602ce - docs: add "introduction to automating compliance" (2024-07-09)
+
+
+### August 31, 2024 to September 31, 2024 
+
+- a746f09 - fix: fixed merge conflict (2024-09-11)
+- 17b68e3 - docs: updated roadmap (2024-09-11)
+- 057064f - fix: fixed invalid links (2024-08-31)
+- 38b1cde - fix: fixed broken links (2024-08-31)

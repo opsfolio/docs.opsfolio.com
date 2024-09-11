@@ -142,5 +142,5 @@ Each compliance framework may have specific requirements for controls, but commo
 
 [^1]: “Effective frameworks for delivering compliance with personal data privacy regulatory requirements.” 2016. IEEE Conference Publication | IEEE Xplore. December 1, 2016. https://ieeexplore.ieee.org/abstract/document/7907015.
 [^2]: “General Data Protection Regulation,” Wikipedia, accessed September 02, 2024. https://en.wikipedia.org/wiki/General_Data_Protection_Regulation.
-<!-- [^1]: "What are the GDPR Fines?," GDPR.EU, accessed July 17, 2024, https://gdpr.eu/fines/ -->
+[^10]: "What are the GDPR Fines?," GDPR.EU, accessed July 17, 2024, https://gdpr.eu/fines/
 
