@@ -8,7 +8,7 @@ description: introduction to compliance frameworks
 
 #### Definition of Compliance Frameworks
 
-Compliance frameworks are structured sets of guidelines, standards, and best practices that organizations follow to meet regulatory requirements, ensure data security, and protect privacy. These frameworks provide a systematic approach to managing and mitigating risks, ensuring that organizations operate within legal and ethical boundaries.
+Compliance frameworks are structured sets of guidelines, standards, and best practices that organizations follow to meet regulatory requirements, ensure data security, and protect privacy[^1]. These frameworks provide a systematic approach to managing and mitigating risks, ensuring that organizations operate within legal and ethical boundaries.
 
 #### Importance of Compliance
 
@@ -23,11 +23,11 @@ Compliance is crucial for several reasons:
 
 Different regulatory bodies oversee various compliance frameworks based on industry and geographical location. Some key frameworks include:
 
-- **GDPR (General Data Protection Regulation):** A regulation in EU law on data protection and privacy in the European Union and the European Economic Area.
+- **GDPR (General Data Protection Regulation):** A regulation in EU law on data protection and privacy in the European Union and the European Economic Area[^2].
 - **HIPAA (Health Insurance Portability and Accountability Act):** A US law designed to provide privacy standards to protect patients' medical records and other health information.
 - **PCI-DSS (Payment Card Industry Data Security Standard):** A set of security standards designed to ensure that all companies that accept, process, store, or transmit credit card information maintain a secure environment.
 - **FDA (Food and Drug Administration):** A US regulatory body that oversees the safety and efficacy of food, pharmaceuticals, and medical devices.
-- **NIST (National Institute of Standards and Technology):** A US agency that develops and promotes measurement standards, including cybersecurity standards.
+- **NIST (National Institute of Standards and Technology):** A US agency that develops and promotes measurement standards, including cybersecurity standards.z
 
 ```mermaid
 graph TD;
@@ -56,7 +56,7 @@ Compliance requirements influence how technical teams design, implement, and mai
 
 Non-compliance can result in severe penalties, including:
 
-- **Fines:** Regulatory bodies can impose substantial fines for non-compliance. For example, GDPR fines can reach up to 4% of annual global turnover or €20 million[^1], whichever is higher.
+- **Fines:** Regulatory bodies can impose substantial fines for non-compliance. For example, GDPR fines can reach up to 4% of annual global turnover or €20 million[^10], whichever is higher.
 - **Legal Action:** Organizations may face lawsuits from affected parties, leading to legal costs and potential settlements.
 - **Reputational Damage:** Non-compliance can damage an organization's reputation, leading to loss of customer trust and business opportunities.
 
@@ -140,5 +140,7 @@ Each compliance framework may have specific requirements for controls, but commo
 
 ---
 
-[^1]: "What are the GDPR Fines?," GDPR.EU, accessed July 17, 2024, https://gdpr.eu/fines/
+[^1]: “Effective frameworks for delivering compliance with personal data privacy regulatory requirements.” 2016. IEEE Conference Publication | IEEE Xplore. December 1, 2016. https://ieeexplore.ieee.org/abstract/document/7907015.
+[^2]: “General Data Protection Regulation,” Wikipedia, accessed September 02, 2024. https://en.wikipedia.org/wiki/General_Data_Protection_Regulation.
+<!-- [^1]: "What are the GDPR Fines?," GDPR.EU, accessed July 17, 2024, https://gdpr.eu/fines/ -->
 

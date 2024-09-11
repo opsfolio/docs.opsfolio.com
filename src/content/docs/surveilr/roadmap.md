@@ -37,6 +37,7 @@ Welcome to the page for the `surveilr` Roadmap! Our goal with this part is to gi
 ### Week 3 (September 23 - September 27, 2024)
 1. **RSSD Schema Migration**
     - Utilize Atlas with `surveilr` SQL notebooks to create migrations for RSSDs, ensuring smooth transitions and updates.
+
 2. **Non-Interactive Authentication for Microsoft 365 Integration**
  - [ ] Non-Interactive Authentication
    - [ ] Automatic retrieval of access and refresh tokens.
@@ -44,6 +45,13 @@ Welcome to the page for the `surveilr` Roadmap! Our goal with this part is to gi
    - [ ] Command: `surveilr ingest imap microsft-365 -i="<CLIENT_ID>" -s="<CLIENT SECRET>" -t="<TENANT_ID>"`
  - [ ] Interactive Authentication
    - [ ] Require either `-m auth-code` or `-m device-code` to initiate interactive authentication.
+
+
+3. **Implement VFS Strategy Using rclone for Multi-source File Acquisition**
+   -  [ ] Develop a new `surveilr ingest vfs` command that utilizes rclone to source files from various locations (e.g., S3, SFTP, local).
+   -  [ ] Implement `surveilr vfs` as an alias for rclone commands, enabling virtual file system operations without requiring separate rclone installation.
+   -  [ ] Ensure `surveilr ingest vfs` stages files from multiple locations (clouds, file systems, WebDAV, etc.) using rclone and then processes the staged files with `surveilr ingest files`.
+   -  [ ] Coordinate with the RSIE team to document the multi-source acquisition strategy into the RSIE pattern specification.
 
 
 ### October
@@ -175,7 +183,6 @@ Welcome to the page for the `surveilr` Roadmap! Our goal with this part is to gi
    - **Key Features:**
      - **Selective Extraction:** Enable users to selectively extract attachments based on a regex provided through the `--extract-attachments-filter` argument.
      - **Flexible Management:** Allow more precise control over which attachments are extracted, improving the overall flexibility of the `surveilr` tool.
-
 
 
 
