@@ -6,6 +6,8 @@ description: This document contains the help content for the `surveilr` command-
 This document contains the help content for the `surveilr` command-line program.
 
 
+**Command Overview:**
+
 - [`surveilr`](#surveilr)
         - [**Subcommands:**](#subcommands)
         - [**Options:**](#options)
@@ -77,23 +79,25 @@ This document contains the help content for the `surveilr` command-line program.
 - [`surveilr udi pgp osquery remote`](#surveilr-udi-pgp-osquery-remote)
         - [**Options:**](#options-23)
 - [`surveilr udi admin`](#surveilr-udi-admin)
-- [`surveilr anonymize`](#surveilr-anonymize)
-        - [**Options:**](#options-24)
 - [`surveilr upgrade`](#surveilr-upgrade)
-        - [**Options:**](#options-25)
+        - [**Options:**](#options-24)
 - [`surveilr orchestrate`](#surveilr-orchestrate)
         - [**Subcommands:**](#subcommands-13)
-        - [**Options:**](#options-26)
+        - [**Options:**](#options-25)
 - [`surveilr orchestrate sessions`](#surveilr-orchestrate-sessions)
 - [`surveilr orchestrate notebooks`](#surveilr-orchestrate-notebooks)
-        - [**Options:**](#options-27)
+        - [**Options:**](#options-26)
 - [`surveilr orchestrate transform-csv`](#surveilr-orchestrate-transform-csv)
-        - [**Options:**](#options-28)
+        - [**Options:**](#options-27)
 - [`surveilr orchestrate transform-html`](#surveilr-orchestrate-transform-html)
-        - [**Options:**](#options-29)
+        - [**Options:**](#options-28)
 - [`surveilr orchestrate transform-xml`](#surveilr-orchestrate-transform-xml)
-        - [**Options:**](#options-30)
+        - [**Options:**](#options-29)
 - [`surveilr orchestrate transform-markdown`](#surveilr-orchestrate-transform-markdown)
+- [`surveilr doctor`](#surveilr-doctor)
+- [`surveilr shell`](#surveilr-shell)
+        - [**Arguments:**](#arguments)
+        - [**Options:**](#options-30)
 
 ## `surveilr`
 
@@ -107,10 +111,10 @@ This document contains the help content for the `surveilr` command-line program.
 * `notebooks` — Notebooks maintenance utilities
 * `web-ui` — Configuration to start the SQLPage webserver
 * `udi` — Universal Data Infrastructure
-* `anonymize` — PII and PHI Deidentification StrategSerialize
 * `upgrade` — Update `surveilr` to latest or specific version
 * `orchestrate` — Enable RSSDs to execute SQL-based validation and log "issues," "warnings," and other notifications into the orchestration tables
 * `doctor` — Print out the versions of external dependencies that `surveilr` uses on the current host
+* `shell` — Execute `sqlite3` and `duckdb` commands directly with unopinionated and very lightweight logging. This command is the generalized version of `orchestrate`
 
 ###### **Options:**
 
@@ -798,21 +802,6 @@ execute osquery on remote hosts
 
 
 
-## `surveilr anonymize`
-
-PII and PHI Deidentification StrategSerialize
-
-**Usage:** `surveilr anonymize [OPTIONS] --sql <SQL>`
-
-###### **Options:**
-
-* `-d`, `--state-db-fs-path <STATE_DB_FS_PATH>` — target SQLite database
-
-  Default value: `resource-surveillance.sqlite.db`
-* `-s`, `--sql <SQL>` — Path to SQL Script to deidentify data
-
-
-
 ## `surveilr upgrade`
 
 Update `surveilr` to latest or specific version
@@ -963,4 +952,52 @@ Resource transformation utilities for CSV data stored in the RSSD
 ## `surveilr orchestrate transform-markdown`
 
 **Usage:** `surveilr orchestrate transform-markdown`
+
+
+
+## `surveilr doctor`
+
+Print out the versions of external dependencies that `surveilr` uses on the current host
+
+**Usage:** `surveilr doctor`
+
+
+
+## `surveilr shell`
+
+Execute `sqlite3` and `duckdb` commands directly with unopinionated and very lightweight logging. This command is the generalized version of `orchestrate`
+
+**Usage:** `surveilr shell [OPTIONS] [SCRIPTS]...`
+
+###### **Arguments:**
+
+* `<SCRIPTS>` — SQL scripts to execute (file paths or URLs)
+
+###### **Options:**
+
+* `-d`, `--state-db-fs-path <STATE_DB_FS_PATH>` — target SQLite database
+
+  Default value: `resource-surveillance.sqlite.db`
+* `--engine <ENGINE>` — Perform all SQL executions with this shell. Defaults to `rusqlite`(which is also sqlite3)
+
+  Default value: `rusqlite`
+
+  Possible values: `rusqlite`, `duckdb`, `rhai`
+
+* `--cmd <CMD>` — run "COMMAND" before reading stdin
+* `--no-observability` — skip logging. shell executions are logged in `orchestration_*`` related tables
+
+  Default value: `false`
+
+  Possible values: `true`, `false`
+
+
+
+
+<hr/>
+
+<small><i>
+    This document was generated automatically by
+    <a href="https://crates.io/crates/clap-markdown"><code>clap-markdown</code></a>.
+</i></small>
 
