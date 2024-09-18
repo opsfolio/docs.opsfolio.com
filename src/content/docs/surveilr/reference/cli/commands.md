@@ -991,6 +991,12 @@ Execute `sqlite3` and `duckdb` commands directly with unopinionated and very lig
 
   Possible values: `true`, `false`
 
+* `--output <OUTPUT>` — Return the output of the last SQL statement in JSON
+
+  Default value: `json`
+
+  Possible values: `json`, `line`, `table`
+
 
 
 
