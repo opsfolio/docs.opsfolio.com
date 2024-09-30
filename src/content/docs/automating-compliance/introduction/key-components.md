@@ -110,7 +110,7 @@ graph TD;
     B --> E[Firewalls]
     B --> F[Intrusion Detection Systems]
     B --> G[Encryption]
-    B --> H[Access Control Mechanisms]
+    B --> H[Access Control Mechanisms] 
     C --> I[Policies and Procedures]
     C --> J[Risk Assessments]
     C --> K[Training Programs]
@@ -214,7 +214,8 @@ graph TD;
 ---
 
 [^1]: "System and Organization Controls," Wikipedia, accessed July 29, 2024, https://en.wikipedia.org/wiki/System_and_Organization_Controls#Trust_Service_Criteria
-[^2]: "What are 6 types of common controls and why do you need them?," Trust Community, accessed July 23, 2024, https://community.trustcloud.ai/docs/grc-launchpad/grc-101/compliance/what-are-common-controls-and-why-do-you-need-one.
+[^2]: Haber, Morey J., Brian Chappell, and Christopher Hills. 2022. “Regulatory Compliance.” In Apress eBooks, 297–373. https://doi.org/10.1007/978-1-4842-8236-6_8.
+<!-- [^2]: "What are 6 types of common controls and why do you need them?," Trust Community, accessed July 23, 2024, https://community.trustcloud.ai/docs/grc-launchpad/grc-101/compliance/what-are-common-controls-and-why-do-you-need-one. -->
 [^3]: "Technical Controls — Cybersecurity Resilience," Resilient Energy Platform, accessed July 23, 2024, https://resilient-energy.org/cybersecurity-resilience/building-blocks/technical-controls 
 [^4]: Michael Swanagan, "Types Of Security Controls Explained," PurpleSec,s published December 07, 2023, https://purplesec.us/security-controls/#Admin
 [^5]: Michael Swanagan, "Types Of Security Controls Explained," PurpleSec, published December 07, 2023, https://purplesec.us/security-controls/#Physical
