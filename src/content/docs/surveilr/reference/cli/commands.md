@@ -991,6 +991,16 @@ Execute `sqlite3` and `duckdb` commands directly with unopinionated and very lig
 
   Possible values: `true`, `false`
 
+* `--output <OUTPUT>` — Return the output of the last SQL statement in JSON
+
+  Default value: `json`
+
+  Possible values: `json`, `line`, `table`
+
+* `--import-env <IMPORT_ENV>` — Import environment variables to place into the `session_state_ephemeral` table. Pass `.*` to import all env variables or any regular expression to determine which env vars are imported
+* `--session-state-table-name <SESSION_STATE_TABLE_NAME>` — A Special argument to override the name of `session_state_ephemeral`
+
+  Default value: `session_state_ephemeral`
 
 
 
