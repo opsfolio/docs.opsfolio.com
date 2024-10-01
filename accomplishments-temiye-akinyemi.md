@@ -24,7 +24,9 @@
 
 ### August 31, 2024 to September 31, 2024 
 
+- b9c11d8 - chore: added references and footnotes (2024-09-30)
+- 4c938fb - docs(app): improved cap-exec explanation (2024-09-11)
 - a746f09 - fix: fixed merge conflict (2024-09-11)
 - 17b68e3 - docs: updated roadmap (2024-09-11)
 - 057064f - fix: fixed invalid links (2024-08-31)
-- 38b1cde - fix: fixed broken links (2024-08-31)
+- 38b1cde - fix: fixed broken links (2024-08-31) 
