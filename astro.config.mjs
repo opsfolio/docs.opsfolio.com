@@ -311,7 +311,7 @@ export default defineConfig({
           ],
         },
         {
-          label: "Resource Surveillance",
+          label: "Evidence Warehouse",
           items: [
             {
               label: "Getting Started",
