@@ -10,9 +10,9 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.3",
-    "@astrojs/starlight": "^0.28.2",
-    "astro": "^4.15.9",
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/starlight": "^0.28.3",
+    "astro": "^4.16.2",
     "astro-page-insight": "^0.6.3",
     "playwright": "^1.45.1",
     "remark-mermaidjs": "^6.0.0",
