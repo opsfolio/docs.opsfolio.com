@@ -14,10 +14,18 @@ export default defineConfig({
     starlight({
       title: "Opsfolio Docs",
       customCss: ["./src/assets/css/custom.css"],
-      social: {
-        github: "https://github.com/opsfolio/releases.opsfolio.com",
-        discord: "https://discord.gg/TbfdKMDY",
-      },
+      social: [
+        {
+          icon: "github",
+          label: "GitHub",
+          href: "https://github.com/opsfolio/releases.opsfolio.com",
+        },
+        {
+          icon: "discord",
+          label: "Discord",
+          href: "https://discord.gg/TbfdKMDY",
+        },
+      ],
       sidebar: [
         {
           label: "Understanding Compliance Processes for Technical Staff",
