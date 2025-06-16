@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
-    "@astrojs/starlight": "^0.34.3",
-    "astro": "^5.8.1",
+    "@astrojs/starlight": "^0.34.4",
+    "astro": "^5.9.3",
     "astro-page-insight": "^0.6.3",
     "playwright": "^1.45.1",
     "remark-mermaidjs": "^6.0.0",
