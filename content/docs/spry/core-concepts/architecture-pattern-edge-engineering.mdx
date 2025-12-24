@@ -1,0 +1,338 @@
+---
+title: Edge-Based Engineering Architecture Patterns
+description: Comprehensive guide to architectural patterns, design principles, and implementation strategies for edge computing systems.
+icon: Network
+index: 11
+---
+
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+## Introduction
+
+Edge-based engineering represents a fundamental paradigm shift in distributed systems architecture. Unlike traditional cloud architecture which follows a "center-out" model, edge-based engineering adopts an "edge-in" approach that prioritizes local autonomy, smart persistence, and resilience under constraint.
+
+The **edge** refers to computing that happens physically close to the data source—medical devices, smartphones, factory sensors, or local servers—rather than in centralized cloud infrastructure. This proximity enables systems that are faster, more private, and more reliable than cloud-only models.
+
+### Core Challenges
+
+Edge-based systems must solve three primary distributed systems challenges:
+
+- **Latency**: Minimize response time by processing data locally
+- **Intermittent Connectivity**: Maintain full functionality during network disruptions  
+- **Massive Data Volume**: Handle large-scale data with limited hardware resources
+
+---
+
+## Architectural Paradigm: From ETL to SQL-First ELT
+
+### Traditional ETL (Legacy Approach)
+
+**Workflow**: Data is extracted, transformed using external scripts (Python, Spark, Java), then loaded into storage.
+
+**Edge Challenges**:
+- Requires significant middleware on constrained devices
+- Complex, opaque transformation logic makes debugging difficult in remote locations
+- Poor data lineage and reproducibility
+- Heavy resource requirements unsuitable for edge hardware
+
+### SQL-First ELT (Modern Edge Standard)
+
+**Workflow**: Raw data is loaded immediately into a local engine. All transformations happen afterward using SQL inside the database.
+
+**Key Advantages**:
+- **Portability**: SQL files + raw data = complete database state reproducible anywhere
+- **Transparency**: Transformation logic is the "source of truth" alongside the data
+- **Universality**: SQL is widely understood and standardized
+- **Simplicity**: Reduces dependency on external tooling and middleware
+
+Tools like surveilr use this approach to ensure deterministic, reproducible data pipelines at the edge.
+
+---
+
+## Core Data Engineering Patterns
+
+### The LTP Pattern (Load → Transform → Persist)
+
+LTP is a specialized, high-efficiency variant of ELT optimized for constrained environments and "local-first" software.
+
+<Steps>
+<Step key="load">
+### Load
+
+Ingest raw data (CSV, Parquet, JSON) into a transient, high-speed in-memory layer (typically DuckDB).
+
+```sql
+-- Load raw data into DuckDB
+CREATE TABLE raw_data AS 
+SELECT * FROM read_csv_auto('sensor_data.csv');
+```
+
+This phase prioritizes speed and flexibility over persistence.
+</Step>
+
+<Step key="transform">
+### Transform
+
+Perform heavy computations—window functions, joins, aggregations—entirely in memory where operations are fastest.
+
+```sql
+-- Complex analytical transformation
+WITH windowed_data AS (
+    SELECT 
+        timestamp,
+        sensor_id,
+        value,
+        AVG(value) OVER (
+            PARTITION BY sensor_id 
+            ORDER BY timestamp 
+            ROWS BETWEEN 10 PRECEDING AND CURRENT ROW
+        ) AS moving_avg
+    FROM raw_data
+)
+SELECT * FROM windowed_data WHERE value > moving_avg * 1.2;
+```
+
+Execute complex analytical queries without disk I/O overhead.
+</Step>
+
+<Step key="persist">
+### Persist
+
+Write only the final, curated results to permanent, lightweight disk-based storage (typically SQLite).
+
+```sql
+-- Persist refined results to SQLite
+ATTACH 'sensor_analytics.db' AS sqlite_db (TYPE SQLITE);
+
+INSERT INTO sqlite_db.sensor_alerts 
+SELECT * FROM windowed_data WHERE value > moving_avg * 1.2;
+```
+
+Only store what end-users or dashboards actually need to see.
+</Step>
+</Steps>
+
+#### Strategic Advantages
+
+- **Prevents Database Bloat**: Massive raw files remain outside the operational database
+- **Performance**: Edge devices stay fast and responsive by avoiding unnecessary disk I/O
+- **Efficiency**: Only store what end-users or dashboards actually need to see
+- **Resource Optimization**: Ideal for constrained hardware environments
+
+---
+
+### The Multi-Engine Strategy (DuckDB + SQLite)
+
+Sophisticated edge architectures leverage different database engines for different lifecycle stages:
+
+| Engine | Role | Strengths | Use Case |
+|--------|------|-----------|----------|
+| **DuckDB** | The Processor (Transform) | Columnar-vectorized execution; processes millions of rows in milliseconds | Heavy analytical workloads, complex transformations, combining fragmented datasets |
+| **SQLite** | The Store (Persist) | Row-oriented; extremely stable and reliable | State management, serving final views to UIs, long-term persistence |
+
+**Integration Pattern**: DuckDB crunches massive raw datasets and streams refined results directly into SQLite for permanent storage and application access.
+
+<Callout type="info" title="Video Resource">
+This video provides an excellent visual walkthrough of the specific "Multi-Engine" approach where DuckDB is used to query and transform data directly from SQLite files:
+[**Querying SQLite with DuckDB**](https://www.youtube.com/watch?v=ogge3kmm_2g)
+</Callout>
+
+---
+
+### Dynamic SQL via JSON Pattern
+
+This pattern enables schema-agnostic, adaptive data pipelines that work across varying data structures without code changes.
+
+#### Core DuckDB Functions
+
+```sql
+-- Convert SQL string to structured JSON AST
+json_serialize_sql(string)
+
+-- Convert JSON AST back to valid SQL
+json_deserialize_sql(json)
+
+-- Execute logic from JSON AST directly
+json_execute_serialized_sql(json)
+```
+
+#### Implementation Workflow
+
+<Steps>
+<Step key="attach-db">
+### Attach persistent SQLite database
+
+```sql
+ATTACH 'persistent_store.db' AS sqlite_db (TYPE SQLITE);
+```
+
+Enables DuckDB to write directly to the final destination.
+</Step>
+
+<Step key="define-mapping">
+### Define dynamic mapping logic
+
+```sql
+WITH mapping_logic AS (
+    SELECT 
+        printf(
+            'INSERT INTO sqlite_db.target_table 
+             SELECT %s AS standard_col1, %s AS standard_col2 
+             FROM read_csv_auto(''raw_source.csv'')',
+            'input_field_a',
+            'input_field_b'
+        ) AS generated_query
+)
+```
+
+Creates SQL string by matching dynamic input fields to standard target fields.
+</Step>
+
+<Step key="execute-validated">
+### Execute with validation
+
+```sql
+SELECT * FROM json_execute_serialized_sql(
+    json_serialize_sql((SELECT generated_query FROM mapping_logic))
+);
+```
+
+Serializes to JSON first to ensure structural integrity, then executes.
+</Step>
+</Steps>
+
+#### Pattern Benefits
+
+- **Schema Agnosticism**: Handle datasets with 5 or 500 columns using the same script
+- **Security**: Query structure validation before execution reduces injection risks
+- **Efficiency**: Eliminates intermediate application layers (Python, Node.js)
+- **Generic Data Hub**: Supports Parquet, CSV, JSON inputs with automatic mapping
+
+---
+
+## Infrastructure Patterns
+
+### The Hybrid Edge-Cloud Pattern
+
+No edge device operates in complete isolation. This pattern defines intelligent interaction between edge and cloud.
+
+**Workload Partitioning**:
+- **Edge**: Real-time, safety-critical tasks (e.g., emergency shutdowns based on sensor data)
+- **Cloud**: Long-term trend analysis, ML model training, historical analytics
+
+**Gated Ingress/Egress**:
+- Data sent to cloud in controlled "bursts" or "summaries"
+- Reduces bandwidth consumption and maintains security
+- Prevents continuous streaming of raw data
+
+### The Hub-and-Spoke Pattern
+
+Common in large facilities like hospitals, factories, or distributed sensor networks.
+
+**Architecture**:
+- **Spokes**: Individual sensors or low-power IoT devices (e.g., CGM sensors, temperature monitors)
+- **Hub**: More powerful local gateway or edge server
+
+**Mechanism**:
+- Hub collects data from multiple spokes
+- Performs LTP processing locally
+- Provides unified API or dashboard for the location
+- Acts as intermediary between spokes and cloud
+
+---
+
+## Key Design Principles
+
+| Principle | Description | Edge Importance |
+|-----------|-------------|-----------------|
+| **Deterministic Rebuilds** | Ability to recreate database from raw files + SQL scripts | Essential for disaster recovery in remote sites where backups might fail |
+| **Idempotency** | Running the same task twice doesn't create duplicate data | Prevents data corruption during intermittent network reconnects |
+| **Multi-Engine Tiering** | Different engines for processing vs. storage (DuckDB + SQLite) | Optimizes limited CPU and RAM on edge hardware |
+| **Zero Trust Networking** | Treat local network as potentially compromised | Ensures medical/industrial data remains encrypted even if local network is breached |
+| **Local-First Autonomy** | System remains fully functional without internet | Critical for safety systems and continuous operations |
+| **Zero-Copy Integration** | Engines share memory (e.g., DuckDB reading Arrow buffers) | Avoids overhead of moving data between processes |
+
+---
+
+## Real-World Application: Medical Data Processing
+
+These patterns solve concrete problems in healthcare edge computing:
+
+<Steps>
+<Step key="privacy">
+### Patient Privacy
+
+Using LTP, raw patient files are processed locally on their device. Only anonymized metrics are persisted, ensuring sensitive data never leaves the edge.
+
+```sql
+-- Process locally, persist only anonymized results
+WITH patient_metrics AS (
+    SELECT 
+        hash(patient_id) AS anon_id,
+        AVG(glucose_level) AS avg_glucose,
+        date
+    FROM raw_cgm_data
+    GROUP BY patient_id, date
+)
+INSERT INTO metrics SELECT * FROM patient_metrics;
+```
+</Step>
+
+<Step key="performance">
+### Performance
+
+DuckDB handles "Combined CGM Tracing" operations on millions of glucose data rows in milliseconds—operations too slow for SQLite alone.
+
+```sql
+-- Process millions of rows in-memory
+SELECT 
+    timestamp,
+    glucose_value,
+    LEAD(glucose_value) OVER (ORDER BY timestamp) - glucose_value AS delta
+FROM read_parquet('cgm_data/*.parquet')
+WHERE patient_id = ?;
+```
+</Step>
+
+<Step key="compliance">
+### Compliance
+
+Zero Trust Networking ensures HIPAA-compliant data handling even on compromised local networks.
+
+All data encrypted at rest and in transit, even within the local network perimeter.
+</Step>
+
+<Step key="reliability">
+### Reliability
+
+Deterministic rebuilds enable disaster recovery on medical devices in remote clinics without reliable cloud backup.
+
+</Step>
+</Steps>
+
+---
+
+## Implementation in Spry
+
+The Spry project exemplifies these patterns:
+
+- **SQL-First ELT**: All transformation logic in portable SQL
+- **LTP Pattern**: DuckDB for processing, SQLite for persistence  
+- **Multi-Engine**: Leverages strengths of both database systems
+- **Dynamic SQL**: Schema-agnostic processing of varying CGM data formats
+- **Local-First**: Full functionality without internet connectivity
+- **Privacy-Preserving**: Sensitive patient data processed locally
+
+---
+
+## Summary
+
+Edge-based engineering isn't about deploying "smaller servers"—it's about fundamentally smarter architectural patterns. By shifting from ETL to SQL-First ELT/LTP and leveraging multi-engine strategies, we build systems that are:
+
+- **Faster**: Local processing eliminates network latency
+- **More Private**: Sensitive data processed and stored locally
+- **More Reliable**: Function independently of cloud connectivity
+- **More Efficient**: Optimized for constrained hardware resources
+- **More Maintainable**: SQL-based transformations are portable and transparent
+
+These patterns represent the future of distributed systems architecture, enabling powerful computing capabilities at the network edge where data originates and decisions must be made in real-time.

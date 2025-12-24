@@ -1,0 +1,693 @@
+---
+title: Configuration
+description: Configure Spry and SQLPage for your project
+icon: Settings
+index: 0
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+
+## Overview
+
+Spry uses YAML frontmatter, environment variables, and cell-level options to configure applications. This reference covers all available configuration options and best practices.
+
+<Callout type="info">
+**Configuration Layers**
+
+Spry's configuration system is hierarchical: command-line arguments override environment variables, which override frontmatter, which override defaults. This flexibility lets you develop locally and deploy to different environments seamlessly.
+</Callout>
+
+## Frontmatter
+
+Document-level configuration uses YAML frontmatter at the top of Spryfiles.
+
+### Basic Syntax
+
+```yaml
+---
+key: value
+nested:
+  subkey: value
+---
+```
+
+<Callout>
+**Frontmatter Must Be First**
+
+YAML frontmatter must appear at the very beginning of your Spryfile, before any content. It's delimited by `---` markers on both ends.
+</Callout>
+
+## SQLPage Configuration
+
+Configure SQLPage applications with the `sqlpage-conf` key in frontmatter.
+
+### Complete Example
+
+```yaml
+---
+sqlpage-conf:
+  database_url: ${env.SPRY_DB}
+  web_root: ./dev-src.auto
+  port: ${env.PORT}
+  allow_exec: true
+  max_uploaded_file_size: 10485760
+  compress_responses: true
+---
+```
+
+### Available Options
+
+<div className="overflow-x-auto my-6">
+  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+    <thead className="bg-gray-50 dark:bg-gray-800">
+      <tr>
+        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Option</th>
+        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Type</th>
+        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Description</th>
+      </tr>
+    </thead>
+    <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+      <tr>
+        <td className="px-4 py-3 text-sm font-mono text-blue-600 dark:text-blue-400">database_url</td>
+        <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">string</td>
+        <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">Database connection URL</td>
+      </tr>
+      <tr>
+        <td className="px-4 py-3 text-sm font-mono text-blue-600 dark:text-blue-400">web_root</td>
+        <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">string</td>
+        <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">Web content directory</td>
+      </tr>
+      <tr>
+        <td className="px-4 py-3 text-sm font-mono text-blue-600 dark:text-blue-400">port</td>
+        <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">number/string</td>
+        <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">Server port</td>
+      </tr>
+      <tr>
+        <td className="px-4 py-3 text-sm font-mono text-blue-600 dark:text-blue-400">listen_on</td>
+        <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">string</td>
+        <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">Listen address (PostgreSQL)</td>
+      </tr>
+      <tr>
+        <td className="px-4 py-3 text-sm font-mono text-blue-600 dark:text-blue-400">allow_exec</td>
+        <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">boolean</td>
+        <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">Allow exec component</td>
+      </tr>
+      <tr>
+        <td className="px-4 py-3 text-sm font-mono text-blue-600 dark:text-blue-400">max_uploaded_file_size</td>
+        <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">number</td>
+        <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">Max upload size in bytes</td>
+      </tr>
+      <tr>
+        <td className="px-4 py-3 text-sm font-mono text-blue-600 dark:text-blue-400">compress_responses</td>
+        <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">boolean</td>
+        <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">Enable gzip compression</td>
+      </tr>
+      <tr>
+        <td className="px-4 py-3 text-sm font-mono text-blue-600 dark:text-blue-400">https_domain</td>
+        <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">string</td>
+        <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">HTTPS domain for certificates</td>
+      </tr>
+      <tr>
+        <td className="px-4 py-3 text-sm font-mono text-blue-600 dark:text-blue-400">environment</td>
+        <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">string</td>
+        <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">Environment name</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+### Database URL Formats
+
+<Tabs items={['SQLite', 'PostgreSQL']}>
+  <Tab value="SQLite">
+    **Relative Path:**
+    ```yaml
+    database_url: sqlite://app.db?mode=rwc
+    ```
+
+    **Absolute Path:**
+    ```yaml
+    database_url: sqlite:///absolute/path/to/app.db?mode=rwc
+    ```
+
+    **Common Options:**
+    - `mode=rwc` - Read, write, create if not exists
+    - `mode=rw` - Read and write only (no create)
+    - `mode=ro` - Read-only
+    - `cache=shared` - Enable shared cache
+  </Tab>
+
+  <Tab value="PostgreSQL">
+    **Basic Connection:**
+    ```yaml
+    database_url: postgresql://user:pass@host:5432/database
+    ```
+
+    **With Environment Variables:**
+    ```yaml
+    database_url: postgres://${env.PGUSER}:${env.PGPASSWORD}@${env.PGHOST}/${env.PGDATABASE}
+    ```
+
+    **Connection Parameters:**
+    ```yaml
+    database_url: postgresql://user:pass@host:5432/db?sslmode=require&connect_timeout=10
+    ```
+
+    **Common Options:**
+    - `sslmode=require` - Require SSL connection
+    - `connect_timeout=10` - Connection timeout in seconds
+    - `application_name=myapp` - Application identifier
+  </Tab>
+</Tabs>
+
+<Callout type="warning">
+**Security Note**
+
+Never commit database passwords directly in your Spryfile. Always use environment variables with `${env.VARIABLE}` syntax.
+</Callout>
+
+## Environment Variables
+
+Environment variables provide secure, flexible configuration across different environments.
+
+### Interpolation Syntax
+
+Use `${env.VARIABLE_NAME}` to interpolate environment variables anywhere in frontmatter:
+
+```yaml
+---
+sqlpage-conf:
+  database_url: ${env.DATABASE_URL}
+  port: ${env.PORT}
+  api_key: ${env.API_KEY}
+---
+```
+
+### Common Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `SPRY_DB` | Database connection URL | `sqlite://app.db?mode=rwc` |
+| `PORT` | Server port | `9227` |
+| `DATABASE_URL` | Alternative database URL | `postgres://localhost/db` |
+| `GITHUB_TOKEN` | For remote imports | `ghp_xxxxxxxxxxxxx` |
+
+### Setting Variables
+
+<Tabs items={['direnv', 'Manual', 'Spry-Generated']}>
+  <Tab value="direnv">
+    **Using direnv (.envrc):**
+
+    Create `.envrc` file:
+    ```bash
+    # .envrc
+    export SPRY_DB="sqlite://app.db?mode=rwc"
+    export PORT=9227
+    export API_KEY="your-secret-key"
+    ```
+
+    Enable direnv:
+    ```bash
+    direnv allow
+    ```
+
+    Variables automatically load when entering the directory!
+  </Tab>
+
+  <Tab value="Manual">
+    **Manual Export:**
+
+    ```bash
+    export SPRY_DB="sqlite://app.db?mode=rwc"
+    export PORT=9227
+    source .envrc  # Or export individually
+    ```
+
+    **In CI/CD:**
+    ```bash
+    # GitHub Actions
+    env:
+      SPRY_DB: ${{ secrets.SPRY_DB }}
+      PORT: 9227
+    ```
+
+    **Docker:**
+    ```dockerfile
+    ENV SPRY_DB="sqlite://app.db?mode=rwc"
+    ENV PORT=9227
+    ```
+  </Tab>
+
+  <Tab value="Spry-Generated">
+    **Generate with Spry:**
+
+    In your Spryfile:
+    ````markdown
+    ```envrc prepare-env -C ./.envrc --gitignore
+    export SPRY_DB="sqlite://app.db?mode=rwc"
+    export PORT=9227
+    export API_KEY="generated-key"
+    ```
+    ````
+
+    Run the task:
+    ```bash
+    spry rb task prepare-env
+    ```
+
+    This creates `.envrc` and adds it to `.gitignore` automatically!
+  </Tab>
+</Tabs>
+
+<Callout type="success">
+**Best Practice: direnv**
+
+We highly recommend using [direnv](https://direnv.net/) for automatic environment variable management. It loads variables when you `cd` into your project and unloads them when you leave.
+</Callout>
+
+## Custom Metadata
+
+Add arbitrary metadata for custom processing, documentation, or workflow management.
+
+### Project Metadata
+
+```yaml
+---
+project:
+  name: My Application
+  version: 1.0.0
+  author: Your Name
+  repository: https://github.com/user/repo
+  
+deployment:
+  environment: production
+  region: us-east-1
+  cdn: cloudflare
+---
+```
+
+### Use Cases
+
+<Cards>
+  <Card title="Documentation Generation">
+    Extract project info for README generation and API docs
+  </Card>
+  
+  <Card title="Deployment Automation">
+    Use metadata to route deployments to correct environments
+  </Card>
+  
+  <Card title="Compliance Tracking">
+    Track audit requirements and test status
+  </Card>
+  
+  <Card title="Custom Workflows">
+    Build domain-specific automation based on metadata
+  </Card>
+</Cards>
+
+## Specialized Configurations
+
+### Runbook Configuration
+
+For DevOps automation and executable runbooks:
+
+```yaml
+---
+runbook:
+  name: Server Maintenance
+  version: 1.0.0
+  author: DevOps Team
+  timeout: 3600
+  retry: 3
+  notify:
+    - ops@example.com
+---
+```
+
+**Fields:**
+- `name` - Runbook identifier
+- `version` - Semantic version
+- `author` - Owner or team
+- `timeout` - Maximum execution time (seconds)
+- `retry` - Number of retry attempts
+- `notify` - Email addresses for notifications
+
+### Data Quality Configuration
+
+For data validation and quality checks:
+
+```yaml
+---
+dq:
+  dataset: users
+  severity: error
+  threshold: 0.95
+  notify:
+    - data-team@example.com
+  schedule: "0 2 * * *"
+---
+```
+
+**Fields:**
+- `dataset` - Dataset identifier
+- `severity` - `error`, `warning`, or `info`
+- `threshold` - Quality score threshold (0-1)
+- `notify` - Alert recipients
+- `schedule` - Cron expression for automated runs
+
+### Compliance Configuration
+
+For audit and compliance tracking:
+
+```yaml
+---
+doc-classify:
+  role: evidence
+  framework: SOC2
+  control: CC6.1
+  status: pending
+  last_review: 2025-01-15
+  reviewer: security@example.com
+---
+```
+
+**Fields:**
+- `role` - Document role (`evidence`, `policy`, `procedure`)
+- `framework` - Compliance framework (`SOC2`, `CMMC`, `ISO27001`)
+- `control` - Specific control identifier
+- `status` - `pending`, `passed`, `failed`
+- `last_review` - ISO date of last review
+- `reviewer` - Reviewer email
+
+<Callout type="info">
+**Extensible Metadata**
+
+These are examples - you can define any frontmatter structure that suits your workflow. Access custom metadata in projections and custom code.
+</Callout>
+
+## Cell Options
+
+Cell-level options configure individual code blocks.
+
+### Task Options
+
+<div className="overflow-x-auto my-6">
+  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+    <thead className="bg-gray-50 dark:bg-gray-800">
+      <tr>
+        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Option</th>
+        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Syntax</th>
+        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Description</th>
+      </tr>
+    </thead>
+    <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+      <tr>
+        <td className="px-4 py-3 text-sm font-semibold">Description</td>
+        <td className="px-4 py-3 text-sm font-mono text-purple-600 dark:text-purple-400">--descr "text"</td>
+        <td className="px-4 py-3 text-sm">Human-readable description</td>
+      </tr>
+      <tr>
+        <td className="px-4 py-3 text-sm font-semibold">Dependencies</td>
+        <td className="px-4 py-3 text-sm font-mono text-purple-600 dark:text-purple-400">--dep a,b,c</td>
+        <td className="px-4 py-3 text-sm">Required tasks (comma-separated)</td>
+      </tr>
+      <tr>
+        <td className="px-4 py-3 text-sm font-semibold">Silent</td>
+        <td className="px-4 py-3 text-sm font-mono text-purple-600 dark:text-purple-400">--silent</td>
+        <td className="px-4 py-3 text-sm">Suppress output</td>
+      </tr>
+      <tr>
+        <td className="px-4 py-3 text-sm font-semibold">Capture</td>
+        <td className="px-4 py-3 text-sm font-mono text-purple-600 dark:text-purple-400">-C &lt;path&gt;</td>
+        <td className="px-4 py-3 text-sm">Write output to file</td>
+      </tr>
+      <tr>
+        <td className="px-4 py-3 text-sm font-semibold">Git Ignore</td>
+        <td className="px-4 py-3 text-sm font-mono text-purple-600 dark:text-purple-400">--gitignore</td>
+        <td className="px-4 py-3 text-sm">Add output to .gitignore</td>
+      </tr>
+      <tr>
+        <td className="px-4 py-3 text-sm font-semibold">Graph</td>
+        <td className="px-4 py-3 text-sm font-mono text-purple-600 dark:text-purple-400">--graph &lt;name&gt;</td>
+        <td className="px-4 py-3 text-sm">Assign to named graph</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**Example:**
+````markdown
+```bash build-app --descr "Build production bundle" --dep test,lint -C ./dist/output.log --gitignore
+npm run build
+```
+````
+
+### SQLPage Cell Options
+
+Add route metadata as JSON attributes:
+
+````markdown
+```sql page.sql { route: { caption: "Dashboard", description: "Main dashboard view" } }
+SELECT 'card' AS component;
+```
+````
+
+**Route Attributes:**
+
+| Attribute | Description | Example |
+|-----------|-------------|---------|
+| `caption` | Navigation title | `"Dashboard"` |
+| `description` | Page description | `"Main dashboard view"` |
+| `path` | Custom route path | `"/admin/users"` |
+| `virtual` | Hide from navigation | `true` |
+
+### Directive Options
+
+#### PARTIAL Directive
+
+Inject shared content into multiple pages:
+
+````markdown
+```sql PARTIAL global-layout.sql --inject **/*.sql
+SELECT 'shell' AS component, 'My App' AS title;
+```
+````
+
+**Options:**
+- `--inject <glob>` - Pattern of files to inject into (supports `**` for recursive)
+
+#### Import Directive
+
+Import code from external files:
+
+````markdown
+```import --base ./lib --spc
+sql database-schema.sql HEAD
+sql seed-data.sql TAIL
+```
+````
+
+**Options:**
+- `--base <path>` - Base directory for relative imports
+- `--spc` - Include in SQLPage content generation
+
+<Callout>
+**Directive Placement**
+
+Directives like `PARTIAL` and `import` are processed during the build phase and affect how other cells are generated or combined.
+</Callout>
+
+## Configuration Precedence
+
+When the same setting is defined in multiple places, Spry uses this priority order:
+
+<div className="my-8">
+  <div className="flex flex-col space-y-3">
+    <div className="p-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 rounded">
+      <div className="font-bold text-red-900 dark:text-red-200">1. Command-line arguments</div>
+      <div className="text-sm text-red-800 dark:text-red-300">Highest priority - always wins</div>
+    </div>
+    
+    <div className="text-center text-2xl">↓</div>
+    
+    <div className="p-4 bg-orange-50 dark:bg-orange-900/20 border-l-4 border-orange-500 rounded">
+      <div className="font-bold text-orange-900 dark:text-orange-200">2. Environment variables</div>
+      <div className="text-sm text-orange-800 dark:text-orange-300">From .envrc, shell exports, or CI/CD</div>
+    </div>
+    
+    <div className="text-center text-2xl">↓</div>
+    
+    <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 rounded">
+      <div className="font-bold text-blue-900 dark:text-blue-200">3. Frontmatter in Spryfile</div>
+      <div className="text-sm text-blue-800 dark:text-blue-300">YAML configuration at document top</div>
+    </div>
+    
+    <div className="text-center text-2xl">↓</div>
+    
+    <div className="p-4 bg-gray-50 dark:bg-gray-800 border-l-4 border-gray-500 rounded">
+      <div className="font-bold text-gray-900 dark:text-gray-200">4. Default values</div>
+      <div className="text-sm text-gray-600 dark:text-gray-400">Lowest priority - built-in defaults</div>
+    </div>
+  </div>
+</div>
+
+**Example:**
+```bash
+# Environment variable
+export PORT=8080
+
+# Frontmatter says
+# port: 9227
+
+# Command-line argument wins
+spry sp spc --port 3000  # Uses 3000
+```
+
+## Validation
+
+Spry validates all configuration using Zod schemas, providing clear error messages for issues.
+
+### Validation Errors
+
+When configuration is invalid, you'll see detailed error messages:
+
+```
+Error: Invalid frontmatter in Spryfile.md
+
+Issues found:
+  - sqlpage-conf.port: Expected number, received string "abc"
+  - sqlpage-conf.database_url: Required field missing
+  - sqlpage-conf.max_uploaded_file_size: Must be positive integer
+```
+
+### Check for Issues
+
+Validate your Spryfile before running:
+
+```bash
+# Check for configuration issues
+spry rb issues
+
+# Validate specific file
+spry rb issues path/to/Spryfile.md
+
+# JSON output for CI/CD
+spry rb issues --format json
+```
+
+**Example Output:**
+```json
+{
+  "issues": [
+    {
+      "severity": "error",
+      "location": "frontmatter.sqlpage-conf.port",
+      "message": "Expected number, received string",
+      "file": "Spryfile.md"
+    }
+  ]
+}
+```
+
+<Callout type="success">
+**Validation Best Practice**
+
+Add validation to your CI/CD pipeline to catch configuration errors before deployment:
+
+```yaml
+# .github/workflows/validate.yml
+- name: Validate Spryfile
+  run:  spry rb issues --format json
+```
+</Callout>
+
+## Common Patterns
+
+### Multi-Environment Setup
+
+Use environment-specific `.envrc` files:
+
+<Tabs items={['Development', 'Staging', 'Production']}>
+  <Tab value="Development">
+    **`.envrc.dev`**
+    ```bash
+    export SPRY_DB="sqlite://dev.db?mode=rwc"
+    export PORT=9227
+    export DEBUG=true
+    export API_URL="http://localhost:3000"
+    ```
+
+    Load: `source .envrc.dev`
+  </Tab>
+
+  <Tab value="Staging">
+    **`.envrc.staging`**
+    ```bash
+    export SPRY_DB="postgresql://user:pass@staging-db/app"
+    export PORT=9227
+    export DEBUG=false
+    export API_URL="https://api-staging.example.com"
+    ```
+
+    Load: `source .envrc.staging`
+  </Tab>
+
+  <Tab value="Production">
+    **`.envrc.production`**
+    ```bash
+    export SPRY_DB="postgresql://user:pass@prod-db/app"
+    export PORT=443
+    export DEBUG=false
+    export API_URL="https://api.example.com"
+    export HTTPS_DOMAIN="app.example.com"
+    ```
+
+    Load: `source .envrc.production`
+  </Tab>
+</Tabs>
+
+### Secrets Management
+
+Never commit secrets to git. Use environment variables:
+
+```yaml
+---
+sqlpage-conf:
+  database_url: ${env.DATABASE_URL}
+  
+api:
+  key: ${env.API_KEY}
+  secret: ${env.API_SECRET}
+---
+```
+
+**Load from vault or secrets manager:**
+```bash
+# From AWS Secrets Manager
+export API_KEY=$(aws secretsmanager get-secret-value --secret-id api-key --query SecretString --output text)
+
+# From 1Password CLI
+export API_KEY=$(op read "op://vault/api/key")
+
+# From environment file (not committed)
+source .env.secrets
+```
+
+### Configuration Templates
+
+Create template Spryfiles for common patterns:
+
+```markdown
+---
+sqlpage-conf:
+  database_url: ${env.SPRY_DB:-sqlite://app.db?mode=rwc}
+  port: ${env.PORT:-9227}
+  web_root: ${env.WEB_ROOT:-./dev-src.auto}
+---
+```
+
+The `:-` syntax provides defaults when variables aren't set.

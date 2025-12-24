@@ -1,0 +1,121 @@
+---
+title: Common Workflows
+description: Common Workflows in Spry.
+icon: Workflow
+index : 8
+---
+
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+## Development Workflow
+
+Follow these steps to set up and run your development environment:
+
+<Steps>
+<Step key="init-proj">
+### Initialize project
+
+```bash
+spry sp init
+```
+
+Initializes the project structure and dependencies.
+</Step>
+
+<Step key="live-reload">
+### Start development server with live reload
+
+```bash
+spry sp spc --fs dev-src.auto --destroy-first --conf sqlpage/sqlpage.json --watch --with-sqlpage
+```
+
+Launches a development server with automatic file watching and live reload.
+</Step>
+
+<Step key="list-task">
+### List and execute tasks as needed
+
+```bash
+spry rb task ls
+spry rb task prepare-db
+```
+
+Provides task management capabilities for database preparation and other setup tasks.
+</Step>
+</Steps>
+
+---
+
+## Deployment Workflow
+
+Deploy your application to production with these steps:
+
+<Steps>
+<Step key="clean-art">
+### Clean development artifacts
+
+```bash
+rm -rf dev-src.auto
+```
+
+Removes temporary development files.
+</Step>
+
+<Step key="deploy-db">
+### Package and deploy to database
+
+```bash
+spry sp spc --package --conf sqlpage/sqlpage.json | sqlite3 production.db
+```
+
+Packages the application and deploys it to the production database.
+</Step>
+
+<Step key="start-server">
+### Start SQLPage server
+
+```bash
+sqlpage
+```
+
+Starts the SQLPage server to serve the application.
+</Step>
+</Steps>
+
+---
+
+## Task Management Workflow
+
+Manage and execute tasks efficiently:
+
+<Steps>
+<Step key="list-task">
+### List available tasks
+
+```bash
+spry rb task ls
+```
+
+Displays all available tasks in the project.
+</Step>
+
+<Step key="spec-task">
+### Execute specific task
+
+```bash
+spry rb task my-task --verbose rich
+```
+
+Runs a specific task with detailed verbose output.
+</Step>
+
+<Step key="all-task">
+### Execute all tasks in order
+
+```bash
+spry rb run --summarize
+```
+
+Executes all tasks sequentially with a summary of results.
+</Step>
+</Steps>

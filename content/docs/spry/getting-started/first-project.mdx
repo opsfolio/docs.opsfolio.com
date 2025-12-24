@@ -1,0 +1,692 @@
+---
+title: Your First Project
+description: Build a complete Sales Dashboard application using Spry and SQLPage
+icon: Rocket
+index: 5
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+
+## Project Overview
+
+In this tutorial, you'll build a complete **Sales Dashboard** application from scratch using Spry and SQLPage. By the end, you'll have a working web application with:
+
+- **Dashboard Overview** - Key sales metrics at a glance
+- **Sales Report** - Interactive table with search and sort
+- **Regional Analysis** - Visual charts and breakdowns by region
+
+This project demonstrates the core concepts of Spry while building something practical you can extend and customize.
+
+<Callout type="info">
+**What You'll Learn**
+
+- Creating executable Markdown files (Spryfiles)
+- Setting up environment variables
+- Defining database schemas with bash scripts
+- Building SQLPage web applications
+- Using PARTIAL directives for shared layouts
+- Working with task dependencies
+</Callout>
+
+## Prerequisites
+
+Before starting, ensure you have:
+
+- **Spry** installed ([Installation Guide](/docs/getting-started/installation))
+- **SQLPage** installed (`brew install sqlpage` or [download here](https://github.com/lovasoa/SQLpage/releases))
+- **SQLite** (usually pre-installed on macOS/Linux)
+- Basic familiarity with SQL and bash
+
+<Steps>
+  <Step>
+    ## Initialize the Project
+    
+    Create a new directory and initialize a Spry project:
+
+    ```bash
+    mkdir sales-dashboard
+    cd sales-dashboard
+
+    spry sp init
+    ```
+
+    This creates the essential project files:
+    
+    | File | Purpose |
+    |------|---------|
+    | `Spryfile.md` | Your application definition (we'll replace this) |
+
+    <Callout>
+    The init command sets up a complete project structure. We'll customize the Spryfile in the next step.
+    </Callout>
+  </Step>
+
+  <Step>
+    ## Create the Spryfile
+    
+    Replace the contents of `Spryfile.md` with our sales dashboard application:
+
+    ````markdown
+    ---
+    sqlpage-conf:
+      database_url: ${env.SPRY_DB}
+      web_root: ./dev-src.auto
+      port: ${env.PORT}
+      allow_exec: true
+    ---
+
+    # Sales Dashboard Application
+
+    A simple sales tracking dashboard built with Spry and SQLPage.
+
+    ## Environment Setup
+
+    ```envrc prepare-env -C ./.envrc --gitignore --descr "Create environment configuration"
+    export SPRY_DB="sqlite://sales.db?mode=rwc"
+    export PORT=9227
+    ```
+
+    ## Database Setup
+
+    ```bash prepare-db --descr "Create and populate the sales database"
+    #!/usr/bin/env -S bash
+    rm -f sales.db
+    sqlite3 sales.db << 'SQL'
+    CREATE TABLE sales (
+      id INTEGER PRIMARY KEY,
+      product TEXT NOT NULL,
+      amount DECIMAL(10,2) NOT NULL,
+      sale_date DATE NOT NULL,
+      region TEXT NOT NULL
+    );
+
+    INSERT INTO sales (product, amount, sale_date, region) VALUES
+      ('Widget A', 150.00, '2025-01-01', 'North'),
+      ('Widget B', 250.00, '2025-01-02', 'South'),
+      ('Widget A', 175.00, '2025-01-03', 'East'),
+      ('Widget C', 300.00, '2025-01-04', 'West'),
+      ('Widget B', 225.00, '2025-01-05', 'North'),
+      ('Widget A', 180.00, '2025-01-06', 'South'),
+      ('Widget C', 320.00, '2025-01-07', 'East'),
+      ('Widget B', 240.00, '2025-01-08', 'West');
+    SQL
+    echo "Database created with $(sqlite3 sales.db 'SELECT COUNT(*) FROM sales') records"
+    ```
+
+    ## Cleanup Task
+
+    ```bash clean --descr "Remove generated files"
+    rm -rf dev-src.auto sales.db
+    ```
+
+    ## Application Layout
+
+    This partial is automatically injected into all SQL pages.
+
+    ```sql PARTIAL global-layout.sql --inject **/*
+    SELECT 'shell' AS component,
+           'Sales Dashboard' AS title,
+           'chart-line' AS icon,
+           'fluid' AS layout,
+           'index.sql' AS link,
+           '{"link":"/index.sql","title":"Home"}' AS menu_item,
+           '{"link":"/sales.sql","title":"Sales"}' AS menu_item,
+           '{"link":"/regions.sql","title":"Regions"}' AS menu_item;
+    ```
+
+    ## Home Page
+
+    ```sql index.sql { route: { caption: "Home", description: "Dashboard overview" } }
+    SELECT 'card' AS component,
+           'Sales Overview' AS title,
+           2 AS columns;
+
+    SELECT 'Total Revenue' AS title,
+           '$' || printf('%.2f', SUM(amount)) AS description,
+           'green' AS color
+    FROM sales;
+
+    SELECT 'Total Transactions' AS title,
+           COUNT(*) || ' orders' AS description,
+           'blue' AS color
+    FROM sales;
+
+    SELECT 'Average Sale' AS title,
+           '$' || printf('%.2f', AVG(amount)) AS description,
+           'orange' AS color
+    FROM sales;
+
+    SELECT 'Products Sold' AS title,
+           COUNT(DISTINCT product) || ' products' AS description,
+           'purple' AS color
+    FROM sales;
+    ```
+
+    ## Sales Report
+
+    ```sql sales.sql { route: { caption: "Sales Report", description: "All sales transactions" } }
+    SELECT 'text' AS component,
+           'Sales Report' AS title,
+           'View all sales transactions with search and sorting.' AS contents;
+
+    SELECT 'table' AS component,
+           TRUE AS sort,
+           TRUE AS search;
+
+    SELECT
+      id AS "ID",
+      product AS "Product",
+      '$' || printf('%.2f', amount) AS "Amount",
+      sale_date AS "Date",
+      region AS "Region"
+    FROM sales
+    ORDER BY sale_date DESC;
+    ```
+
+    ## Regional Analysis
+
+    ```sql regions.sql { route: { caption: "By Region", description: "Sales breakdown by region" } }
+    SELECT 'text' AS component,
+           'Regional Sales Analysis' AS title,
+           'Sales performance by geographic region.' AS contents;
+
+    SELECT 'chart' AS component,
+           'bar' AS type,
+           'Region' AS xtitle,
+           'Total Sales ($)' AS ytitle;
+
+    SELECT
+      region AS x,
+      SUM(amount) AS y
+    FROM sales
+    GROUP BY region
+    ORDER BY SUM(amount) DESC;
+
+    SELECT 'table' AS component,
+           'Regional Summary' AS title,
+           TRUE AS sort;
+
+    SELECT
+      region AS "Region",
+      COUNT(*) AS "Transactions",
+      '$' || printf('%.2f', SUM(amount)) AS "Total Sales",
+      '$' || printf('%.2f', AVG(amount)) AS "Average Sale"
+    FROM sales
+    GROUP BY region
+    ORDER BY SUM(amount) DESC;
+    ```
+    ````
+
+    <Callout type="success">
+    **Understanding the Structure**
+
+    This Spryfile contains:
+    - **Frontmatter** with SQLPage configuration
+    - **Executable tasks** for environment and database setup
+    - **PARTIAL directive** for shared navigation
+    - **SQL pages** that define the web interface
+    </Callout>
+  </Step>
+
+  <Step>
+    ## Set Up the Environment
+    
+    Create the `.envrc` file with environment variables:
+
+    ```bash
+    spry rb task prepare-env
+    ```
+
+    This generates a `.envrc` file with:
+    ```bash
+    export SPRY_DB="sqlite://sales.db?mode=rwc"
+    export PORT=9227
+    ```
+
+    Load the environment variables:
+
+    <Tabs items={['direnv', 'manual']}>
+      <Tab value="direnv">
+        If you have direnv installed:
+        ```bash
+        direnv allow
+        ```
+        
+        The variables will automatically load when you enter the directory.
+      </Tab>
+
+      <Tab value="manual">
+        Source the file manually:
+        ```bash
+        source .envrc
+        ```
+        
+        You'll need to run this each time you open a new terminal.
+      </Tab>
+    </Tabs>
+
+    Verify the variables are set:
+    ```bash
+    echo $SPRY_DB
+    # Output: sqlite://sales.db?mode=rwc
+    ```
+  </Step>
+
+  <Step>
+    ## Create the Database
+    
+    Execute the database setup task:
+
+    ```bash
+    spry rb task prepare-db
+    ```
+
+    You should see output like:
+    ```
+    Database created with 8 records
+    ```
+
+    Verify the database was created:
+    ```bash
+    ls -lh sales.db
+    sqlite3 sales.db "SELECT COUNT(*) FROM sales;"
+    # Output: 8
+    ```
+
+    <Callout type="info">
+    **What Just Happened?**
+
+    The `prepare-db` task executed the bash script in your Spryfile, which:
+    1. Removed any existing database
+    2. Created a new SQLite database
+    3. Defined the sales table schema
+    4. Inserted 8 sample records
+    </Callout>
+  </Step>
+
+  <Step>
+    ## Build the Application
+    
+    Generate the SQLPage files from your Spryfile:
+
+    ```bash
+    spry sp spc --fs dev-src.auto --destroy-first --conf sqlpage/sqlpage.json
+    ```
+
+    This command:
+    - `--fs dev-src.auto` - Outputs to the `dev-src.auto` directory
+    - `--destroy-first` - Removes existing files before generating
+    - `--conf sqlpage/sqlpage.json` - Uses the SQLPage configuration
+
+    Check the generated files:
+    ```bash
+    ls -la dev-src.auto/
+    # Output:
+    # index.sql
+    # sales.sql
+    # regions.sql
+    ```
+
+    <Callout>
+    The `PARTIAL global-layout.sql` was automatically injected into each of these files.
+    </Callout>
+  </Step>
+
+  <Step>
+    ## Run SQLPage
+    
+    Start the SQLPage server:
+
+    ```bash
+    sqlpage
+    ```
+
+    You should see output like:
+    ```
+    SQLPage server started on http://localhost:9227
+    Database: sales.db
+    ```
+
+    Open your browser to **`http://localhost:9227`** to see your dashboard!
+
+    <Callout type="success">
+    **🎉 Your Dashboard is Live!**
+
+    You should see:
+    - A navigation menu with Home, Sales, and Regions
+    - Dashboard cards showing sales metrics
+    - Interactive tables and charts
+    </Callout>
+
+    Press `Ctrl+C` to stop the server when you're done.
+  </Step>
+
+  <Step>
+    ## Development Workflow
+    
+    For active development with automatic rebuilding, use watch mode:
+
+    ```bash
+    spry sp spc --fs dev-src.auto --destroy-first \
+      --conf sqlpage/sqlpage.json --watch --with-sqlpage
+    ```
+
+    This command:
+    - Watches `Spryfile.md` for changes
+    - Automatically rebuilds when you save
+    - Restarts the SQLPage server
+    - Keeps your browser in sync
+
+    **Try it out:**
+    1. Edit `Spryfile.md` (change a title or add a card)
+    2. Save the file
+    3. Watch the terminal rebuild automatically
+    4. Refresh your browser to see changes
+
+    <Callout type="warning">
+    **Development Mode Only**
+
+    Watch mode is for development. For production deployment, see the next step.
+    </Callout>
+  </Step>
+
+  <Step>
+    ## Deploy to Production
+    
+    Package your application into the database for easy deployment:
+
+    ```bash
+    spry sp spc --package --conf sqlpage/sqlpage.json | sqlite3 sales.db
+    ```
+
+    This stores all SQL files in the `sqlpage_files` table within the database itself.
+
+    **Verify the packaging:**
+    ```bash
+    sqlite3 sales.db "SELECT path FROM sqlpage_files;"
+    # Output:
+    # index.sql
+    # sales.sql
+    # regions.sql
+    ```
+
+    **Deploy your application:**
+    
+    To deploy, simply copy `sales.db` to your production server and run SQLPage:
+    
+    ```bash
+    # On production server
+    sqlpage
+    ```
+
+    The database contains both your data and your application code!
+
+    <Callout type="info">
+    **Self-Contained Deployment**
+
+    This packaging approach means you can deploy your entire application as a single database file - perfect for edge deployments, Docker containers, or simple server setups.
+    </Callout>
+  </Step>
+</Steps>
+
+## Project Structure
+
+After completing all steps, your project has this structure:
+
+```
+sales-dashboard/
+├── Spryfile.md             # Your application definition (source of truth)
+├── .envrc                  # Environment variables (git-ignored)
+├── .gitignore              # Git ignore rules
+├── sales.db                # SQLite database with data and packaged app
+├── sqlpage/
+│   └── sqlpage.json        # SQLPage server configuration
+└── dev-src.auto/           # Generated SQLPage files (for development)
+    ├── index.sql           # Home page
+    ├── sales.sql           # Sales report page
+    └── regions.sql         # Regional analysis page
+```
+
+<Callout>
+**Source of Truth**
+
+The `Spryfile.md` is your source of truth. The `dev-src.auto/` directory is generated and can be deleted and rebuilt at any time.
+</Callout>
+
+## Key Concepts Demonstrated
+
+This project showcases several core Spry concepts:
+
+<Cards>
+  <Card title="Frontmatter Configuration" href="/docs/core-concepts/fundamental-building-blocks#frontmatter">
+    Using `sqlpage-conf` to configure database connection and server settings
+  </Card>
+  
+  <Card title="Environment Variables" href="/docs/reference-guides/configuration#environment-variables">
+    Interpolating values with `${env.SPRY_DB}` syntax
+  </Card>
+  
+  <Card title="Executable Cells" href="/docs/core-concepts/executable-markdown">
+    Running bash scripts to create and populate databases
+  </Card>
+  
+  <Card title="Materializable Cells">
+    Generating SQL files from code blocks
+  </Card>
+</Cards>
+
+### Detailed Concept Breakdown
+
+| Concept | Example in Project | Where to Learn More |
+|---------|-------------------|---------------------|
+| **Frontmatter** | `sqlpage-conf` with database URL and port | [Configuration Reference](/docs/core-concepts/fundamental-building-blocks#frontmatter) |
+| **Environment Variables** | `${env.SPRY_DB}` interpolation | [Core Concepts](/docs/reference-guides/configuration#environment-variables) |
+| **Executable Cells** | `bash prepare-db` task | [Code Cells](/docs/core-concepts/fundamental-building-blocks#cells) |
+| **Materializable Cells** | `sql index.sql` page definition | Cell Types |
+| **PARTIAL Directive** | `global-layout.sql` injected everywhere | [Directives](/docs/reference-guides/configuration#partial-directive) |
+| **Route Attributes** | `{ route: { caption: "Home" } }` metadata | [SQLPage Integration](/docs/core-concepts/sql-page-integration) |
+
+## Customization Ideas
+
+Now that you have a working dashboard, try these enhancements:
+
+### Add New Metrics
+
+Add a product performance card to the home page:
+
+````markdown
+```sql index.sql { route: { caption: "Home", description: "Dashboard overview" } }
+-- ... existing cards ...
+
+SELECT 'Best Seller' AS title,
+       (SELECT product FROM sales 
+        GROUP BY product 
+        ORDER BY SUM(amount) DESC 
+        LIMIT 1) AS description,
+       'star' AS color
+FROM sales;
+```
+````
+
+### Create a Product Page
+
+Add a new page showing sales by product:
+
+````markdown
+```sql products.sql { route: { caption: "Products", description: "Sales by product" } }
+SELECT 'text' AS component,
+       'Product Performance' AS title;
+
+SELECT 'table' AS component;
+
+SELECT
+  product AS "Product",
+  COUNT(*) AS "Units Sold",
+  '$' || printf('%.2f', SUM(amount)) AS "Total Revenue",
+  '$' || printf('%.2f', AVG(amount)) AS "Average Price"
+FROM sales
+GROUP BY product
+ORDER BY SUM(amount) DESC;
+```
+````
+
+Don't forget to add it to the navigation in `global-layout.sql`:
+
+```sql
+'{"link":"/products.sql","title":"Products"}' AS menu_item
+```
+
+### Add Date Filters
+
+Enhance the sales report with date range filtering:
+
+````markdown
+```sql sales.sql
+-- Add a form for date filtering
+SELECT 'form' AS component, 'Filter by Date' AS title;
+SELECT 'date' AS type, 'start_date' AS name, 'Start Date' AS label;
+SELECT 'date' AS type, 'end_date' AS name, 'End Date' AS label;
+
+-- Filter the table based on form input
+SELECT 'table' AS component, TRUE AS sort, TRUE AS search;
+
+SELECT
+  id AS "ID",
+  product AS "Product",
+  '$' || printf('%.2f', amount) AS "Amount",
+  sale_date AS "Date",
+  region AS "Region"
+FROM sales
+WHERE (:start_date IS NULL OR sale_date >= :start_date)
+  AND (:end_date IS NULL OR sale_date <= :end_date)
+ORDER BY sale_date DESC;
+```
+````
+
+## Troubleshooting
+
+### Common Issues and Solutions
+
+<Tabs items={['SQLPage', 'Database', 'Build']}>
+  <Tab value="SQLPage">
+    **SQLPage won't start**
+
+    Check if SQLPage is installed:
+    ```bash
+    sqlpage --version
+    ```
+
+    Verify the port is available:
+    ```bash
+    lsof -i :9227
+    # Kill process if needed: kill -9 <PID>
+    ```
+
+    Ensure environment variables are set:
+    ```bash
+    echo $SPRY_DB
+    echo $PORT
+    ```
+
+    **Pages show errors**
+
+    Check SQLPage logs for SQL errors. Common issues:
+    - Syntax errors in SQL queries
+    - Missing table or column names
+    - Incorrect SQLPage component syntax
+  </Tab>
+
+  <Tab value="Database">
+    **Database not created**
+
+    Verify the task ran successfully:
+    ```bash
+    spry rb task prepare-db --verbose rich
+    ```
+
+    Check if the file exists:
+    ```bash
+    ls -lh sales.db
+    ```
+
+    Inspect the database:
+    ```bash
+    sqlite3 sales.db ".tables"
+    sqlite3 sales.db "SELECT * FROM sales LIMIT 5;"
+    ```
+
+    **Connection errors**
+
+    Verify the database URL format:
+    ```bash
+    echo $SPRY_DB
+    # Should be: sqlite://sales.db?mode=rwc
+    ```
+
+    Check file permissions:
+    ```bash
+    chmod 644 sales.db
+    ```
+  </Tab>
+
+  <Tab value="Build">
+    **Files not generating**
+
+    Run with verbose output:
+    ```bash
+    spry sp spc --fs dev-src.auto --destroy-first \
+      --conf sqlpage/sqlpage.json --verbose
+    ```
+
+    Check for syntax errors in Spryfile:
+    - Unclosed code blocks
+    - Missing task IDs
+    - Malformed frontmatter
+
+    Verify the output directory:
+    ```bash
+    ls -la dev-src.auto/
+    ```
+
+    **Watch mode not working**
+
+    Ensure you're using the correct flags:
+    ```bash
+    spry sp spc --fs dev-src.auto --destroy-first \
+      --conf sqlpage/sqlpage.json --watch --with-sqlpage
+    ```
+
+    Check file permissions in the project directory.
+  </Tab>
+</Tabs>
+
+## Next Steps
+
+Congratulations! You've built a complete data application with Spry. Here are some paths to explore next:
+
+<Cards>
+  <Card title="Learn More About Spryfiles" href="/docs/core-concepts/executable-markdown">
+    Understand the structure and capabilities of executable Markdown
+  </Card>
+  
+  <Card title="Explore Code Cells" href="/docs/core-concepts/fundamental-building-blocks#cells">
+    Master different cell types and execution patterns
+  </Card>
+  
+  <Card title="Build Complex Workflows" href="/docs/use-cases/devops-runbook">
+    Create multi-step automation with task dependencies
+  </Card>
+  
+  <Card title="CLI Reference" href="/docs/reference-guides/cli-commands">
+    Discover all available Spry commands and options
+  </Card>
+</Cards>
+
+<Callout type="success">
+**You're Ready to Build!**
+
+You now have hands-on experience creating executable Markdown applications. The patterns you learned here apply to any Spry project - from simple automation scripts to complex data applications.
+</Callout>

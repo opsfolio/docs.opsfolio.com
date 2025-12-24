@@ -1,0 +1,375 @@
+---
+title: axiom 
+description: Spry Axiom Explorer CLI
+icon: Atom
+index: 5
+tableOfContents:
+  minHeadingLevel: 1
+  maxHeadingLevel: 6
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+
+# Spry Axiom Explorer CLI
+
+The Spry Axiom Explorer CLI is a lightweight, terminal-based interface built on top of the Spry framework to help developers and users interact with markdown docs, ontology graphs, and structured content directly from the command line. The CLI aims to streamline every-day workflows — browsing documentation, inspecting content structure, projecting subsets, or converting markdown into executable scripts — so you can work without leaving your terminal.
+
+Spry is a lightweight TypeScript library that treats Markdown as a programmable medium, where every fence, section, and directive in your .md file can express behavior, not just formatting. 
+
+<Callout type="info">
+**What Spry Does:** It executes embedded code blocks, captures their outputs, composes multiple source types (SQL, HTML, JSON, shell, etc.) as executable "cells", and treats sections as first-class programmable units with attributes, metadata, and dependency graphs.
+</Callout>
+
+## Root Command
+
+**Usage:** 
+
+```bash
+spry axiom [options]
+spry axiom [command] [options]
+```
+
+**Options:**
+
+- `-h, --help`: Shows the help message for the axiom command or any subcommand
+
+**Examples:**
+
+```bash
+# Show general help
+spry axiom -h
+spry axiom --help
+
+# Show help for specific commands
+spry axiom web-ui -h
+spry axiom ls --help
+spry axiom inspect -h
+spry axiom projection --help
+spry axiom shebang -h
+```
+
+## Commands
+
+<Cards>
+  <Card title="web-ui [paths...]">
+   Start a web interface for exploring documents.
+    
+    ```bash
+    spry axiom web-ui
+    spry axiom web-ui <path to md file>
+    ```
+  </Card>
+  
+  <Card title="ls [paths...]">
+    List document structure as a hierarchical tree.
+    
+    ```bash
+    spry axiom ls
+    spry axiom ls ./file.md
+    ```
+  </Card>
+  
+  <Card title="inspect [paths...]">
+    Inspect mdast nodes as a hierarchy.
+    
+    ```bash
+    spry axiom inspect
+    spry axiom inspect <path to md file>
+    ```
+  </Card>
+  
+  <Card title="projection [paths...]">
+    Compute a projection and emit as JSON.
+    
+    ```bash
+    spry axiom projection
+    spry axiom projection <path to md file>
+    ```
+  </Card>
+  
+  <Card title="shebang [paths...]">
+    Convert markdown files into executables.
+    
+    ```bash
+    spry axiom shebang
+    spry axiom shebang <path to md file>
+    ```
+  </Card>
+</Cards>
+
+### 1. `web-ui` - Markdown AST & SOG Browser
+
+Axiom web-ui launches an interactive browser-based UI to explore Markdown ASTs (mdASTs) and Spry Ontology Graphs (SOGs).
+
+```bash
+spry axiom web-ui [paths...] [options]
+```
+
+**Purpose:** Serve the markdown mdASTs and Spry Ontology Graphs (SOGs) in an interactive web interface.
+
+**Arguments:**
+- `[paths...]`: Optional paths to markdown files. If not provided, uses default file (typically `Spryfile.md`).
+
+**Options:**
+
+- `-h, --help`: Show help for the web-ui command
+- `--port <port>`: Specify the port on which the Web UI server runs (default: 9876)
+- `--listen <addr>`: Specify the network interface/address for the Web UI server to bind to (default: 127.0.0.1)
+- `--no-open`: Start the server without automatically opening the browser
+
+**Examples:**
+
+```bash
+# Show help
+spry axiom web-ui -h
+spry axiom web-ui --help
+
+# Start Web UI with default file on default port
+spry axiom web-ui
+
+# Start Web UI with custom file
+spry axiom web-ui spry-cmd.md.md
+
+# Start on custom port
+spry axiom web-ui --port 9090
+spry axiom web-ui spry-cmd.md.md --port 9090
+
+# Specify network interface
+spry axiom web-ui --listen 127.0.0.1
+spry axiom web-ui spry-cmd.md.md --listen 127.0.0.1
+
+# Start without opening browser
+spry axiom web-ui --no-open
+spry axiom web-ui spry-cmd.md.md --no-open
+```
+
+### 2. `ls` - Browse Document Hierarchy
+
+Displays the hierarchical structure of Markdown documents as a tree, based on Spry section containment rules.
+
+```bash
+spry axiom ls [paths...] [options]
+```
+
+**Purpose:** List document structure as a hierarchical tree.
+
+**Arguments:**
+- `[paths...]`: Optional paths to markdown files. If not provided, uses default file (typically `Spryfile.md`).
+
+**Options:**
+
+- `-h, --help`: Show help for the ls command
+- `-n, --node <nodeType>`: Include additional mdAST node types (e.g., paragraph) in the listing
+- `--no-color`: Print the tree output without ANSI colors
+
+**Examples:**
+
+```bash
+# Show help
+spry axiom ls -h
+spry axiom ls --help
+
+# List headings from default file
+spry axiom ls
+
+# List headings from custom file
+spry axiom ls spry-cmd.md.md
+
+# Include additional node types
+spry axiom ls -n paragraph
+spry axiom ls --node paragraph
+spry axiom ls spry-cmd.md.md -n paragraph
+spry axiom ls spry-cmd.md.md --node paragraph
+
+# List without colors
+spry axiom ls --no-color
+spry axiom ls spry-cmd.md.md --no-color
+
+# Combine options
+spry axiom ls -n paragraph --no-color
+```
+
+### 3. `inspect` - Analyze Document Structure
+
+Shows a detailed breakdown of a Markdown file's AST structure, including metadata, headings, tasks, and Spry-specific attributes.
+
+```bash
+spry axiom inspect [paths...] [options]
+```
+
+**Purpose:** Inspect mdast nodes as a hierarchy.
+
+**Arguments:**
+- `[paths...]`: Optional paths to markdown files. If not provided, uses default file (typically `Spryfile.md`).
+
+**Options:**
+
+- `-h, --help`: Show help for the inspect command
+- `--no-color`: Produce a non-colorized version of the inspection output
+
+**What It Shows:**
+
+spry axiom inspect parses a Markdown file and shows its internal AST (Abstract Syntax Tree) along with all Spry-specific metadata such as:
+
+- Frontmatter (doc-classify, config blocks, parsed FM)
+- Headings and their roles (project, suite, plan, case)
+- Code blocks recognized as tasks (EXECUTABLE, MATERIALIZABLE, import blocks, graphs, descriptions)
+- Command-line metadata extracted from fenced code blocks
+- Structural hierarchy of the document
+
+**Examples:**
+
+```bash
+# Show help
+spry axiom inspect -h
+spry axiom inspect --help
+
+# Inspect default file
+spry axiom inspect
+
+# Inspect custom file
+spry axiom inspect spry-cmd.md.md
+
+# Inspect without colors
+spry axiom inspect --no-color
+spry axiom inspect spry-cmd.md.md --no-color
+```
+
+### 4. `projection` - Generate JSON Projection
+
+spry axiom projection computes the structured "projection" of a Markdown document — a normalized JSON representation of how Spry interprets the file, including headings, tasks, metadata, imports, graphs, and hierarchical structure.
+
+```bash
+spry axiom projection [paths...] [options]
+```
+
+**Purpose:** Compute a projection and emit as JSON (defaults to flexible).
+
+**Arguments:**
+- `[paths...]`: Optional paths to markdown files. If not provided, uses default file (typically `Spryfile.md`).
+
+**Options:**
+
+- `-h, --help`: Show help for the projection command
+- `--pretty`: Pretty-print JSON output with indentation
+- `--jsonl`: Independently prepare JSON per file as JSONL (Conflicts: --pretty)
+
+**Examples:**
+
+```bash
+# Show help
+spry axiom projection -h
+spry axiom projection --help
+
+# Generate projection from default file
+spry axiom projection
+
+# Generate projection from custom file
+spry axiom projection spry-cmd.md.md
+
+# Pretty-print JSON output
+spry axiom projection --pretty
+spry axiom projection spry-cmd.md.md --pretty
+
+# Generate JSONL (JSON Lines)
+spry axiom projection --jsonl
+spry axiom projection spry-cmd.md.md --jsonl
+```
+
+**Output Formats:**
+1. **Default**: Compact JSON output
+2. **--pretty**: Human-readable, indented JSON
+3. **--jsonl**: One JSON object per file, one line per file (JSON Lines format)
+
+### 5. `shebang` - Convert to Executable
+
+spry axiom shebang turns a Markdown file into a runnable executable script by inserting a shebang (#!) line at the top.
+
+```bash
+spry axiom shebang [paths...] [options]
+```
+
+**Purpose:** Convert markdown files into executables with shebang (#!) helpers.
+
+**Arguments:**
+- `[paths...]`: Optional paths to markdown files. If not provided, uses default file (typically `Spryfile.md`).
+
+**Options:**
+
+- `-h, --help`: Show help for the shebang command
+- `--dry-run`: Show the shebang that would be added without modifying the file
+- `--entrypoint <ep>`: Specify a custom launcher script for the shebang (default: ./cli.ts)
+
+**Examples:**
+
+```bash
+# Show help
+spry axiom shebang -h
+spry axiom shebang --help
+
+# Add shebang to default file
+spry axiom shebang
+
+# Add shebang to custom file
+spry axiom shebang spry-cmd.md.md
+
+# Preview without modifying (dry-run)
+spry axiom shebang --dry-run
+spry axiom shebang spry-cmd.md.md --dry-run
+
+# Specify custom entrypoint
+spry axiom shebang --entrypoint ./my-spry-launcher.ts
+spry axiom shebang spry-cmd.md.md --entrypoint ./my-spry-launcher.ts
+```
+
+**Behavior:**
+- Adds a shebang line at the top of the markdown file
+- Makes the file executable (sets appropriate permissions)
+- Default entrypoint is `./cli.ts`
+- Use `--dry-run` to preview changes before applying
+
+## File Sources
+
+All commands that accept file paths support:
+
+1. **Local file system paths**: `./Spryfile.md`, `/path/to/file.md`
+2. **Default behavior**: If no path is provided, uses `Spryfile.md` in the current directory
+3. **Multiple sources**: Some commands support multiple file paths
+
+## Common Patterns
+
+<Tabs items={['Explore and Analyze', 'Convert to Executable']}>
+  <Tab value="Explore and Analyze">
+    ```bash
+    # First, browse the document structure
+    spry axiom ls ./Spryfile.md
+
+    # Then inspect detailed AST information
+    spry axiom inspect ./Spryfile.md
+
+    # Generate JSON projection for programmatic use
+    spry axiom projection ./Spryfile.md --pretty
+
+    # Or launch the web UI for interactive exploration
+    spry axiom web-ui ./Spryfile.md
+    ```
+  </Tab>
+  
+  <Tab value="Convert to Executable">
+    ```bash
+    # Preview the shebang that will be added
+    spry axiom shebang ./my-file.md --dry-run
+
+    # Add shebang to make it executable
+    spry axiom shebang ./my-file.md
+
+    # With custom entrypoint
+    spry axiom shebang ./my-file.md --entrypoint ./custom-launcher.ts
+
+    # Now the file can be executed directly
+    ./my-file.md
+    ```
+  </Tab>
+</Tabs>

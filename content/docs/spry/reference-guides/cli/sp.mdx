@@ -1,0 +1,428 @@
+---
+title: sp
+description: Spry SQLPage Playbook operator
+icon: Database
+index: 6
+tableOfContents:
+  minHeadingLevel: 1
+  maxHeadingLevel: 6
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+
+# Spry SQLPage Playbook Operator
+
+The Spry SQLPage Playbook operator (`sp`) is a command-line interface designed to streamline SQLPage development workflows. It helps developers manage SQLPage projects by converting Markdown documents into SQL-based web applications, providing tools for content generation, live development, and database deployment. The CLI bridges the gap between human-readable Markdown documentation and production-ready SQLPage applications.
+
+SQLPage is a framework that lets you build web applications using SQL queries. With Spry's `sp` operator, you can author your entire application in Markdown and automatically generate the necessary SQL content for SQLPage to serve.
+
+<Callout type="info">
+**What SP Does:** It transforms Markdown documents into SQLPage-compatible SQL files, manages development environments with live reload, generates database deployment scripts, and provides tools to inspect and manage your SQLPage content all from the command line.
+</Callout>
+
+## Root Command
+
+**Usage:** 
+
+```bash
+spry sp [command] [options]
+```
+
+**Options:**
+
+- `-h, --help`: Shows the help message for the sp command or any subcommand
+
+**Examples:**
+
+```bash
+# Show general help
+spry sp -h
+spry sp --help
+
+# Show help for specific commands
+spry sp init -h
+spry sp spc --help
+```
+
+## Commands
+
+<Cards>
+  <Card title="init">
+    Initialize a new Spry SQLPage project with configuration files.
+    
+    ```bash
+    spry sp init
+    spry sp init --dialect postgres
+    ```
+  </Card>
+  
+  <Card title="spc">
+    SQLPage Content CLI for managing content generation and deployment.
+    
+    ```bash
+    spry sp spc --package
+    spry sp spc --fs dev-src.auto --watch --with-sqlpage
+    ```
+  </Card>
+</Cards>
+
+### 1. `init` - Initialize Development Environment
+
+Sets up a new Spry SQLPage project by creating necessary configuration files (`Spryfile.md` and `spry.ts`) for local development.
+
+```bash
+spry sp init [options]
+```
+
+**Purpose:** Bootstrap a new Spry SQLPage project with the required scaffolding files.
+
+**Options:**
+
+- `-h, --help`: Show help for the init command
+- `--force`: Remove existing configuration files and recreate from latest tag
+- `-d, --dialect <dialect>`: Specify SQL dialect for package generation (options: `sqlite`, `postgres`; default: `sqlite`)
+
+**Examples:**
+
+```bash
+# Show help
+spry sp init -h
+spry sp init --help
+
+# Initialize with default SQLite dialect
+spry sp init
+
+# Initialize with PostgreSQL dialect
+spry sp init --dialect postgres
+spry sp init -d postgres
+
+# Force recreation from latest tag (removes existing files)
+spry sp init --force
+
+# Force with specific dialect
+spry sp init --force --dialect postgres
+```
+
+**Behavior:**
+- Creates `Spryfile.md` as the primary content source
+- Downloads templates from the latest release tag
+- Use `--force` to overwrite existing files
+- Choose dialect based on your target database
+
+<Callout type="info" title="First Time Setup">
+Run `spry sp init` when starting a new Spry project to create the necessary configuration files and local development environment.
+</Callout>
+
+---
+
+### 2. `spc` - SQLPage Content CLI
+
+The SQLPage Content CLI is the primary tool for working with Markdown-to-SQLPage conversion. It supports multiple workflows: generating SQL packages for database deployment, materializing files to the filesystem for development, and providing live reload during development.
+
+```bash
+spry sp spc [options] [command]
+```
+
+**Purpose:** Manage SQLPage content generation, development server, and database deployment.
+
+**Global Options:**
+
+- `-h, --help`: Show help for the spc command
+- `-m, --md <mdPath>`: Specify Markdown source file(s) (repeatable; default: `["Spryfile.md"]`)
+- `-p, --package`: Generate SQL package to stdout (conflicts with `--fs`)
+- `-d, --dialect <dialect>`: SQL dialect for package generation (`sqlite` or `postgres`; default: `sqlite`)
+- `--fs <srcHome>`: Materialize SQL files to specified directory (requires `--conf`; conflicts with `--package`)
+- `--destroy-first`: Remove target directory before materializing (requires `--fs`)
+- `--watch`: Enable watch mode for automatic rebuilds (requires `--fs`)
+- `--with-sqlpage`: Start SQLPage server in development mode (requires `--watch`)
+- `--sqlpage-bin <bin>`: Path to SQLPage binary (default: `sqlpage`; requires `--watch`)
+- `-c, --conf <confPath>`: Write sqlpage.json configuration to specified path
+- `--verbose`: Enable verbose logging
+
+**Subcommands:**
+
+- `ls`: List all SQLPage file entries from Markdown sources
+- `cat`: Output contents of SQLPage files matching glob patterns
+
+**Examples:**
+
+```bash
+# Show help
+spry sp spc -h
+spry sp spc --help
+
+# Generate SQL package for SQLite (to stdout)
+spry sp spc --package
+spry sp spc -p
+
+# Generate SQL package for PostgreSQL
+spry sp spc --package --dialect postgres
+spry sp spc -p -d postgres
+
+# Use specific markdown source
+spry sp spc --md custom.md --package
+spry sp spc -m custom.md -p
+
+# Multiple markdown sources
+spry sp spc --md core.md --md extensions.md --package
+
+# Materialize files to directory with config
+spry sp spc --fs dev-src.auto --conf sqlpage/sqlpage.json
+spry sp spc --fs dev-src.auto -c sqlpage/sqlpage.json
+
+# Clean build (remove existing files first)
+spry sp spc --fs dev-src.auto --destroy-first --conf sqlpage/sqlpage.json
+
+# Watch mode with auto-rebuild
+spry sp spc --fs dev-src.auto --conf sqlpage/sqlpage.json --watch
+
+# Full development setup with SQLPage server
+spry sp spc --fs dev-src.auto --conf sqlpage/sqlpage.json --watch --with-sqlpage
+
+# Custom SQLPage binary path
+spry sp spc --fs dev-src.auto --conf sqlpage/sqlpage.json --watch --with-sqlpage --sqlpage-bin /usr/local/bin/sqlpage
+
+# With verbose output
+spry sp spc --fs dev-src.auto --conf sqlpage/sqlpage.json --verbose
+```
+
+<Callout type="warn" title="Option Constraints">
+Note that `--package` and `--fs` are mutually exclusive. Use `--package` for database deployment and `--fs` for file-based development.
+</Callout>
+
+---
+
+## Subcommands
+
+### `spc ls` - List SQLPage Files
+
+Lists all SQLPage file entries discovered in the Markdown sources, showing the structure and organization of your SQLPage content.
+
+```bash
+spry sp spc ls [options]
+```
+
+**Purpose:** Display all SQLPage files that will be generated from Markdown sources.
+
+**Options:**
+
+- `-h, --help`: Show help for the ls command
+- `-m, --md <mdPath>`: Use the given Markdown source(s) (repeatable)
+- `-i, --pi`: Show cell names and INFO lines for each file
+- `-I, --pi-attrs`: Show cell names, INFO lines, and attributes
+- `-t, --tree`: Display files as a hierarchical tree structure
+
+**Examples:**
+
+```bash
+# Show help
+spry sp spc ls -h
+spry sp spc ls --help
+
+# List all SQLPage files from default source
+spry sp spc ls
+
+# List from specific markdown file
+spry sp spc ls --md custom.md
+spry sp spc ls -m custom.md
+
+# Show as tree structure
+spry sp spc ls --tree
+spry sp spc ls -t
+
+# Show cell information
+spry sp spc ls --pi
+spry sp spc ls -i
+
+# Show cell information with attributes
+spry sp spc ls --pi-attrs
+spry sp spc ls -I
+
+# Combined: tree view with cell info from custom source
+spry sp spc ls --md custom.md --tree --pi
+spry sp spc ls -m custom.md -t -i
+```
+
+**What It Shows:**
+
+The `ls` command displays:
+- File paths that will be generated
+- SQL content cells within each file
+- Metadata and attributes (with `-I` flag)
+- Hierarchical organization (with `-t` flag)
+
+---
+
+### `spc cat` - Concatenate File Contents
+
+Outputs the contents of SQLPage files that match specified glob patterns, useful for inspecting generated SQL content.
+
+```bash
+spry sp spc cat -g <glob> [options]
+```
+
+**Purpose:** Display the SQL content of files matching glob patterns.
+
+**Options:**
+
+- `-h, --help`: Show help for the cat command
+- `-m, --md <mdPath>`: Use the given Markdown source(s) (repeatable)
+- `-g, --glob <pattern>`: Path glob pattern(s) to match (required, repeatable)
+
+**Examples:**
+
+```bash
+# Show help
+spry sp spc cat -h
+spry sp spc cat --help
+
+# Show all SQL files
+spry sp spc cat -g "*.sql"
+spry sp spc cat --glob "*.sql"
+
+# Show specific files
+spry sp spc cat -g "index.sql"
+spry sp spc cat -g "index.sql" -g "admin/*.sql"
+
+# Show files from custom markdown source
+spry sp spc cat --md custom.md -g "*.sql"
+spry sp spc cat -m custom.md --glob "*.sql"
+
+# Multiple patterns
+spry sp spc cat -g "**/*.sql" -g "**/*.json"
+
+# Show all files in admin directory
+spry sp spc cat -g "admin/**/*"
+```
+
+---
+
+## Database Deployment
+
+### Deploy to SQLite
+
+```bash
+# Deploy to new database
+spry sp spc --package | sqlite3 app.db
+
+# Deploy to existing database
+spry sp spc --package | sqlite3 existing.db
+
+# With custom markdown source
+spry sp spc --md custom.md --package | sqlite3 app.db
+```
+
+### Deploy to PostgreSQL
+
+```bash
+# Deploy using connection string
+spry sp spc --package --dialect postgres | psql $DATABASE_URL
+
+# Deploy to remote database
+spry sp spc --package --dialect postgres | psql postgresql://user:pass@host:5432/db
+
+# Deploy with environment variable
+spry sp spc --package --dialect postgres | psql $PROD_DATABASE_URL
+
+# Save to file first (for review or version control)
+spry sp spc --package --dialect postgres > deploy.sql
+psql $PROD_DATABASE_URL < deploy.sql
+
+# Deploy with multiple markdown sources
+spry sp spc --md src1.md --md src2.md --package --dialect postgres | psql $DATABASE_URL
+```
+
+<Callout title="Production Deployment">
+Use `--package` to generate a single SQL script containing all `sqlpage_files` rows, ready for database deployment. This ensures all content is properly embedded in your database.
+</Callout>
+
+---
+
+## File Sources
+
+All commands that accept file paths support:
+
+1. **Local file system paths**: `./Spryfile.md`, `/path/to/file.md`
+2. **Default behavior**: If no path is provided, uses `Spryfile.md` in the current directory
+3. **Multiple sources**: Use `-m` or `--md` multiple times to include multiple markdown files
+
+## Common Workflows
+
+<Tabs items={['Initial Setup', 'Development', 'Production', 'Multi-Source']}>
+  <Tab value="Initial Setup">
+    ```bash
+    # 1. Initialize the project
+    spry sp init
+
+    # 2. List available files to verify setup
+    spry sp spc ls --tree
+
+    # 3. Inspect generated content
+    spry sp spc cat -g "*.sql"
+
+    # 4. Start development server
+    spry sp spc --fs dev-src.auto --destroy-first --conf sqlpage/sqlpage.json --watch --with-sqlpage
+    ```
+  </Tab>
+  
+  <Tab value="Development">
+    ```bash
+    # Run this once to start live-reload development
+    spry sp spc --fs dev-src.auto --conf sqlpage/sqlpage.json --watch --with-sqlpage
+
+    # In another terminal, inspect files as needed
+    spry sp spc ls --pi
+    spry sp spc cat -g "*.sql"
+
+    # Make changes to your Markdown files
+    # The server will automatically rebuild and reload
+    ```
+  </Tab>
+
+  <Tab value="Production">
+    ```bash
+    # Generate and deploy to SQLite
+    spry sp spc --package | sqlite3 production.db
+
+    # Generate and deploy to PostgreSQL
+    spry sp spc --package --dialect postgres | psql $PROD_DATABASE_URL
+
+    # Or save to file first for review
+    spry sp spc --package --dialect postgres > deploy.sql
+    # Review deploy.sql
+    psql $PROD_DATABASE_URL < deploy.sql
+    ```
+  </Tab>
+
+  <Tab value="Multi-Source">
+    ```bash
+    # Work with multiple markdown sources
+    spry sp spc --md core.md --md extensions.md --package
+
+    # List all files from multiple sources
+    spry sp spc --md core.md --md extensions.md ls --tree
+
+    # Watch multiple sources during development
+    spry sp spc --md core.md --md extensions.md --fs dev-src.auto --conf sqlpage/sqlpage.json --watch --with-sqlpage
+    ```
+  </Tab>
+</Tabs>
+
+<Callout type="info" title="Development Mode">
+Use `--watch --with-sqlpage` during development for automatic rebuilds and server restarts when your Markdown changes. This provides the fastest feedback loop.
+</Callout>
+
+<Callout type="warn" title="Directory Cleanup">
+The `--destroy-first` flag will delete the entire target directory. Use with caution and ensure you're not pointing to a directory with important files.
+</Callout>
+
+## Best Practices
+
+1. **Start with init**: Always begin new projects with `spry sp init` to set up the proper structure
+2. **Use watch mode**: During development, use `--watch --with-sqlpage` for instant feedback
+3. **Test before deploy**: Use `--package > test.sql` to review generated SQL before deploying to production
+4. **Version control**: Keep your Markdown sources in version control, not the generated SQL
+5. **Multiple sources**: Split large projects into multiple Markdown files for better organization
+6. **Inspect regularly**: Use `ls` and `cat` commands to understand what's being generated

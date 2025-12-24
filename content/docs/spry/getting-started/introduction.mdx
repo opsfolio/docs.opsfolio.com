@@ -1,0 +1,115 @@
+---
+title: Introduction
+description: Build reproducible data and AI pipelines with executable Markdown
+icon: FileText
+index : 0
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+
+# Spry End-User Guide
+
+> Executable Markdown for QA Engineers, Data Scientists, and DevOps Engineers
+
+## What is Spry?
+
+Spry is a lightweight TypeScript ecosystem that treats Markdown as a **programmable medium**. Instead of just documenting code, your Markdown **becomes** the code—every fenced block, section, and directive can execute, compose, and produce reproducible outputs.
+
+Think of Spry as a bridge between documentation and execution. Your runbooks, data pipelines, and application logic live together in a single, human-readable Markdown file that can be versioned, reviewed, and executed like traditional code.
+
+<Callout type="info">
+**💡 Built for Modern Workflows**
+
+Spry is especially powerful for QA engineers building audit-ready test cases, data scientists creating reproducible analyses, and DevOps teams maintaining executable runbooks.
+</Callout>
+
+## Key Features
+
+<Cards>
+  <Card title="Executable Markdown" href="#executable-markdown">
+    Transform code blocks into executable cells with support for Bash, SQL, TypeScript, Python, and more.
+  </Card>
+  
+  <Card title="Task Dependencies" href="#task-dependencies">
+    Automatic dependency resolution with DAG-based orchestration ensures tasks run in the correct order.
+  </Card>
+  
+  <Card title="SQLPage Integration" href="#sqlpage-integration">
+    Build complete database-driven web applications with automatic routing and navigation.
+  </Card>
+  
+  <Card title="Audit-Ready Evidence" href="#audit-ready-evidence">
+    Capture execution results as verifiable artifacts for compliance frameworks like CMMC, SOC2, and ISO 27001.
+  </Card>
+</Cards>
+
+### [Executable Markdown](/docs/core-concepts/executable-markdown)
+
+Every fenced code block in your Markdown can be executed as a task. Spry understands multiple languages and can run shell scripts, SQL queries, TypeScript code, and more—all from within your documentation.
+
+````markdown
+```bash cleanup --descr "Remove old build artifacts"
+rm -rf dist/ build/
+```
+````
+
+### [Task Dependencies](/docs/core-concepts/task-orchestration)
+
+Define dependencies between tasks to create complex workflows. Spry automatically resolves the execution order and can run independent tasks in parallel.
+
+````markdown
+```bash test --dep build
+npm test
+```
+
+```bash deploy --dep test
+./deploy.sh production
+```
+````
+
+### [SQLPage Integration](/docs/use-cases/sqlpage-data-app)
+
+Spry has first-class support for SQLPage, allowing you to define entire database-driven web applications in a single Markdown file. Define your schema, queries, and UI components all in one place.
+
+### [Audit-Ready Evidence](/docs/use-cases/audit-complains)
+
+Capture task execution results as JSON artifacts with timestamps and metadata. Perfect for compliance documentation and automated testing scenarios.
+
+## Use Cases
+
+<Cards>
+  <Card title="Policies as Code" href="/docs/use-cases/audit-complains">
+    Create verifiable test cases for compliance frameworks with automated evidence capture.
+  </Card>
+  
+  <Card title="Data Applications" href="/docs/use-cases/sqlpage-data-app">
+    Build SQLite or PostgreSQL-backed dashboards with SQLPage integration.
+  </Card>
+  
+  <Card title="Executable Runbooks" href="/docs/use-cases/devops-runbook">
+    Automate DevOps workflows with pre-flight checks, deployments, and rollbacks.
+  </Card>
+  
+  <Card title="Reproducible Research">
+    Document data science workflows that can be re-executed with guaranteed reproducibility.
+  </Card>
+</Cards>
+
+## Core Philosophy
+
+Spry embraces three core principles:
+
+1. **Documentation as Code**: Your Markdown files are both documentation and executable programs
+2. **Reproducibility**: Every execution can be reproduced with the same inputs and environment
+3. **Progressive Enhancement**: Start with simple scripts and progressively add structure, dependencies, and metadata
+
+<Callout>
+Spry works seamlessly with version control systems like Git, making it easy to track changes to your executable documentation over time.
+</Callout>
+
+## Supported Platforms
+
+- **macOS** (Intel & Apple Silicon)
+- **Linux** (Ubuntu, Debian, and other distributions)
+- **Windows** (x64)

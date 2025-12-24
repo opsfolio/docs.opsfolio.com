@@ -1,0 +1,127 @@
+---
+title: Installation Guide
+description: Detailed installation instructions and usage
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+
+Get the latest Resource Surveillance & Integration Engine (`surveilr`) for Critical Systems by following these steps to complete the installation.
+
+## Package Managers (Recommended)
+
+<Tabs items={["Ubuntu/Debian", "macOS", "Windows"]}>
+  <Tab value="Ubuntu/Debian">
+    ```bash
+    # Ubuntu (Jammy)
+    $ wget https://github.com/surveilr/packages/releases/latest/download/surveilr_jammy.deb
+    $ sudo dpkg -i surveilr_jammy.deb
+
+    # Debian (Bookworm)
+    $ wget https://github.com/surveilr/packages/releases/latest/download/surveilr_bookworm.deb
+    $ sudo dpkg -i surveilr_bookworm.deb
+    ```
+  </Tab>
+  
+  <Tab value="macOS">
+    ```bash
+    $ brew tap surveilr/tap && brew install surveilr
+    ```
+  </Tab>
+  
+  <Tab value="Windows">
+    ```powershell
+    # Recommended: Use installation script
+    $ irm https://raw.githubusercontent.com/surveilr/packages/refs/heads/main/scripts/install.ps1 | iex
+
+    # Alternative: Manual installation
+    # 1. Download from: https://github.com/surveilr/packages/releases/latest
+    # 2. Extract the downloaded zip file
+    # 3. Copy the executable (ends with .exe) to your desired directory
+    # 4. Add to PATH or run from the directory
+    ```
+  </Tab>
+</Tabs>
+
+## Direct Download
+
+Visit our [GitHub Releases](https://github.com/surveilr/packages/releases) page to download pre-built binaries for your operating system:
+
+Visit our [GitHub Releases](https://github.com/surveilr/packages/releases) page to download pre-built binaries:
+
+- **Windows**: `surveilr-windows.zip`
+- **macOS**: `surveilr-macos.zip`
+- **Linux**: `surveilr-linux.tar.gz`
+
+## Installation Scripts
+
+<Tabs items={["macOS/Linux", "Using Eget"]}>
+  <Tab value="macOS/Linux">
+    ```bash
+    # Install in current directory
+    $ curl -sL https://raw.githubusercontent.com/surveilr/packages/main/scripts/install.sh | bash
+
+    # Install globally
+    $ curl -sL https://raw.githubusercontent.com/surveilr/packages/main/scripts/install.sh | SURVEILR_HOME="$HOME/bin" bash
+
+    # Install in preferred path
+    $ curl -sL https://raw.githubusercontent.com/surveilr/packages/main/scripts/install.sh | SURVEILR_HOME="/path/to/directory" bash
+    ```
+  </Tab>
+  
+  <Tab value="Using Eget">
+    ```bash
+    # Install eget first
+    $ curl https://zyedidia.github.io/eget.sh | sh
+
+    # Install surveilr
+    $ eget surveilr/packages --asset tar.gz
+    ```
+  </Tab>
+</Tabs>
+
+## Verify Installation
+
+Run the following commands to verify that `surveilr` is installed correctly:
+
+```bash
+$ surveilr --version                      # version information
+$ surveilr doctor                         # dependencies that surveilr uses
+$ surveilr --help                         # get CLI help (pay special attention to ENV var names)
+```
+
+<Callout>
+  Check out more commands in the [CLI reference](/docs/core/cli/cli-commands).
+</Callout>
+
+## Upgrading `surveilr`
+
+To upgrade `surveilr` to the latest version or a specific version:
+
+```bash
+$ surveilr upgrade                        # upgrades to the latest version
+
+$ surveilr upgrade -v 0.13.0              # upgrades to version 0.13.0 if present
+```
+
+When using the command above, you will be prompted to confirm the upgrade by typing `yes`. However, if you are running the upgrade in a bash script, you won't be able to provide this confirmation interactively.
+
+Use the `--yes` or `--y` flag to automatically skip the confirmation step:
+
+```bash
+$ surveilr upgrade --yes                  # upgrades to the latest version and skips confirmation
+
+$ surveilr upgrade -v 0.13.0 --yes        # upgrades to version 0.13.0 and skips confirmation
+```
+
+## Downgrading `surveilr`
+
+To downgrade `surveilr` to any specific version:
+
+```bash
+$ surveilr upgrade -v 0.12.0              # downgrades to version 0.12.0
+```
+
+<Callout type="info">
+  The downgrade command uses the same format as the upgrade command with the only difference being that a lower version number is passed.
+</Callout>

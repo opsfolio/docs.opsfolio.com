@@ -1,0 +1,614 @@
+---
+title: Custom Extensions
+description: Extend Spry with custom cell executors, projections, and playbooks
+icon: Braces
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+# Custom Extensions
+
+Extend Spry with custom cell executors, projections, and playbooks to support new languages, workflow patterns, and domain-specific use cases.
+
+<Callout type="info">
+**🔧 Extensibility by Design**
+
+Spry's architecture is built around composable primitives, making it straightforward to add support for new executable languages, custom graph relationships, and specialized workflow types.
+</Callout>
+
+## Custom Cell Executors
+
+Add support for new executable languages by creating custom cell executors. This example demonstrates adding R language support to Spry.
+
+### Step 1: Register the Language
+
+First, register your language with the language registry to tell Spry about your new executable type.
+
+```typescript title="my-languages.ts"
+import { languageRegistry, LanguageSpec } from "./lib/universal/code.ts";
+
+const rLangSpec: LanguageSpec = {
+  id: "r",
+  aliases: ["R", "rlang"],
+  extensions: [".r", ".R"],
+  nature: "executable",
+};
+
+languageRegistry.set("r", rLangSpec);
+```
+
+### Step 2: Create the Executor
+
+Implement the executor function that handles code execution for your language.
+
+```typescript title="executors/r-executor.ts"
+import { Code } from "types/mdast";
+
+export interface RExecutorOptions {
+  workingDir?: string;
+  rPath?: string;
+  timeout?: number;
+}
+
+export interface ExecutionResult {
+  stdout: string;
+  stderr: string;
+  exitCode: number;
+  duration: number;
+}
+
+export async function executeRCell(
+  code: Code,
+  options: RExecutorOptions = {}
+): Promise<ExecutionResult> {
+  const {
+    workingDir = Deno.cwd(),
+    rPath = "Rscript",
+    timeout = 60000
+  } = options;
+
+  const startTime = Date.now();
+
+  // Create temporary file
+  const tempFile = await Deno.makeTempFile({ suffix: ".R" });
+  await Deno.writeTextFile(tempFile, code.value);
+
+  try {
+    const command = new Deno.Command(rPath, {
+      args: [tempFile],
+      cwd: workingDir,
+      stdout: "piped",
+      stderr: "piped",
+    });
+
+    const process = command.spawn();
+
+    // Handle timeout
+    const timeoutId = setTimeout(() => {
+      process.kill("SIGTERM");
+    }, timeout);
+
+    const { code: exitCode, stdout, stderr } = await process.output();
+
+    clearTimeout(timeoutId);
+
+    return {
+      stdout: new TextDecoder().decode(stdout),
+      stderr: new TextDecoder().decode(stderr),
+      exitCode,
+      duration: Date.now() - startTime,
+    };
+  } finally {
+    await Deno.remove(tempFile);
+  }
+}
+```
+
+### Step 3: Integrate with Task Runner
+
+Connect your executor to Spry's task execution pipeline.
+
+```typescript title="orchestrate/r-task.ts"
+import { ExecutableTask } from "../projection/playbook.ts";
+import { executeRCell } from "../executors/r-executor.ts";
+
+export async function executeRTask(
+  task: ExecutableTask,
+  context: { runId: string }
+) {
+  if (task.language?.id !== "r") {
+    throw new Error("Not an R task");
+  }
+
+  const startedAt = new Date();
+
+  try {
+    const result = await executeRCell(task.origin, {
+      workingDir: task.provenance.file.dirname,
+    });
+
+    return {
+      disposition: result.exitCode === 0 ? "continue" : "terminate",
+      ctx: context,
+      success: result.exitCode === 0,
+      exitCode: result.exitCode,
+      output: result.stdout,
+      error: result.stderr,
+      startedAt,
+      endedAt: new Date(),
+    };
+  } catch (error) {
+    return {
+      disposition: "terminate",
+      ctx: context,
+      success: false,
+      exitCode: 1,
+      error: String(error),
+      startedAt,
+      endedAt: new Date(),
+    };
+  }
+}
+```
+
+### Step 4: Register with Task Runbook
+
+Create a custom runbook that includes your new executor.
+
+```typescript title="orchestrate/custom-runbook.ts"
+import { tasksRunbook } from "./lib/axiom/orchestrate/task.ts";
+import { executeRTask } from "./r-task.ts";
+
+export function customTasksRunbook(options) {
+  const baseRunbook = tasksRunbook(options);
+
+  return {
+    ...baseRunbook,
+    async execute(plan) {
+      // Custom execution logic
+      for (const task of plan.dag) {
+        if (task.language?.id === "r") {
+          await executeRTask(task, { runId: "custom" });
+        } else {
+          // Use default execution
+        }
+      }
+    },
+  };
+}
+```
+
+<Callout type="warn">
+**⚠️ Runtime Dependencies**
+
+Custom executors assume the target runtime (like R, Ruby, etc.) is installed on the system. Make sure to document installation requirements for users.
+</Callout>
+
+## Custom Edge Rules
+
+Add new relationship types to the graph for specialized workflow patterns.
+
+### Basic Custom Rule
+
+Create rules that discover and establish relationships between tasks in your Markdown.
+
+```typescript title="rules/dependency-rule.ts"
+import { Root, Code } from "types/mdast";
+import { visit } from "unist-util-visit";
+import { GraphEdgesRule, RuleContext } from "./lib/axiom/edge/rule/mod.ts";
+
+interface DependencyEdge {
+  rel: "dependsOn";
+  from: Code;
+  to: Code;
+}
+
+export function dependencyRule(): GraphEdgesRule<
+  "dependsOn",
+  RuleContext,
+  DependencyEdge
+> {
+  return function* (ctx, prevEdges) {
+    // Pass through existing edges
+    for (const edge of prevEdges) {
+      yield edge as unknown as DependencyEdge;
+    }
+
+    // Build code node index
+    const codeNodes = new Map<string, Code>();
+    visit(ctx.root, "code", (node: Code) => {
+      const id = extractTaskId(node);
+      if (id) {
+        codeNodes.set(id, node);
+      }
+    });
+
+    // Generate dependency edges
+    visit(ctx.root, "code", (node: Code) => {
+      const deps = extractDependencies(node);
+      for (const depId of deps) {
+        const depNode = codeNodes.get(depId);
+        if (depNode) {
+          yield {
+            rel: "dependsOn",
+            from: node,
+            to: depNode,
+          };
+        }
+      }
+    });
+  };
+}
+
+function extractTaskId(node: Code): string | undefined {
+  // Parse task ID from meta
+  return node.meta?.split(" ")[0];
+}
+
+function extractDependencies(node: Code): string[] {
+  // Parse --dep from meta
+  const match = node.meta?.match(/--dep\s+(\S+)/);
+  return match ? match[1].split(",") : [];
+}
+```
+
+### Using Custom Rules
+
+Compose your custom rules with Spry's built-in rules.
+
+```typescript
+import { astGraphEdges } from "./lib/axiom/edge/orchestrate.ts";
+import { typicalRules } from "./lib/axiom/edge/pipeline/typical.ts";
+import { dependencyRule } from "./rules/dependency-rule.ts";
+
+function* customRules() {
+  yield* typicalRules();
+  yield dependencyRule();
+}
+
+const edges = astGraphEdges(root, {
+  prepareContext: (root) => ({ root }),
+  rules: () => customRules(),
+});
+```
+
+## Custom Projections
+
+Create domain-specific views of the graph for specialized analysis and reporting.
+
+### Basic Projection
+
+Build projections that extract and transform information from your Markdown files.
+
+```typescript title="projections/report-projection.ts"
+import { Root } from "types/mdast";
+import { visit } from "unist-util-visit";
+import { graph } from "../lib/axiom/graph.ts";
+import { markdownASTs } from "../lib/axiom/io/mod.ts";
+
+export interface ReportSection {
+  title: string;
+  level: number;
+  content: string[];
+  codeCells: Array<{
+    language: string;
+    taskId?: string;
+    lines: number;
+  }>;
+}
+
+export interface ReportProjection {
+  title: string;
+  sections: ReportSection[];
+  totalCodeCells: number;
+  languages: string[];
+}
+
+export async function reportProjectionFromFiles(
+  paths: string[]
+): Promise<ReportProjection> {
+  const sections: ReportSection[] = [];
+  const languages = new Set<string>();
+  let totalCodeCells = 0;
+  let title = "Untitled";
+
+  for await (const md of markdownASTs(paths)) {
+    let currentSection: ReportSection | null = null;
+
+    visit(md.mdastRoot, (node) => {
+      if (node.type === "heading") {
+        if (currentSection) {
+          sections.push(currentSection);
+        }
+
+        const headingText = extractText(node);
+        if (node.depth === 1 && !title) {
+          title = headingText;
+        }
+
+        currentSection = {
+          title: headingText,
+          level: node.depth,
+          content: [],
+          codeCells: [],
+        };
+      }
+
+      if (node.type === "paragraph" && currentSection) {
+        currentSection.content.push(extractText(node));
+      }
+
+      if (node.type === "code" && currentSection) {
+        const code = node as Code;
+        if (code.lang) {
+          languages.add(code.lang);
+        }
+        currentSection.codeCells.push({
+          language: code.lang || "unknown",
+          taskId: code.meta?.split(" ")[0],
+          lines: code.value.split("\n").length,
+        });
+        totalCodeCells++;
+      }
+    });
+
+    if (currentSection) {
+      sections.push(currentSection);
+    }
+  }
+
+  return {
+    title,
+    sections,
+    totalCodeCells,
+    languages: [...languages],
+  };
+}
+
+function extractText(node: any): string {
+  if (node.type === "text") return node.value;
+  if (node.children) {
+    return node.children.map(extractText).join("");
+  }
+  return "";
+}
+```
+
+### Using Custom Projection
+
+Apply your projection to generate reports and insights.
+
+```typescript
+const report = await reportProjectionFromFiles(["./runbook.md"]);
+
+console.log(`Report: ${report.title}`);
+console.log(`Sections: ${report.sections.length}`);
+console.log(`Code cells: ${report.totalCodeCells}`);
+console.log(`Languages: ${report.languages.join(", ")}`);
+```
+
+## Custom Playbooks
+
+Create new domain-specific playbooks for specialized workflow types.
+
+### Playbook Structure
+
+Define the data structures for your custom playbook type.
+
+```typescript title="playbooks/data-quality/types.ts"
+export interface DQCheck {
+  name: string;
+  dataset: string;
+  query: string;
+  expectation: string;
+  severity: "error" | "warning" | "info";
+}
+
+export interface DQPlaybook {
+  name: string;
+  checks: DQCheck[];
+  sources: string[];
+}
+```
+
+### Playbook Projection
+
+Extract your playbook structure from Markdown files.
+
+```typescript title="playbooks/data-quality/projection.ts"
+import { Code } from "types/mdast";
+import { visit } from "unist-util-visit";
+import { markdownASTs } from "../../lib/axiom/io/mod.ts";
+import { DQCheck, DQPlaybook } from "./types.ts";
+
+export async function dqPlaybookFromFiles(
+  paths: string[]
+): Promise<DQPlaybook> {
+  const checks: DQCheck[] = [];
+
+  for await (const md of markdownASTs(paths)) {
+    visit(md.mdastRoot, "code", (node: Code) => {
+      if (node.lang === "sql" && node.meta?.includes("@expect")) {
+        const check = parseDQCheck(node);
+        if (check) {
+          checks.push(check);
+        }
+      }
+    });
+  }
+
+  return {
+    name: "Data Quality Checks",
+    checks,
+    sources: paths,
+  };
+}
+
+function parseDQCheck(node: Code): DQCheck | null {
+  const meta = node.meta || "";
+  const expectMatch = meta.match(/@expect\s+(\S+)/);
+  const datasetMatch = meta.match(/@dataset\s+(\S+)/);
+
+  if (!expectMatch) return null;
+
+  return {
+    name: meta.split(" ")[0] || "unnamed",
+    dataset: datasetMatch?.[1] || "unknown",
+    query: node.value,
+    expectation: expectMatch[1],
+    severity: meta.includes("--error") ? "error" :
+              meta.includes("--warning") ? "warning" : "info",
+  };
+}
+```
+
+### Playbook CLI
+
+Build a CLI interface for your custom playbook.
+
+```typescript title="playbooks/data-quality/cli.ts"
+import { Command } from "@cliffy/command";
+import { dqPlaybookFromFiles } from "./projection.ts";
+
+export class DQPlaybookCLI {
+  rootCmd() {
+    return new Command()
+      .name("dq")
+      .description("Data Quality Playbook")
+      .command("ls", this.lsCommand())
+      .command("run", this.runCommand());
+  }
+
+  lsCommand() {
+    return new Command()
+      .name("ls")
+      .description("List DQ checks")
+      .arguments("[paths...:string]")
+      .action(async (_opts, ...paths) => {
+        const playbook = await dqPlaybookFromFiles(paths);
+
+        for (const check of playbook.checks) {
+          console.log(`${check.name} (${check.severity})`);
+          console.log(`  Dataset: ${check.dataset}`);
+          console.log(`  Expects: ${check.expectation}`);
+        }
+      });
+  }
+
+  runCommand() {
+    return new Command()
+      .name("run")
+      .description("Execute DQ checks")
+      .arguments("[paths...:string]")
+      .action(async (_opts, ...paths) => {
+        const playbook = await dqPlaybookFromFiles(paths);
+
+        for (const check of playbook.checks) {
+          console.log(`Running: ${check.name}`);
+          // Execute check logic
+        }
+      });
+  }
+}
+```
+
+## Best Practices
+
+### Extension Design
+
+<Cards>
+  <Card title="Follow Existing Patterns">
+    Study built-in implementations to understand Spry's conventions and architectural patterns.
+  </Card>
+  
+  <Card title="Use TypeScript">
+    Leverage type safety to catch errors early and improve maintainability.
+  </Card>
+  
+  <Card title="Write Tests">
+    Ensure correctness with comprehensive unit and integration tests.
+  </Card>
+  
+  <Card title="Document Usage">
+    Provide clear examples and usage documentation for your extensions.
+  </Card>
+</Cards>
+
+### Performance
+
+1. **Lazy evaluation** - Use generators to defer computation until needed
+2. **Cache results** - Avoid recomputation of expensive operations
+3. **Minimal AST traversal** - Combine operations into single passes when possible
+
+### Integration
+
+1. **Compose with existing** - Extend Spry's capabilities, don't replace them
+2. **Respect the pipeline** - Work within the established architecture
+3. **Handle errors gracefully** - Provide clear, actionable error messages
+
+### Testing
+
+Write comprehensive tests for your custom extensions to ensure reliability.
+
+<Tabs items={['Executor Tests', 'Rule Tests']}>
+  <Tab value="Executor Tests">
+    ```typescript
+    Deno.test("custom executor runs R code", async () => {
+      const code: Code = {
+        type: "code",
+        lang: "r",
+        value: 'print("Hello")',
+      };
+
+      const result = await executeRCell(code);
+
+      assertEquals(result.exitCode, 0);
+      assertStringIncludes(result.stdout, "Hello");
+    });
+    ```
+  </Tab>
+  
+  <Tab value="Rule Tests">
+    ```typescript
+    Deno.test("custom rule generates edges", async () => {
+      const md = `\`\`\`sql a\nSELECT 1\n\`\`\`\n\`\`\`sql b --dep a\nSELECT 2\n\`\`\``;
+
+      const edges = [...astGraphEdges(parse(md), {
+        prepareContext: (r) => ({ root: r }),
+        rules: () => [dependencyRule()],
+      })];
+
+      const depEdges = edges.filter(e => e.rel === "dependsOn");
+      assertEquals(depEdges.length, 1);
+    });
+    ```
+  </Tab>
+</Tabs>
+
+## Extension Examples
+
+<Cards>
+  <Card title="Ruby Executor">
+    Add support for Ruby code blocks with custom gem management and REPL integration.
+  </Card>
+  
+  <Card title="Conditional Rules">
+    Create rules that establish conditional dependencies based on metadata or content.
+  </Card>
+  
+  <Card title="Metrics Projection">
+    Build projections that extract performance metrics and statistics from executions.
+  </Card>
+  
+  <Card title="CI/CD Playbook">
+    Design specialized playbooks for continuous integration and deployment workflows.
+  </Card>
+</Cards>
+
+<Callout>
+**📚 Need Help?**
+
+Check the source code for built-in executors and rules to see real-world examples of extension patterns. The Spry codebase follows consistent conventions that make it easy to learn by example.
+</Callout>

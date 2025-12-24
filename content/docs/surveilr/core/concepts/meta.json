@@ -1,0 +1,13 @@
+{
+  "title": "Concepts",
+  "pages": [
+    "advanced-sql-functions",
+    "behaviors",
+    "code-notebooks",
+    "resource",
+    "resource-surveillance",
+    "surveilr-orchestrate",
+    "surveilr-shell",
+    "uniform-resource-table"
+    ]
+  }

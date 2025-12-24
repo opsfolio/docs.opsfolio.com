@@ -1,0 +1,42 @@
+/*Theme CSS */
+body {
+    background-color: #fff !important;
+    color: #000 !important;
+}
+.bg-fd-card {
+    background: linear-gradient(135deg, #edfbfe, #fdfeff) !important;
+}
+*, :after, :before, ::backdrop {
+    border-color: #c5d7dc !important;
+}
+.data-\[active\=true\]\:bg-fd-primary\/10[data-active=true] {
+    background: linear-gradient(135deg, #06b1e0, #3333cc) !important;
+    color: #fff !important;
+}
+/* .data-\[active\=true\]\:text-fd-primary[data-active=true] {
+    color: #fff !important;
+} */
+.hover\:bg-fd-accent:hover {
+   background-color: #e6f7fb !important;
+}
+.data-\[active\=true\]\:before\:bg-fd-primary[data-active="true"]:before {
+    background-color: #fff !important;
+}
+.bg-fd-secondary {
+    background: #dbf3fa !important;
+}
+.text-fd-secondary-foreground {
+    color: #06b1e0 !important;
+}
+.data-\[active\=true\]\:text-fd-primary[data-active=true] {
+    color: #06b1e0;
+}
+.text-fd-primary {
+    color: #06b1e0;
+}
+.text-fd-muted-foreground {
+    color: #000;
+}
+.prose :where(code):not(:where([class~="not-prose"], [class~="not-prose"] *)){
+    background: #f5f9fa ;
+}

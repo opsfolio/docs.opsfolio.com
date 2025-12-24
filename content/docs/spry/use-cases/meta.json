@@ -1,0 +1,10 @@
+{
+  "title": "Use Cases",
+  "icon": "Puzzle",
+  "pages": [
+    "audit-complains",
+    "sqlpage-data-app",
+    "devops-runbook",
+    "quality-testcase-template"
+  ]
+}

@@ -1,0 +1,18 @@
+
+{
+  "title": "Core Concepts",
+  "icon": "Lightbulb",
+  "pages": [
+    "what-is-spry",
+    "executable-markdown",
+    "fundamental-building-blocks",
+    "templates-and-partials",
+    "task-orchestration",
+    "sql-page-integration",
+    "environment-variables",
+    "common-workflows",
+    "dag",
+    "ast",
+    "architecture-pattern-edge-engineering"
+  ]
+}

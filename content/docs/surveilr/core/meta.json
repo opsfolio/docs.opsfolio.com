@@ -1,0 +1,13 @@
+{
+  "title": "Surveilr Core",
+  "pages": [
+    "what-is-surveilr",
+    "quick-start",
+    "installation",
+    "cli",
+    "capturable-executables",
+    "concepts",
+    "admin"
+
+    ]
+  }

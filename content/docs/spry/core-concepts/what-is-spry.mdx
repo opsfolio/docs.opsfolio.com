@@ -1,0 +1,390 @@
+---
+title: What is Spry
+description: Spry is a TypeScript library built on Deno that transforms standard Markdown files into executable programs
+icon: Lightbulb
+index: 1
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+## What You Will Discover
+
+- The problem Spry solves and why it matters for your daily workflow
+- How Markdown transforms from static text into an executable runtime
+- The technical architecture that makes this possible
+- Where Spry fits in your toolchain compared to Make, shell scripts, and CI/CD platforms
+- Real-world scenarios with concrete examples you can adapt
+
+## Why This Matters: The Documentation Problem You Already Have
+
+### The Real Problem
+
+Every development team faces this: You write documentation with code examples, deployment instructions, or setup guides. Six months later, someone follows those instructions and nothing works. The codebase evolved, but the documentation stayed frozen in time.
+
+This is not a discipline problem. It is a **structural problem**. Documentation and code live in separate systems with no automatic synchronization.
+
+**The cost is real:**
+
+- New team members waste hours debugging outdated instructions
+- Deployment runbooks fail silently during incidents
+- README files become historical artifacts rather than living guides
+- CI/CD pipelines duplicate logic already written in docs
+
+## What Spry Actually Does
+
+**Spry** is a TypeScript library built on Deno that transforms standard Markdown files into executable programs. Here is what that means technically:
+
+### Key Terms You'll Need
+
+<Cards>
+  <Card title="DAG (Directed Acyclic Graph)">
+    A task dependency chart with no circular conflicts. Simply means: "Task B needs Task A to finish first, and there are no loops where tasks wait for each other forever."
+  </Card>
+  
+  <Card title="Interpolation">
+    Replacing placeholders (like `${variable}`) with actual values when the task runs. Think of it like "fill in the blanks" for your scripts.
+  </Card>
+</Cards>
+
+### How It Works
+
+<Steps>
+  <Step>
+    ### Parsing
+    Spry reads your `.md` file and identifies fenced code blocks (the triple-backtick sections)
+  </Step>
+  
+  <Step>
+    ### Processing Instructions
+    Special syntax after the language identifier (like `bash build --dep lint`) tells Spry how to treat each block
+  </Step>
+  
+  <Step>
+    ### DAG Construction
+    Spry builds a Directed Acyclic Graph of task dependencies
+  </Step>
+  
+  <Step>
+    ### Execution
+    Tasks run in the correct order, with proper shell environments and interpolation
+  </Step>
+</Steps>
+
+<Callout type="info">
+**Key insight:** Your Markdown file remains 100% valid Markdown. It renders correctly on GitHub, in VS Code preview, in documentation sites. Spry simply adds the capability to *execute* what was previously just text.
+</Callout>
+
+### In Simple Terms
+
+Think of Spry like a recipe book that can actually cook. Normally, a recipe just tells you what to do - you have to do the work yourself. With Spry, the recipe book can execute its own instructions. You write your documentation with code examples, and Spry can actually run those examples. If the recipe says "preheat oven" then "bake cake", Spry makes sure the oven is preheated before it tries to bake.
+
+## A Concrete Example
+
+Here is a real Spryfile that builds a TypeScript project:
+
+````markdown
+# Build Pipeline
+
+This document defines our build process. Run it with `spry rb task build`.
+
+## Code Quality
+
+First, we format and lint the code:
+
+```bash format --descr "Format all TypeScript files"
+deno fmt
+```
+
+```bash lint --dep format --descr "Lint after formatting"
+deno lint
+```
+
+## Compilation
+
+Once code quality checks pass, we compile:
+
+```bash build --dep lint --descr "Compile TypeScript to JavaScript"
+deno task compile
+```
+````
+
+### What's Happening in This Code?
+
+Let's break down the fence header `bash lint --dep format --descr "Lint after formatting"`:
+
+**`bash`** - The language identifier. Tells Spry to execute this block using the bash shell. Spry supports bash, sh, zsh, powershell, python, typescript, sql, duckdb, and more.
+
+**`lint`** - The task name. This becomes a unique identifier you can reference from other tasks or run directly via CLI.
+
+**`--dep format`** - Dependency declaration. This task will not run until the `format` task completes successfully. You can specify multiple dependencies: `--dep format --dep typecheck`.
+
+**`--descr "..."`** - Human-readable description. Shows up when you run `task ls` to list available tasks.
+
+<Callout>
+**The key insight:** The text after the triple backticks is not just a language hint for syntax highlighting—it is a complete task specification.
+</Callout>
+
+## The Execution Model
+
+When you run `spry rb task build`, here is what happens internally:
+
+```text
+1. Parse Markdown          → Extract all fenced code blocks
+2. Identify Tasks          → Find blocks with task names in their headers
+3. Build Dependency Graph  → Resolve --dep flags into a DAG
+4. Topological Sort        → Determine safe execution order
+5. Execute in Waves        → Run independent tasks in parallel when possible
+6. Report Results          → Show success/failure for each task
+```
+
+### What's "Topological Sort"?
+
+**Don't worry about the fancy name!** Topological sort just means "put things in the right order so dependencies come first."
+
+Think of getting dressed: you can't put on shoes before socks. Topological sort figures out: socks → shoes → coat (not coat → shoes → socks).
+
+For Spry, it means: if Task B depends on Task A, then A always runs before B. Spry figures this order out automatically.
+
+For our example above, the execution order is: `format` → `lint` → `build`
+
+This is identical to what tools like Make or Just do, except:
+
+- Your task definitions are embedded in prose that explains *why* they exist
+- The file renders as documentation in any Markdown viewer
+- There is no separate build file to maintain
+
+### Technical Deep Dive: The 4-Phase Lifecycle
+
+Spry processes code blocks through four distinct phases:
+
+| Phase | Input | Output | What Happens |
+|-------|-------|--------|--------------|
+| **Syntactic** | Raw Markdown | `NotebookCodeCell` | Parse fence headers, extract language, name, and raw attributes |
+| **Contextual** | `NotebookCodeCell` | `PlaybookCodeCell` | Apply frontmatter configuration, resolve file-level settings |
+| **Semantic** | `PlaybookCodeCell` | `TaskDirective` | Recognize task types (TASK, CONTENT, PARTIAL), parse dependencies |
+| **Executable** | `TaskDirective` | `Task` | Resolve all interpolations, finalize shell configuration |
+
+This phased approach enables powerful debugging. If something goes wrong, you can identify exactly which phase failed and why.
+
+## How Spry Compares to Tools You Know
+
+Understanding where Spry fits helps you decide when to use it:
+
+<Tabs items={['vs. Make/Just', 'vs. Shell Scripts', 'vs. Jupyter']}>
+  <Tab value="vs. Make/Just">
+    | Aspect | Make/Just | Spry |
+    |--------|-----------|------|
+    | **Task Definition** | Recipes in specialized syntax | Fenced code blocks in Markdown |
+    | **Documentation** | Comments, separate README | Prose is the documentation |
+    | **Dependencies** | Target prerequisites | `--dep` flags |
+    | **Readability** | Requires learning Make syntax | Standard Markdown |
+    | **Rendering** | Plain text | Renders beautifully everywhere |
+
+    **Use Spry when:** Your build logic benefits from explanation, you want self-documenting pipelines, or your team includes people who do not know Make syntax.
+
+    **Stick with Make when:** You need deep ecosystem integration, complex pattern rules, or your team is already fluent in Make.
+  </Tab>
+  
+  <Tab value="vs. Shell Scripts">
+    | Aspect | Shell Scripts | Spry |
+    |--------|---------------|------|
+    | **Structure** | Sequential execution | DAG-based dependencies |
+    | **Documentation** | Comments (often sparse) | Markdown prose |
+    | **Error Handling** | Manual `set -e`, traps | Built-in task failure handling |
+    | **Reusability** | Source other scripts | Import from other Markdown files |
+
+    **Use Spry when:** You have multi-step processes with dependencies, need to document the "why" alongside the "what", or want to run subsets of steps easily.
+
+    **Stick with scripts when:** You have simple linear sequences, need maximum portability, or are working in environments where Deno is not available.
+  </Tab>
+  
+  <Tab value="vs. Jupyter">
+    | Aspect | Jupyter | Spry |
+    |--------|---------|------|
+    | **File Format** | `.ipynb` (JSON) | `.md` (plain text) |
+    | **Version Control** | Difficult diffs | Clean diffs |
+    | **Execution Model** | Cell-by-cell interactive | DAG-based batch |
+    | **Output Storage** | Embedded in file | Separate or captured |
+    | **Use Case** | Data exploration | Automation & documentation |
+
+    **Use Spry when:** You want executable documentation, automation pipelines, or CI/CD logic.
+
+    **Use Jupyter when:** You need interactive exploration, inline visualizations, or iterative data analysis.
+  </Tab>
+</Tabs>
+
+## Where Spry Excels
+
+Spry is not a general-purpose tool—it is designed for specific scenarios where executable documentation provides clear value:
+
+### 1. Self-Verifying Documentation
+
+Your README includes setup instructions:
+
+````markdown
+## Getting Started
+
+Install dependencies:
+
+```bash install --descr "Install project dependencies"
+npm install
+```
+
+Run the development server:
+
+```bash dev --dep install --descr "Start dev server"
+npm run dev
+```
+````
+
+Now someone can run `spry rb task dev` and either:
+
+- It works, confirming the docs are accurate
+- It fails, immediately revealing documentation drift
+
+### 2. Literate DevOps Playbooks
+
+Infrastructure automation often lives in cryptic scripts. With Spry:
+
+````markdown
+# Database Migration Playbook
+
+## Pre-Migration Checks
+
+Before touching the database, verify backups exist:
+
+```bash check-backups --descr "Verify recent backup exists"
+aws s3 ls s3://backups/db/ | grep $(date +%Y-%m-%d)
+```
+
+## Run Migration
+
+Only proceed if backups are confirmed:
+
+```bash migrate --dep check-backups --descr "Apply database migrations"
+DATABASE_URL=$PROD_DB alembic upgrade head
+```
+````
+
+The playbook documents the process *and* executes it. New team members read the explanation; the commands run exactly as documented.
+
+### 3. SQL Notebooks with SQLPage
+
+Spry has first-class support for generating SQLPage web applications:
+
+````markdown
+---
+sqlpage-conf:
+  database_url: sqlite://app.db
+---
+
+# User Dashboard
+
+```sql HEAD
+SELECT 'card' as component, 'Users' as title;
+```
+
+```sql TAIL
+SELECT username, email, created_at FROM users ORDER BY created_at DESC;
+```
+````
+
+This generates a complete web application from Markdown. The `HEAD` and `TAIL` directives control SQL generation order.
+
+### 4. Build Pipelines That Explain Themselves
+
+Instead of a `Makefile` + separate documentation:
+
+````markdown
+# CI Pipeline
+
+## Why This Order?
+
+We run linting before tests because syntax errors should be caught early.
+We run unit tests before integration tests because they are faster and catch most issues.
+
+```bash lint
+deno lint
+```
+
+```bash unit-tests --dep lint
+deno test tests/unit/
+```
+
+```bash integration-tests --dep unit-tests
+deno test tests/integration/
+```
+
+```bash deploy --dep integration-tests --when "env.DEPLOY == 'true'"
+./scripts/deploy.sh
+```
+````
+
+## What Spry is NOT
+
+Setting clear boundaries helps you make the right tool choice:
+
+### Common Misconceptions
+
+| Misconception | Reality |
+|---------------|---------|
+| "Spry replaces TypeScript/Python/Go" | Spry **orchestrates** execution of code written in other languages. It does not replace your programming language. |
+| "Spry is a CI/CD platform" | Spry handles task logic. GitHub Actions, GitLab CI, Jenkins handle triggers, scaling, and infrastructure. You can run Spry *inside* CI/CD. |
+| "Spry is like Jupyter for everything" | Unlike Jupyter, Spry is optimized for batch automation, not interactive exploration. There are no inline outputs or visualizations. |
+| "Spry is a templating engine" | Spry has interpolation (`${...}`), but complex templating is better handled by dedicated tools like Jinja or Handlebars. |
+
+## The Philosophy Behind Spry
+
+Spry is built on a principle from computer science history: **Literate Programming**, pioneered by Donald Knuth in the 1980s.
+
+<Callout>
+"Instead of imagining that our main task is to instruct a computer what to do, let us concentrate rather on explaining to human beings what we want a computer to do."
+
+— Donald Knuth
+</Callout>
+
+**Traditional approach:**
+
+```text
+Code file  →  Does things  →  Comment explains (maybe)
+Docs file  →  Describes things  →  Drifts from code
+```
+
+**Spry approach:**
+
+```text
+Markdown file  →  Explains AND does things  →  Cannot drift (it runs)
+```
+
+When you write a Spryfile, you are simultaneously:
+
+- **Documenting**: Writing what needs to happen and why
+- **Implementing**: Creating the automation that makes it happen
+- **Validating**: Ensuring your documentation stays accurate (if it breaks, you know immediately)
+
+## Pro Tips
+
+<Cards>
+  <Card title="Start Small">
+    Convert one existing shell script to a Spryfile. See how it feels before converting your entire build system.
+  </Card>
+  
+  <Card title="Use Descriptive Task Names">
+    `build-frontend` is better than `bf`. You will thank yourself when running `task ls`.
+  </Card>
+  
+  <Card title="Leverage Dependencies for Safety">
+    If Task B should never run without Task A completing, express that with `--dep`. Do not rely on humans remembering the order.
+  </Card>
+  
+  <Card title="Keep Prose Meaningful">
+    Do not just describe *what* the code does (the code shows that). Explain *why* it does it, what could go wrong, and what to check if it fails.
+  </Card>
+  
+  <Card title="Version Control Your Spryfiles">
+    Since they are plain Markdown, you get clean diffs. You can see exactly how your automation logic evolved.
+  </Card>
+</Cards>

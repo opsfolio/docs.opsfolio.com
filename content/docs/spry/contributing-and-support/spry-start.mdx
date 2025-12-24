@@ -1,0 +1,221 @@
+---
+title: Try Spry Projects
+description: Developer guide to installing Spry and getting started with your first project.
+icon: Rocket
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+
+## Get Access to the Repository
+
+Spry example projects are hosted in a private GitHub repository.  
+Before cloning the repository, ensure that you have requested and received access.
+
+- Repository: https://github.com/programmablemd/spry
+
+---
+
+## Clone the Repository
+
+Clone the Spry source code to your local machine, or fork it into your own GitHub account:
+
+```bash
+git clone https://github.com/programmablemd/spry
+
+```
+---
+
+## Prerequisites
+Before proceeding, ensure that all required prerequisites are installed and configured.
+
+* See: [Prerequisites](../contributing-and-support/contributing-to-spry#prerequisites)
+
+---
+
+## Start a SQL Page Based Spry Project
+
+### 1. Create a Project Directory
+
+Create a new directory for your Spry project and navigate into it:
+
+```bash
+mkdir my-spry-project
+cd my-spry-project
+```
+### 2. Create the Spry CLI Entrypoint
+
+Create a spry.ts file that acts as the Spry CLI launcher:
+
+```bash
+#!/usr/bin/env -S deno run -A --node-modules-dir=auto
+// Use `deno run -A --watch` in the shebang if you're contributing / developing Spry itself.
+
+import { CLI } from "../../../../bin/spry.ts";
+
+await CLI().parse(Deno.args);
+```
+
+### 3. Initialize a New Spry Project
+Run the following command to initialize a new Spry project:
+
+```bash
+./spry.ts sp init 
+```
+This command creates the required project structure and configuration files.
+
+**Sample Spryfile.md:**
+````md
+---
+sqlpage-conf:
+  allow_exec: true
+  port: '${env.PORT}'
+  database_url: '${env.SPRY_DB}'
+  web_root: "./dev-src.auto"
+---
+
+# Sample Spryfile.md
+
+## Environment variables and .envrc
+
+Recommended practice is to keep these values in a local, directory-scoped environment file. If you use direnv (recommended), create a file named `.envrc` in this directory.
+
+POSIX-style example (bash/zsh):
+
+```envrc prepare-env -C ./.envrc --gitignore --descr "Generate .envrc file and add it to local .gitignore if it's not already there"
+export DB_NAME="sqlpage.db"
+export SPRY_DB="sqlite://$DB_NAME?mode=rwc"
+export PORT=9227
+```
+
+Then run `direnv allow` in this project directory to load the `.envrc` into your shell environment. direnv will evaluate `.envrc` only after you explicitly allow it.
+
+## SQLPage Dev / Watch mode
+
+While you're developing, Spry's `dev-src.auto` generator should be used:
+
+```bash prepare-sqlpage-dev --descr "Generate the dev-src.auto directory to work in sqlite dev mode"
+./spry.ts sp spc --fs dev-src.auto --destroy-first --conf sqlpage/sqlpage.json
+```
+
+```bash clean --descr "Clean up the project directory's generated artifacts"
+rm -rf dev-src.auto
+```
+
+In development mode, here’s the `--watch` convenience you can use so that
+whenever you update `Spryfile.md`, it regenerates the SQLPage `dev-src.auto`,
+which is then picked up automatically by the SQLPage server:
+
+```bash
+./spry.ts sp spc --fs dev-src.auto --destroy-first --conf sqlpage/sqlpage.json --watch --with-sqlpage
+```
+
+- --watch` turns on watching all `--md` files passed in (defaults to `Spryfile.md`)
+
+- --with-sqlpage` starts and stops SQLPage after each build
+
+Restarting SQLPage after each re-generation of dev-src.auto is **not**
+necessary, so you can also use `--watch` without `--with-sqlpage` in one
+terminal window while keeping the SQLPage server running in another terminal
+window.
+
+If you're running SQLPage in another terminal window, use:
+
+```bash
+./spry.ts sp spc --fs dev-src.auto --destroy-first --conf sqlpage/sqlpage.json --watch
+```
+
+## SQLPage single database deployment mode
+
+After development is complete, the `dev-src.auto` can be removed and single-database deployment can be used:
+
+```bash deploy --descr "Generate sqlpage_files table upsert SQL and push them to sqlite"
+rm -rf dev-src.auto
+./spry.ts sp spc --package --dialect sqlite --conf sqlpage/sqlpage.json | sqlite3 $DB_NAME
+```
+
+## Start the SQLPage server
+
+```bash
+sqlpage
+```
+
+You can create fenced cells for `bash`, `sql`, etc. here.
+
+TODO: add examples with `doctor`, `prepare-db`, etc.
+
+```sql index.sql { route: { caption: "Home" } }
+select 'card' as component,
+'Spry' as title,
+1 as columns;
+select 'Use Markdown to Code, Build, and Orchestrate Intelligence'  as title,
+'https://sprymd.org' as link,
+'Spry turns Markdown into a programmable medium. Every fenced block, directive, and section executes, verifies, and composes reproducible workflows. From SQL pipelines to AI context graphs, Spry unifies your code, data, and documentation into one living system of record.' as description;
+```
+````
+
+#### Task to Setting Up Environment Variables
+Use the below command to execute the task to generate .envrc file.
+
+```
+./spry.ts rb task prepare-env
+```
+
+Spry relies on environment variables for configuration. You can set these up using `direnv` for automatic loading.
+
+#### Generate the dev-src.auto directory to work in sqlite dev mode
+
+Using the below command to generate the dev-src.auto directory.
+
+```
+./spry.ts sp spc --fs dev-src.auto --destroy-first --conf sqlpage/sqlpage.json
+```
+
+Sample Spryfile.md file contains a task to generate the dev-src.auto directory. It is possible to run the task using the below command.
+
+```
+./spry.ts rb task prepare-sqlpage-dev
+```
+
+#### watch mode
+
+Sample spryfile.md contains a SQL block that defines the home page content using SQLPage components.
+
+**Sample home page content from Spryfile.md :**
+```` md
+```sql index.sql { route: { caption: "Home" } }
+select 'card' as component,
+'Spry' as title,
+1 as columns;
+select 'Use Markdown to Code, Build, and Orchestrate Intelligence'  as title,
+'https://sprymd.org' as link,
+'Spry turns Markdown into a programmable medium. Every fenced block, directive, and section executes, verifies, and composes reproducible workflows. From SQL pipelines to AI context graphs, Spry unifies your code, data, and documentation into one living system of record.' as description;
+```
+````
+To run sql page and enable watch mode, use the below command:
+
+```
+./spry.ts sp spc --fs dev-src.auto --destroy-first --conf sqlpage/sqlpage.json --watch --with-sqlpage
+```
+
+If you're running SQLPage in another terminal window, use:
+```bash
+./spry.ts sp spc --fs dev-src.auto --destroy-first --conf sqlpage/sqlpage.json --watch
+```
+
+
+**Project Structure:**
+
+A typical SQLPage-based Spry project looks like this:
+
+```text
+myproject/
+├── Spryfile.md          # Main executable markdown file
+├── spry.ts              # Spry CLI
+├── sqlpage/
+│   ├── sqlpage.json     # SQLPage configuration
+│   └── migrations/      # Database migrations
+└── dev-src.auto/        # Auto-generated SQLPage source files
+```

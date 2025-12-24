@@ -1,0 +1,300 @@
+---
+title: rb
+description: Complete reference for spry rb command-line tools
+icon: BookOpen
+---
+
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+
+## ls
+
+List all tasks in markdown files.
+
+```bash
+spry rb ls [paths...]
+```
+
+### Options
+
+- `--no-color` - Output without ANSI colors
+
+### Examples
+
+<Tabs items={['Basic', 'Specific File', 'Multiple Files', 'No Color']}>
+  <Tab value="Basic">
+    ```bash
+    spry rb ls
+    ```
+    List all tasks in the current directory.
+  </Tab>
+  <Tab value="Specific File">
+    ```bash
+    spry rb ls Spryfile.md
+    ```
+    List tasks from a specific file.
+  </Tab>
+  <Tab value="Multiple Files">
+    ```bash
+    spry rb ls *.md
+    ```
+    List tasks from all markdown files.
+  </Tab>
+  <Tab value="No Color">
+    ```bash
+    spry rb ls --no-color
+    ```
+    Output without ANSI colors.
+  </Tab>
+</Tabs>
+
+---
+
+## task
+
+Execute specific task and its dependencies.
+
+```bash
+spry rb task <taskId> [paths...]
+```
+
+### Options
+
+- `--verbose <style>` - Output format: `plain` (simple text), `rich` (colored/formatted), `markdown` (markdown formatted)
+- `--summarize` - Generate JSON summary of execution results
+
+### Examples
+
+<Tabs items={['Basic', 'Verbose', 'Summary', 'Combined']}>
+  <Tab value="Basic">
+    ```bash
+    spry rb task task-1
+    ```
+    Run a specific task.
+  </Tab>
+  <Tab value="Verbose">
+    ```bash
+    spry rb task task-1 --verbose rich
+    ```
+    Run with detailed colored output.
+  </Tab>
+  <Tab value="Summary">
+    ```bash
+    spry rb task task-1 --summarize
+    ```
+    Run with JSON summary of results.
+  </Tab>
+  <Tab value="Combined">
+    ```bash
+    spry rb task task-1 --verbose rich --summarize
+    ```
+    Run with all options enabled.
+  </Tab>
+</Tabs>
+
+---
+
+## run
+
+Execute all code cells in markdown documents as a DAG (Directed Acyclic Graph).
+
+```bash
+spry rb run [paths...]
+```
+
+### Options
+
+- `-h, --help` - Show help information
+- `--verbose <style>` - Emit information messages verbosely
+  - `plain` - Plain text output
+  - `rich` - Colorized/formatted output
+  - `markdown` - Markdown formatted output
+- `--graph <name>` - Run only nodes in provided graph(s)
+- `--summarize` - Emit summary after execution in JSON format
+- `--visualize <style>` - Visualize the DAG before/during execution
+  - `ascii-tree` - Tree structure diagram
+  - `ascii-workflow` - Workflow sequence diagram
+  - `ascii-flowchart` - Detailed flowchart format
+  - `mermaid-js` - Mermaid graph syntax
+
+### Examples
+
+<Tabs items={['Basic', 'Verbose', 'Graphs', 'Visualization', 'Advanced']}>
+  <Tab value="Basic">
+    ```bash
+    # Run all tasks in order
+    spry rb run
+
+    # Run from specific file
+    spry rb run Spryfile.md
+    ```
+  </Tab>
+  <Tab value="Verbose">
+    ```bash
+    # Plain text output
+    spry rb run --verbose plain
+
+    # Colored detailed output
+    spry rb run --verbose rich
+
+    # Markdown formatted output
+    spry rb run --verbose markdown
+    ```
+  </Tab>
+  <Tab value="Graphs">
+    ```bash
+    # Run only Graph A tasks
+    spry rb run --graph A
+
+    # Run Graphs A and B
+    spry rb run --graph "A,B"
+    ```
+  </Tab>
+  <Tab value="Visualization">
+    ```bash
+    # Show task tree structure
+    spry rb run --visualize ascii-tree
+
+    # Show workflow sequence
+    spry rb run --visualize ascii-workflow
+
+    # Show detailed flowchart
+    spry rb run --visualize ascii-flowchart
+
+    # Show Mermaid diagram
+    spry rb run --visualize mermaid-js
+    ```
+  </Tab>
+  <Tab value="Advanced">
+    ```bash
+    # JSON execution summary
+    spry rb run --summarize
+
+    # Output with visualization
+    spry rb run --verbose rich --visualize ascii-workflow
+
+    # Save execution log
+    spry rb run --verbose rich --summarize > execution.json
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## issues
+
+Display errors, warnings, and validation issues in markdown documents.
+
+```bash
+spry rb issues [paths...]
+```
+
+### What It Detects
+
+- Malformed code block syntax
+- Invalid task IDs
+- Circular dependencies
+- Missing task references
+- Duplicate task names
+- Syntax errors
+
+### Examples
+
+```bash
+# Check current file
+spry rb issues
+
+# Check specific file
+spry rb issues Spryfile.md
+
+# Check all markdown files
+spry rb issues *.md
+```
+
+### Output
+
+**No Issues:**
+```
+✓ No issues found
+```
+
+**With Issues:**
+```
+Spryfile.md:
+  Line 42: ERROR - Circular dependency: task-a → task-b → task-a
+  Line 58: WARNING - Undefined task reference 'missing-task'
+  Line 75: ERROR - Missing language specifier in code block
+```
+
+### Usage Patterns
+
+#### Validate Before Running
+
+```bash
+spry rb issues && spry rb run
+```
+
+#### In Scripts
+
+```bash
+if spry rb issues > /dev/null; then
+  echo "Ready to run"
+  spry rb run
+else
+  echo "Fix issues first"
+fi
+```
+
+<Callout type="info">
+  Always run `spry rb issues` before executing tasks to catch potential problems early.
+</Callout>
+
+---
+
+## report
+
+Execute all code cells and return results as new markdown.
+
+```bash
+spry rb report [paths...]
+```
+
+### Description
+
+Executes all code cells in markdown documents and generates new markdown with embedded outputs. Useful for creating executable documentation and reports with live data.
+
+### Examples
+
+```bash
+# Generate report from current directory
+spry rb report
+
+# Generate report from specific file
+spry rb report Spryfile.md
+
+# Generate reports from multiple files
+spry rb report *.md
+```
+
+### Output Example
+
+**Before:**
+````markdown
+```bash
+echo "Hello"
+```
+````
+
+**After:**
+````markdown
+```bash
+echo "Hello"
+```
+```output
+Hello
+```
+````
+
+<Callout type="warn">
+  The `report` command will execute all code cells. Ensure your code is safe to run before generating reports.
+</Callout>

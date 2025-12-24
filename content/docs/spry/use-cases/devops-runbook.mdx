@@ -1,0 +1,292 @@
+---
+title: Executable Runbooks (DevOps)
+description: Automated deployment workflows with dependency management
+icon: Server
+index: 3
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+
+## Recipe 3: Executable Runbooks (DevOps)
+
+**Goal:** Define an automated server health check and deployment workflow with dependency management, error handling, and rollback capabilities.
+
+<Callout type="success">
+**Runbook Benefits**
+
+Executable runbooks capture DevOps procedures as code, making them testable, version-controlled, and consistently executable. No more copy-pasting commands from wiki pages!
+</Callout>
+
+<Steps>
+  <Step>
+    ## Create the Runbook
+    
+    Create `deployment-runbook.md`:
+
+    ````markdown
+    ---
+    runbook:
+      name: Production Deployment
+      version: 1.0.0
+      author: DevOps Team
+    ---
+
+    # Production Deployment Runbook
+
+    This runbook automates the deployment process with health checks.
+
+    ## Pre-Flight Checks
+
+    ```bash check-git-status --descr "Verify clean git working directory"
+    #!/usr/bin/env -S bash
+    set -e
+
+    if [ -n "$(git status --porcelain)" ]; then
+      echo "ERROR: Working directory is not clean"
+      git status --short
+      exit 1
+    fi
+
+    echo "OK: Git working directory is clean"
+    ```
+
+    ```bash check-tests --descr "Run test suite" --dep check-git-status
+    #!/usr/bin/env -S bash
+    set -e
+
+    echo "Running test suite..."
+    npm test
+
+    if [ $? -eq 0 ]; then
+      echo "OK: All tests passed"
+    else
+      echo "ERROR: Tests failed"
+      exit 1
+    fi
+    ```
+
+    ## Build Phase
+
+    ```bash build-app --descr "Build production artifacts" --dep check-tests
+    #!/usr/bin/env -S bash
+    set -e
+
+    echo "Building production artifacts..."
+    npm run build
+
+    echo "OK: Build completed successfully"
+    ls -la dist/
+    ```
+
+    ## Health Check
+
+    ```bash health-check --descr "Verify server health"
+    #!/usr/bin/env -S bash
+    set -e
+
+    SERVER_URL="${SERVER_URL:-http://localhost:3000}"
+
+    echo "Checking server health at $SERVER_URL..."
+
+    response=$(curl -s -o /dev/null -w "%{http_code}" "$SERVER_URL/health")
+
+    if [ "$response" = "200" ]; then
+      echo "OK: Server is healthy (HTTP $response)"
+    else
+      echo "ERROR: Server health check failed (HTTP $response)"
+      exit 1
+    fi
+    ```
+
+    ## Deployment
+
+    ```bash deploy --descr "Deploy to production" --dep build-app,health-check
+    #!/usr/bin/env -S bash
+    set -e
+
+    echo "Deploying to production..."
+
+    # Example: Deploy to server
+    rsync -avz --delete dist/ user@server:/var/www/app/
+
+    echo "Restarting application..."
+    ssh user@server 'systemctl restart app'
+
+    echo "OK: Deployment completed"
+    ```
+
+    ## Post-Deployment Verification
+
+    ```bash verify-deployment --descr "Verify deployment success" --dep deploy
+    #!/usr/bin/env -S bash
+    set -e
+
+    echo "Verifying deployment..."
+    sleep 10  # Wait for app to start
+
+    response=$(curl -s -o /dev/null -w "%{http_code}" "http://production-server/health")
+
+    if [ "$response" = "200" ]; then
+      echo "OK: Deployment verified successfully"
+    else
+      echo "ERROR: Post-deployment verification failed"
+      exit 1
+    fi
+    ```
+
+    ## Rollback (Manual)
+
+    ```bash rollback --descr "Rollback to previous version"
+    #!/usr/bin/env -S bash
+    set -e
+
+    echo "Rolling back to previous version..."
+    ssh user@server 'cd /var/www/app && git checkout HEAD~1 && systemctl restart app'
+
+    echo "Rollback completed"
+    ```
+    ````
+
+    <Callout>
+    **Dependency Graph**
+
+    The `--dep` flag creates a dependency graph, ensuring tasks run in the correct order. Spry automatically builds and executes the DAG.
+    </Callout>
+  </Step>
+
+  <Step>
+    ## Visualize the Execution Plan
+    
+    Before running, view the task dependency graph:
+
+    ```bash
+    # List all tasks and their dependencies
+    spry rb ls deployment-runbook.md
+
+    # Visualize the DAG
+    spry rb run deployment-runbook.md --visualize plain
+    ```
+
+    **Example Output:**
+    ```
+    Execution Plan:
+    Layer 0: check-git-status, health-check
+    Layer 1: check-tests
+    Layer 2: build-app
+    Layer 3: deploy
+    Layer 4: verify-deployment
+    ```
+  </Step>
+
+  <Step>
+    ## Execute the Runbook
+    
+    Run the complete deployment pipeline:
+
+    <Tabs items={['Full Pipeline', 'Specific Task', 'With Summary']}>
+      <Tab value="Full Pipeline">
+        ```bash
+        # Execute all tasks in dependency order
+        spry rb run deployment-runbook.md --verbose rich
+        ```
+
+        This runs the entire pipeline with rich progress output, stopping on any error.
+      </Tab>
+
+      <Tab value="Specific Task">
+        ```bash
+        # Run only the deploy task (and its dependencies)
+        spry rb task deploy deployment-runbook.md
+        ```
+
+        This executes only `deploy` and any tasks it depends on.
+      </Tab>
+
+      <Tab value="With Summary">
+        ```bash
+        # Execute with concise summary
+        spry rb run deployment-runbook.md --summarize
+        ```
+
+        Shows a summary of task execution with success/failure indicators.
+      </Tab>
+    </Tabs>
+  </Step>
+
+  <Step>
+    ## Handle Failures and Rollback
+    
+    If deployment fails, execute the rollback task:
+
+    ```bash
+    # Manual rollback
+    spry rb task rollback deployment-runbook.md
+    ```
+
+    <Callout type="warning">
+    **Error Handling**
+
+    All tasks use `set -e` to fail fast on errors. The runbook stops at the first failure, preventing partial deployments and making it safe to retry.
+    </Callout>
+  </Step>
+</Steps>
+
+## Advanced Runbook Patterns
+
+<Tabs items={['Environments', 'Notifications', 'Approval Gates']}>
+  <Tab value="Environments">
+    **Multi-Environment Deployments**
+
+    Use environment variables to target different environments:
+
+    ```bash
+    # Development
+    ENV=dev spry rb run deployment-runbook.md
+
+    # Staging
+    ENV=staging spry rb run deployment-runbook.md
+
+    # Production
+    ENV=production spry rb run deployment-runbook.md
+    ```
+
+    In your runbook:
+    ```bash
+    SERVER_URL="${SERVER_URL:-http://${ENV:-dev}.example.com}"
+    ```
+  </Tab>
+
+  <Tab value="Notifications">
+    **Send Notifications**
+
+    Add notification tasks for Slack, email, or PagerDuty:
+
+    ```bash
+    #!/usr/bin/env -S bash
+    # Notify on deployment completion
+    curl -X POST https://hooks.slack.com/services/YOUR/WEBHOOK/URL \
+      -H 'Content-Type: application/json' \
+      -d "{\"text\":\"Deployment completed successfully to ${ENV}\"}"
+    ```
+  </Tab>
+
+  <Tab value="Approval Gates">
+    **Manual Approval Gates**
+
+    Add interactive approval steps:
+
+    ```bash
+    #!/usr/bin/env -S bash
+    echo "About to deploy to PRODUCTION"
+    echo "Type 'yes' to continue:"
+    read confirmation
+
+    if [ "$confirmation" != "yes" ]; then
+      echo "Deployment cancelled"
+      exit 1
+    fi
+    ```
+  </Tab>
+</Tabs>

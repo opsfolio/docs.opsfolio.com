@@ -1,0 +1,854 @@
+---
+title: Fundamental Building Blocks
+description: Reusable code snippets and template interpolation in Spry
+icon: Building2
+index: 3
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+Spry transforms Markdown documents into executable workflows. This guide explains the fundamental building blocks that make this possible.
+
+## Cells
+
+### What is a Cell?
+
+A **cell** is any fenced code block in Markdown. Cells are the atomic units of content and execution in Spry.
+
+**Basic Example:**
+
+```markdown
+```bash task-name --descr "Description of the task"
+echo "This is a cell"
+` ` `
+```
+
+### Cell Types
+
+Spry recognizes four types of cells:
+
+| Type | Purpose | Example |
+|------|---------|---------|
+| **Code Cell** | Any fenced block with a language | `` ```python `` |
+| **Task Cell** | Executable cell with identity | `` ```bash build `` |
+| **Partial Cell** | Reusable code fragment | `` ```sql PARTIAL header `` |
+| **Content Cell** | Non-executable content | `` ```json config `` |
+
+### Cell Anatomy
+
+Every cell has multiple parts that define its behavior:
+
+```markdown
+```bash task-name --flag value { "attr": "value" } --desc "Description of the task"
+#!/usr/bin/env bash
+echo "cell content"
+` ` `
+```
+
+**Component Breakdown:**
+
+```text
+┌─ Language identifier (required)
+│       ┌─ Task identity (optional, first bare token)
+│       │         ┌─ Processing Instructions (optional, flags)
+│       │         │              ┌─ Attributes (optional, JSON5)
+│       │         │              │
+bash task-name --flag value { "attr": "value" }
+```
+
+| Component | Description | Required |
+|-----------|-------------|----------|
+| Language | Execution mode (bash, sql, python, etc.) | Yes |
+| Identity | Unique task name | For tasks |
+| Flags | Command-line style options | Optional |
+| Attributes | Structured JSON5 metadata | Optional |
+| Content | The actual code or content | Yes |
+
+### Line Numbers and Source Tracking
+
+Cells track their position in the source file:
+
+```typescript
+interface CodeCell {
+  startLine: number  // Where cell begins (including fence)
+  endLine: number    // Where cell ends (including closing fence)
+  source: string     // The actual content
+}
+```
+
+This enables:
+
+- Accurate error reporting
+- Source code linking
+- Debug information
+
+## Tasks
+
+### What is a Task?
+
+A **task** is an executable cell with an identity. Tasks are the execution units in Spry workflows.
+
+**Simple Task:**
+
+```markdown
+```bash greet --descr "Say hello"
+echo "Hello, World!"
+` ` `
+```
+
+**Task Identity Rules:**
+
+- First bare token after language becomes the identity
+- Must be unique within a document
+- Used for dependency references
+- Follows: `[language] [identity] [flags...]`
+
+### Task Nature
+
+Tasks have two natures that determine how they're handled:
+
+| Nature | Description | Example |
+|--------|-------------|---------|
+| **TASK** | Executable code that runs | Shell scripts, Python |
+| **CONTENT** | Generates content but doesn't execute | SQL queries, HTML |
+
+### Task Lifecycle
+
+```text
+Define Task → Parse Metadata → Build Dependencies → Execute → Capture Output
+```
+
+**Example Task Lifecycle:**
+
+```markdown
+```bash build --capture output.txt --dep compile
+npm run build > output.txt
+` ` `
+```
+
+<Steps>
+  <Step>
+    ### Define
+    Task named "build" with dependencies
+  </Step>
+  
+  <Step>
+    ### Parse
+    Extract flags (capture, dep)
+  </Step>
+  
+  <Step>
+    ### Dependencies
+    Wait for "compile" task
+  </Step>
+  
+  <Step>
+    ### Execute
+    Run npm build command
+  </Step>
+  
+  <Step>
+    ### Capture
+    Save output to output.txt
+  </Step>
+</Steps>
+
+### Task Directives
+
+Task directives are extracted metadata describing how to execute a cell:
+
+```typescript
+interface TaskDirective {
+  nature: "TASK" | "CONTENT"   // Execution vs generation
+  identity: string              // Unique name
+  language: LanguageSpec        // How to execute
+  deps?: string[]               // Dependencies
+}
+```
+
+**Example:**
+
+```markdown
+```bash deploy --dep build --dep test
+kubectl apply -f deployment.yml
+` ` `
+```
+
+Produces directive:
+
+```typescript
+{
+  nature: "TASK",
+  identity: "deploy",
+  language: { name: "bash", ... },
+  deps: ["build", "test"]
+}
+```
+
+## Processing Instructions
+
+### What are Processing Instructions?
+
+**Processing Instructions (PI)** are POSIX-style command-line flags embedded in code fence metadata. They control task behavior without modifying the code content.
+
+### Syntax Overview
+
+```text
+language [identity] [flags...] [attributes]
+```
+
+**Example:**
+
+```markdown
+```bash task-name --long-flag value -s --bool-flag { "json": "attrs" }
+content
+` ` `
+```
+
+### Flag Formats
+
+Spry supports multiple flag styles:
+
+<Tabs items={['Boolean Flags', 'Key-Value Flags', 'Repeated Flags']}>
+  <Tab value="Boolean Flags">
+    ```markdown
+    ```bash task --silent --verbose
+    # Flags: { silent: true, verbose: true }
+    ` ` `
+    ```
+    
+    Short form:
+    
+    ```markdown
+    ```bash task -s -v
+    # Flags: { s: true, v: true }
+    ` ` `
+    ```
+  </Tab>
+  
+  <Tab value="Key-Value Flags">
+    Long form with space:
+    
+    ```markdown
+    ```bash task --descr "Task description"
+    # Flags: { descr: "Task description" }
+    ` ` `
+    ```
+    
+    Long form with equals:
+    
+    ```markdown
+    ```bash task --env=production
+    # Flags: { env: "production" }
+    ` ` `
+    ```
+    
+    Short form:
+    
+    ```markdown
+    ```bash task -C output.txt
+    # Flags: { C: "output.txt" }
+    ` ` `
+    ```
+  </Tab>
+  
+  <Tab value="Repeated Flags">
+    Multiple values for same flag:
+    
+    ```markdown
+    ```bash task --dep task1 --dep task2 --dep task3
+    # Flags: { dep: ["task1", "task2", "task3"] }
+    ` ` `
+    ```
+    
+    Flexible text (comma-separated or array):
+    
+    ```markdown
+    ```bash task --dep "task1, task2, task3"
+    # Or
+    ```bash task --dep task1 --dep task2
+    # Both produce: { dep: ["task1", "task2", "task3"] }
+    ` ` `
+    ```
+  </Tab>
+</Tabs>
+
+### Common Flag Reference
+
+#### Dependency Management
+
+| Flag | Short | Type | Description |
+|------|-------|------|-------------|
+| `--dep` | `-D` | string[] | Declare dependency on another task |
+| `--injected-dep` | | string | Inject as dependency using regex pattern |
+
+#### Output Capture
+
+| Flag | Short | Type | Description |
+|------|-------|------|-------------|
+| `--capture` | | string | Capture output to file |
+| `-C` | | string | Capture output to memory variable |
+| `--gitignore` | | boolean | Add captured file to .gitignore |
+
+#### Execution Control
+
+| Flag | Short | Type | Description |
+|------|-------|------|-------------|
+| `--interpolate` | `-I` | boolean | Enable template interpolation |
+| `--silent` | | boolean | Suppress output |
+| `--descr` | | string | Task description |
+
+#### Graph Organization
+
+| Flag | Short | Type | Description |
+|------|-------|------|-------------|
+| `--graph` | `-G` | string | Assign task to named graph |
+
+### Flag Parsing Rules
+
+1. **Order matters**: Positional tokens come first, flags after
+2. **Last wins**: Repeated non-array flags use last value
+3. **Arrays accumulate**: `--dep` flags combine into array
+4. **Quotes preserved**: Quoted strings keep spaces
+5. **Numbers coerced**: Numeric strings become numbers (if enabled)
+
+## Attributes
+
+### What are Attributes?
+
+**Attributes** are JSON5 objects at the end of fence metadata. They provide structured, typed metadata that's more complex than simple flags.
+
+### Syntax
+
+```markdown
+```language identity --flags { "key": "value", nested: { obj: true } }
+content
+` ` `
+```
+
+### JSON5 Features
+
+JSON5 is more flexible than JSON:
+
+```markdown
+```sql page.sql {
+  route: {
+    caption: "Home Page",
+    description: "Main landing page"
+  },
+  cache: true,
+  ttl: 3600,
+  // Comments allowed
+  'single-quotes': 'work',
+  trailingComma: 'ok',
+}
+SELECT * FROM pages;
+` ` `
+```
+
+### When to Use Attributes vs Flags
+
+| Scenario | Use | Example |
+|----------|-----|---------|
+| Simple boolean | Flag | `--silent` |
+| Simple string | Flag | `--descr "text"` |
+| Nested objects | Attributes | `{ route: { path: "/" } }` |
+| Arrays of objects | Attributes | `{ items: [{}, {}] }` |
+| Type-safe config | Attributes | `{ port: 8080, debug: true }` |
+
+## Frontmatter
+
+### What is Frontmatter?
+
+**Frontmatter** is YAML metadata at the very top of a Markdown file. It provides document-level configuration.
+
+### Syntax Representation
+
+```markdown
+---
+title: My Spryfile
+version: 1.0
+sqlpage-conf:
+  database_url: sqlite://data.db
+  port: 9227
+custom:
+  - value1
+  - value2
+---
+
+# Document starts here
+
+Content...
+```
+
+### Common Frontmatter Fields
+
+<Tabs items={['SQLPage Configuration', 'Document Metadata', 'Custom Configuration']}>
+  <Tab value="SQLPage Configuration">
+    ```yaml
+    ---
+    sqlpage-conf:
+      database_url: postgresql://localhost/mydb
+      port: 9227
+      web_root: ./public
+    ---
+    ```
+  </Tab>
+  
+  <Tab value="Document Metadata">
+    ```yaml
+    ---
+    title: Deployment Runbook
+    author: DevOps Team
+    version: 2.1.0
+    tags:
+      - deployment
+      - production
+    ---
+    ```
+  </Tab>
+  
+  <Tab value="Custom Configuration">
+    ```yaml
+    ---
+    app:
+      name: MyApp
+      environment: staging
+      regions:
+        - us-east-1
+        - eu-west-1
+    ---
+    ```
+  </Tab>
+</Tabs>
+
+### Accessing Frontmatter
+
+In interpolated cells:
+
+```markdown
+```bash deploy -I
+echo "Deploying ${fm.app.name} to ${fm.app.environment}"
+` ` `
+```
+
+In TypeScript code:
+
+```typescript
+interface MyFrontmatter {
+  app: {
+    name: string
+    environment: string
+  }
+}
+
+const notebook: Notebook<string, MyFrontmatter> = /* ... */
+console.log(notebook.fm.app.name)
+```
+
+## Dependency Graphs
+
+### What is a Dependency Graph?
+
+Tasks form a **Directed Acyclic Graph (DAG)** based on their dependencies. The graph determines execution order.
+
+### Basic Dependencies
+
+```markdown
+```bash compile
+gcc main.c -o main
+` ` `
+
+```bash test --dep compile
+./main --test
+` ` `
+
+```bash deploy --dep test
+scp main server:/app/
+` ` `
+```
+
+**Graph Structure:**
+
+```text
+compile → test → deploy
+```
+
+### Multiple Dependencies
+
+```markdown
+```bash lint --descr "Lint the code"
+eslint src/
+` ` `
+
+```bash typecheck --descr "Type check the code"
+tsc --noEmit
+` ` `
+
+```bash build --dep lint --dep typecheck --descr "Build the project"
+npm run build
+` ` `
+```
+
+**Graph Structure:**
+
+```text
+lint ───────┐
+            ├──→ build
+typecheck ──┘
+```
+
+### Execution Order
+
+Spry uses **topological sort** to determine execution order:
+
+<Steps>
+  <Step>
+    Find tasks with no dependencies (entry points)
+  </Step>
+  
+  <Step>
+    Execute them (potentially in parallel)
+  </Step>
+  
+  <Step>
+    Remove from graph
+  </Step>
+  
+  <Step>
+    Repeat until all tasks complete
+  </Step>
+</Steps>
+
+**Example:**
+
+```markdown
+```bash a --descr "Task A"
+echo "A"
+` ` `
+
+```bash b --dep a --descr "Task B"
+echo "B"
+` ` `
+
+```bash c --dep a --descr "Task C"
+echo "C"
+` ` `
+
+```bash d --dep b --dep c --descr "Task D"
+echo "D"
+` ` `
+```
+
+**Execution order:**
+
+```text
+Step 1: a          (no deps)
+Step 2: b, c       (only depend on a, can run in parallel)
+Step 3: d          (depends on b and c)
+```
+
+### Cycle Detection
+
+Spry prevents circular dependencies:
+
+```markdown
+```bash task-a --dep task-b --descr "Task A"
+echo "A"
+` ` `
+
+```bash task-b --dep task-a --descr "Task B"
+echo "B"
+` ` `
+```
+
+<Callout type="warn">
+**Error:**
+```text
+Error: Circular dependency detected: task-a → task-b → task-a
+```
+</Callout>
+
+### Named Graphs
+
+Isolate tasks into separate graphs:
+
+```markdown
+```bash build
+npm run build
+` ` `
+
+```bash test --dep build --descr "Run tests"
+npm test
+` ` `
+
+```bash clean --graph maintenance --descr "Clean build artifacts"
+rm -rf dist/
+` ` `
+
+```bash reset --graph maintenance --dep clean --descr "Reset environment"
+git clean -fdx
+` ` `
+```
+
+**Two separate graphs:**
+
+- **Main graph**: build → test
+- **Maintenance graph**: clean → reset
+
+Run specific graph:
+
+```bash
+spry rb run file.md              # Runs main graph
+spry rb run file.md --graph maintenance  # Runs maintenance graph
+```
+
+## Partials
+
+### What are Partials?
+
+**Partials** are reusable code fragments that can be included in other cells, similar to functions or templates.
+
+### Defining a Partial
+
+```markdown
+```sql PARTIAL header.sql
+SELECT 'shell' AS component, 'My App' AS title;
+` ` `
+```
+
+**Key elements:**
+
+- `PARTIAL` keyword (uppercase, acts as identity)
+- Name for reference (`header.sql`)
+- Optional `--inject` pattern for auto-inclusion
+
+### Manual Inclusion
+
+Use in cells with interpolation enabled:
+
+```markdown
+```sql page.sql -I
+${await partial("header.sql")}
+SELECT 'list' AS component;
+SELECT * FROM users;
+` ` `
+```
+
+**Rendered output:**
+
+```sql
+SELECT 'shell' AS component, 'My App' AS title;
+SELECT 'list' AS component;
+SELECT * FROM users;
+```
+
+### Automatic Injection
+
+Partials with `--inject` pattern are automatically prepended:
+
+```markdown
+```sql PARTIAL layout.sql --inject **/*.sql
+SELECT 'shell' AS component, 'App' AS title;
+` ` `
+
+```sql index.sql
+SELECT 'Welcome' AS message;
+` ` `
+
+```sql about.sql
+SELECT 'About' AS message;
+` ` `
+```
+
+**Both cells automatically become:**
+
+```sql
+SELECT 'shell' AS component, 'App' AS title;
+SELECT 'Welcome' AS message;
+```
+
+### Injection Patterns
+
+Glob patterns control where partials inject:
+
+| Pattern | Matches |
+|---------|---------|
+| `**/*.sql` | All SQL cells |
+| `pages/*.sql` | SQL cells in "pages" context |
+| `api-*.sql` | SQL cells starting with "api-" |
+| `*.ts` | All TypeScript cells |
+
+## Interpolation
+
+### What is Interpolation?
+
+**Interpolation** allows embedding dynamic JavaScript expressions in cell content using template literal syntax.
+
+### Enabling Interpolation
+
+Use `--interpolate` or `-I`:
+
+```markdown
+```bash deploy -I --descr "Deploy the app"
+echo "Deploying version ${env.APP_VERSION}"
+` ` `
+```
+
+### Template Syntax
+
+Uses JavaScript template literal syntax:
+
+```markdown
+```bash greet -I --descr "Greet user"
+echo "Hello, ${env.USER || 'World'}!"
+echo "Date: ${new Date().toISOString()}"
+` ` `
+```
+
+### Available Context
+
+<Cards>
+  <Card title="Environment Variables">
+    ```markdown
+    ```bash -I --descr "Show env vars"
+    echo "Home: ${env.HOME}"
+    echo "Path: ${env.PATH}"
+    ` ` `
+    ```
+  </Card>
+  
+  <Card title="Frontmatter Access">
+    ```markdown
+    ```bash -I --descr "Show frontmatter"
+    echo "App: ${fm.app.name} v${fm.app.version}"
+    ` ` `
+    ```
+  </Card>
+  
+  <Card title="Captured Output">
+    ```markdown
+    ```bash deploy -I --dep get-version --descr "Deploy app"
+    docker build -t myapp:${captured.version} .
+    ` ` `
+    ```
+  </Card>
+  
+  <Card title="Partial Inclusion">
+    ```markdown
+    ```sql page.sql -I
+    ${await partial("header.sql")}
+    SELECT * FROM data;
+    ` ` `
+    ```
+  </Card>
+</Cards>
+
+## Notebooks and Playbooks
+
+### Document Hierarchy
+
+Spry organizes Markdown into structured levels:
+
+```text
+Raw Markdown
+    ↓ Parse
+MDAST (Abstract Syntax Tree)
+    ↓ Extract
+Notebook (cells + frontmatter)
+    ↓ Section
+Playbook (sections + context)
+    ↓ Analyze
+TaskDirectives (executable)
+```
+
+### Notebook
+
+A **Notebook** represents a parsed Markdown document.
+
+**Structure:**
+
+```typescript
+interface Notebook<Provenance, Frontmatter, CellAttrs> {
+  provenance: Provenance       // File path or identifier
+  fm: Frontmatter              // Parsed frontmatter
+  cells: NotebookCodeCell[]    // All code cells
+  issues: Issue[]              // Parsing warnings/errors
+}
+```
+
+### Playbook
+
+A **Playbook** extends Notebook with section structure.
+
+**Structure:**
+
+```typescript
+interface Playbook<Provenance, Frontmatter, CellAttrs> {
+  notebook: Notebook<...>      // Underlying notebook
+  sections: Section[]          // Document sections
+  cells: PlaybookCodeCell[]    // Cells with section context
+}
+```
+
+**Section Boundaries:**
+
+Sections are created by:
+
+1. Level 1 headings (`#`)
+2. Horizontal rules (`---`)
+3. Document start/end
+
+## Summary
+
+### Core Concepts Quick Reference
+
+| Concept | Purpose | Key Feature |
+|---------|---------|-------------|
+| **Cell** | Basic unit | Fenced code block |
+| **Task** | Executable unit | Identity + execution |
+| **Processing Instructions** | Task configuration | POSIX-style flags |
+| **Attributes** | Structured metadata | JSON5 objects |
+| **Frontmatter** | Document config | YAML header |
+| **Dependency Graph** | Execution order | DAG with topological sort |
+| **Partial** | Reusable code | Include/inject patterns |
+| **Interpolation** | Dynamic content | Template literals |
+| **Notebook** | Document model | Cells + frontmatter |
+| **Playbook** | Structured document | Sections + context |
+
+### Learning Path
+
+<Steps>
+  <Step>
+    ### Start Simple
+    Basic cells and tasks
+  </Step>
+  
+  <Step>
+    ### Add Dependencies
+    Build task graphs
+  </Step>
+  
+  <Step>
+    ### Use Partials
+    Reuse common code
+  </Step>
+  
+  <Step>
+    ### Enable Interpolation
+    Dynamic content
+  </Step>
+  
+  <Step>
+    ### Structure with Sections
+    Organize complex workflows
+  </Step>
+  
+  <Step>
+    ### Add Attributes
+    Type-safe configuration
+  </Step>
+</Steps>

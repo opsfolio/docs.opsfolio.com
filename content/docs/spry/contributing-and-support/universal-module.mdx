@@ -1,0 +1,918 @@
+---
+title: Universal Module
+description: Cross-cutting utilities and core functionality in Spry.
+icon: Package
+index: 9
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+
+## Introduction
+
+The **universal** module serves as the foundation of Spry, providing cross-cutting utilities and core functionality used throughout the entire system. Think of it as the "standard library" for Spry.
+
+---
+
+## Purpose
+
+The universal module provides essential infrastructure for:
+
+- **DAG-based task execution** - Build and execute dependency graphs for tasks that must run in a specific order
+- **Shell command execution** - Run system commands with rich event tracking and output handling
+- **File system utilities** - Work with files, paths, and directory trees
+- **Terminal UI components** - Build rich, interactive command-line interfaces
+- **Configuration parsing** - Handle various config formats (.gitignore, properties files, JSON schemas)
+- **Shared helpers** - Common utilities for strings, objects, interpolation, and more
+
+---
+
+## Directory Structure
+
+```text
+lib/universal/
+├── task.ts                  # DAG execution engine - core task orchestration
+├── event-bus.ts             # Typed event bus - pub/sub messaging
+├── shell.ts                 # Shell command execution with events
+├── depends.ts               # Dependency resolution utilities
+├── code.ts                  # Code block utilities
+├── code-comments.ts         # Comment extraction and handling
+├── cline.ts                 # Command-line parsing for code fences
+├── content-acquisition.ts   # Content loading from various sources
+├── text-utils.ts            # String manipulation utilities
+├── tmpl-literal-aide.ts     # Template literal helpers
+├── json-stringify-aide.ts   # JSON serialization utilities
+├── interpolate.ts           # String interpolation utilities
+├── resource.ts              # Resource abstraction layer
+├── path-tree.ts             # File tree representation
+├── path-tree-tabular.ts     # Tabular display of path trees
+├── gitignore.ts             # .gitignore file management
+├── properties.ts            # Properties file parsing
+├── zod-aide.ts              # Zod schema utilities
+├── lister-tabular-tui.ts    # Tabular terminal UI builder
+├── lister-tree-tui.ts       # Tree-based terminal UI builder
+├── task-visuals.ts          # DAG visualization (ASCII, Mermaid)
+├── os-user.ts               # Operating system user information
+├── doctor.ts                # System diagnostics and health checks
+├── watcher.ts               # File system watching with debouncing
+├── collectable.ts           # Async collection utilities
+├── pmd-shebang.ts           # Programmable Markdown shebang handling
+├── posix-pi.ts              # POSIX process inspection
+├── merge.ts                 # Deep object merging
+├── reverse-proxy-simulate.ts # Reverse proxy simulation
+├── version.ts               # Version management from git tags
+└── sql-text.ts              # SQL text utilities
+```
+
+---
+
+## Core Modules
+
+### task.ts - DAG Execution Engine
+
+The heart of Spry's task system, implementing a Directed Acyclic Graph (DAG) execution engine that handles task dependencies and parallel execution.
+
+#### Building Execution Plans
+
+```typescript
+import { executionPlan, executionSubplan, executeDAG } from "./task.ts";
+
+// Create full execution plan from all tasks
+const plan = executionPlan(tasks);
+
+// Create subplan for specific targets (useful for "spry build test")
+const subplan = executionSubplan(plan, ["build", "test"]);
+
+// Execute the plan - tasks run in dependency order with parallelization
+const results = await executeDAG(plan, async (task) => {
+  // Your task execution logic
+  console.log(`Running: ${task.taskId()}`);
+  // Return execution result
+  return { success: true, output: "done" };
+});
+```
+
+<Callout type="info">
+**Key Concepts:**
+
+- **Topological Sorting** - Tasks are ordered so dependencies always run first
+- **Parallel Execution** - Independent tasks run concurrently for speed
+- **Cycle Detection** - Circular dependencies are caught and reported
+- **Partial Plans** - Execute only what's needed for specific targets
+</Callout>
+
+#### Task Interface
+
+Every task must implement this interface:
+
+```typescript
+interface Task {
+  taskId(): string;           // Unique identifier
+  dependencies(): string[];    // Task IDs this depends on
+}
+```
+
+#### Event Buses for Progress Tracking
+
+Monitor task execution with different verbosity levels:
+
+```typescript
+import { verboseInfoTaskEventBus, errorOnlyTaskEventBus } from "./task.ts";
+
+// Rich output with progress indicators, timing, and status
+const bus = verboseInfoTaskEventBus({ style: "rich" });
+
+// Minimal output - only show errors
+const errorBus = errorOnlyTaskEventBus({ style: "plain" });
+
+// Use with executeDAG
+const results = await executeDAG(plan, handler, { bus });
+```
+
+**Use Cases:**
+
+- Build systems where tasks compile, test, and deploy in order
+- Data pipelines where transformations depend on previous steps
+- CI/CD workflows with complex dependency chains
+
+---
+
+### event-bus.ts - Typed Event System
+
+A generic, type-safe pub/sub event bus for loose coupling between components.
+
+```typescript
+import { eventBus } from "./event-bus.ts";
+
+// Define your event types - ensures type safety
+type MyEvents = {
+  "start": { id: string; timestamp: number };
+  "done": { id: string; result: number; duration: number };
+  "error": { id: string; error: Error };
+};
+
+const bus = eventBus<MyEvents>();
+
+// Subscribe to events - handlers are fully typed
+bus.on("start", (e) => console.log(`Starting ${e.id} at ${e.timestamp}`));
+bus.on("done", (e) => console.log(`Done ${e.id}: ${e.result} (${e.duration}ms)`));
+bus.on("error", (e) => console.error(`Failed ${e.id}:`, e.error.message));
+
+// Emit events - TypeScript ensures correct payload
+bus.emit("start", { id: "task-1", timestamp: Date.now() });
+bus.emit("done", { id: "task-1", result: 0, duration: 1250 });
+// bus.emit("done", { id: "task-1" }); // TS Error: missing fields!
+```
+
+<Callout type="info">
+**Benefits:**
+
+- Decouples components (emitters don't know about subscribers)
+- Type-safe event payloads catch bugs at compile time
+- Easy to test (mock the bus)
+- Multiple subscribers per event
+</Callout>
+
+---
+
+### shell.ts - Shell Command Execution
+
+Execute shell commands with comprehensive event tracking, output capture, and multiple execution modes.
+
+```typescript
+import { shell, verboseInfoShellEventBus } from "./shell.ts";
+
+const bus = verboseInfoShellEventBus({ style: "rich" });
+const sh = shell({ bus, cwd: Deno.cwd() });
+
+// Execute single command - captures stdout/stderr
+const result = await sh.spawnText("echo hello");
+console.log(result.stdout); // "hello\n"
+
+// Auto-detect execution mode from shebang
+const autoResult = await sh.auto(`#!/bin/bash
+echo "Hello from bash"
+ls -la
+`);
+
+// Execute multi-line script via deno task
+// Each line runs separately with its own events
+const evalResult = await sh.denoTaskEval(`
+echo "Step 1: Setup"
+mkdir -p build
+echo "Step 2: Compile"
+deno bundle src/main.ts build/bundle.js
+`);
+```
+
+#### Shell Events for Monitoring
+
+The shell emits events throughout execution, enabling rich logging and progress tracking:
+
+| Event | Description | Payload |
+|-------|-------------|---------|
+| `spawn:start` | Command starting execution | `{ cmd: string, cwd: string }` |
+| `spawn:done` | Command completed successfully | `{ cmd: string, code: number, stdout: string }` |
+| `spawn:error` | Command failed or errored | `{ cmd: string, error: Error }` |
+| `task:line:start` | Eval line starting (multi-line mode) | `{ line: string, index: number }` |
+| `task:line:done` | Eval line completed | `{ line: string, success: boolean }` |
+| `shebang:tempfile` | Temporary script file created | `{ path: string, shebang: string }` |
+| `shebang:cleanup` | Temporary file removed | `{ path: string }` |
+| `auto:mode` | Execution mode detected | `{ mode: "shebang" \| "eval" }` |
+
+**Use Cases:**
+
+- Running build commands with progress tracking
+- Executing test suites with detailed output
+- Automating deployments with error handling
+- Creating shell-based task workflows
+
+---
+
+## Utility Modules
+
+### cline.ts - Code Fence Command-Line Parsing
+
+Parses code fence info strings (like ` ```bash task-name --flag value ```) into structured data.
+
+```typescript
+import { parseCodeFenceInfo } from "./cline.ts";
+
+const info = parseCodeFenceInfo("bash task-name --descr 'Build the app' --dep setup,test");
+// Returns:
+// {
+//   language: "bash",
+//   identity: "task-name",
+//   descr: "Build the app",
+//   depends: ["setup", "test"]
+// }
+```
+
+<Callout>
+This is crucial for Spry's Markdown-based task definitions where code fences define executable tasks.
+</Callout>
+
+---
+
+### tmpl-literal-aide.ts - Template Literal Helpers
+
+Utilities for working with template literals and multi-line strings.
+
+```typescript
+import { dedentIfFirstLineBlank, indent, safeJsonStringify } from "./tmpl-literal-aide.ts";
+
+// Remove leading whitespace (common in template literals)
+const text = dedentIfFirstLineBlank(`
+    function hello() {
+        console.log("Hello");
+    }
+`);
+// Result: "function hello() {\n    console.log(\"Hello\");\n}"
+
+// Add consistent indentation
+const indented = indent("line1\nline2\nline3", "  ");
+// Result: "  line1\n  line2\n  line3"
+
+// Safe JSON stringify with error handling
+const json = safeJsonStringify({ nested: { data: [1, 2, 3] } });
+```
+
+<Callout type="info">
+**Why This Matters:**
+
+Template literals preserve indentation from your code, which looks messy in output. These helpers normalize whitespace for cleaner results.
+</Callout>
+
+---
+
+### gitignore.ts - .gitignore Management
+
+Programmatically manage .gitignore files without duplicating entries.
+
+```typescript
+import { gitignore } from "./gitignore.ts";
+
+// Add entries only if they don't exist
+const result = await gitignore("dev-src.auto", ".env", "*.tmp");
+// Returns:
+// {
+//   added: ["dev-src.auto", ".env"],      // New entries
+//   preserved: ["*.tmp"]                   // Already existed
+// }
+```
+
+**Use Cases:**
+
+- Auto-generating .gitignore during project setup
+- Ensuring generated files are always ignored
+- Tool-specific ignore patterns (e.g., Spry adds its own entries)
+
+---
+
+### zod-aide.ts - Zod Schema Utilities
+
+Bridge between JSON Schema and Zod for runtime validation.
+
+```typescript
+import { jsonToZod } from "./zod-aide.ts";
+
+// Convert JSON Schema to Zod schema
+const schema = jsonToZod(`{
+  "type": "object",
+  "properties": {
+    "name": { "type": "string" },
+    "age": { "type": "number" },
+    "email": { "type": "string", "format": "email" }
+  },
+  "required": ["name", "age"]
+}`);
+
+// Use for runtime validation
+const result = schema.safeParse({ name: "Alice", age: 30, email: "alice@example.com" });
+if (result.success) {
+  console.log("Valid:", result.data);
+} else {
+  console.error("Errors:", result.error.errors);
+}
+```
+
+<Callout>
+This enables using JSON Schema definitions (which are portable and tool-agnostic) with Zod's excellent TypeScript integration.
+</Callout>
+
+---
+
+## UI Modules
+
+### lister-tabular-tui.ts - Tabular Terminal UI
+
+Build rich, formatted tables for the terminal with custom columns and styling.
+
+```typescript
+import { ListerBuilder } from "./lister-tabular-tui.ts";
+
+type Task = { name: string; status: "done" | "running" | "pending"; duration: number };
+
+const tasks: Task[] = [
+  { name: "build", status: "done", duration: 1234 },
+  { name: "test", status: "running", duration: 567 },
+  { name: "deploy", status: "pending", duration: 0 }
+];
+
+await new ListerBuilder<Task>()
+  .declareColumns("name", "status", "duration")
+  .from(tasks)
+  .field("name", "name", { header: "Task Name" })
+  .field("status", "status", { 
+    header: "Status",
+    format: (s) => s === "done" ? "✓" : s === "running" ? "⟳" : "○"
+  })
+  .field("duration", "duration", { 
+    header: "Duration (ms)",
+    format: (d) => d > 0 ? d.toString() : "—"
+  })
+  .build()
+  .ls(true); // true = output to stdout
+
+// Output:
+// Task Name  Status  Duration (ms)
+// build      ✓       1234
+// test       ⟳       567
+// deploy     ○       —
+```
+
+<Callout type="info">
+**Features:**
+
+- Custom formatters for each column
+- Automatic alignment and spacing
+- Header customization
+- Sorting and filtering support
+</Callout>
+
+---
+
+### lister-tree-tui.ts - Tree Terminal UI
+
+Display hierarchical data as expandable trees in the terminal.
+
+```typescript
+import { TreeLister, ListerBuilder } from "./lister-tree-tui.ts";
+
+type FileRow = { path: string; size: number; type: string };
+
+const files: FileRow[] = [
+  { path: "src/main.ts", size: 1234, type: "file" },
+  { path: "src/utils/helper.ts", size: 567, type: "file" },
+  { path: "tests/main_test.ts", size: 890, type: "file" }
+];
+
+const base = new ListerBuilder<FileRow>()
+  .declareColumns("path", "size", "type")
+  .field("path", "path", { header: "File" })
+  .field("size", "size", { header: "Size" })
+  .field("type", "type", { header: "Type" });
+
+const tree = TreeLister
+  .wrap(base)
+  .from(files)
+  .byPath({ pathKey: "path", separator: "/" })
+  .treeOn("path");
+
+await tree.ls(true);
+
+// Output:
+// src/
+//   main.ts (1234 bytes)
+//   utils/
+//     helper.ts (567 bytes)
+// tests/
+//   main_test.ts (890 bytes)
+```
+
+<Callout>
+Perfect for displaying file systems, nested configurations, or any hierarchical data.
+</Callout>
+
+---
+
+### task-visuals.ts - DAG Visualization
+
+Visualize task dependency graphs in multiple formats.
+
+<Tabs items={['ASCII Art', 'Mermaid Diagram']}>
+<Tab value="ASCII Art">
+```typescript
+import { executionPlanVisuals, ExecutionPlanVisualStyle } from "./task-visuals.ts";
+
+const visuals = executionPlanVisuals(plan);
+
+// ASCII art representation (good for terminals)
+console.log(visuals.visualText(ExecutionPlanVisualStyle.ASCII));
+// Output:
+// setup
+//   ├─→ build
+//   │    └─→ test
+//   └─→ lint
+```
+</Tab>
+
+<Tab value="Mermaid Diagram">
+```typescript
+// Mermaid diagram (for documentation/GitHub)
+console.log(visuals.visualText(ExecutionPlanVisualStyle.Mermaid));
+// Output:
+// graph TD
+//   setup --> build
+//   build --> test
+//   setup --> lint
+```
+</Tab>
+</Tabs>
+
+**Use Cases:**
+
+- Debugging complex task dependencies
+- Documenting build processes
+- Visualizing CI/CD pipelines
+
+---
+
+## System Modules
+
+### doctor.ts - System Diagnostics
+
+Check if required tools and dependencies are available.
+
+```typescript
+import { doctor } from "./doctor.ts";
+
+const diags = doctor([
+  "deno --version",
+  "sqlpage --version", 
+  "git --version"
+]);
+
+const result = await diags.run();
+diags.render.cli(result);
+
+// Output:
+// ✓ deno 2.1.0
+// ✗ sqlpage: command not found
+// ✓ git version 2.43.0
+```
+
+<Callout>
+Essential for tools that depend on external commands - helps users troubleshoot missing dependencies.
+</Callout>
+
+---
+
+### watcher.ts - File System Watching
+
+Watch files for changes and trigger rebuilds automatically.
+
+```typescript
+import { watcher } from "./watcher.ts";
+
+const run = watcher(
+  ["Spryfile.md", "src/**/*.ts"],  // Files/patterns to watch
+  async () => {
+    console.log("Files changed, rebuilding...");
+    await runBuild();
+  },
+  { 
+    debounceMs: 100,  // Wait 100ms after last change
+    ignore: ["build/", "*.tmp"]
+  }
+);
+
+await run(true); // true = watch mode, false = run once
+```
+
+<Callout type="info">
+**Debouncing:** Multiple rapid changes trigger only one rebuild after activity settles.
+</Callout>
+
+---
+
+### version.ts - Git-Based Versioning
+
+Automatically determine version from git tags.
+
+```typescript
+import { computeSemVerSync } from "./version.ts";
+
+// Looks for git tags like v1.2.3
+const version = computeSemVerSync(import.meta.url);
+console.log(version); // "1.2.3"
+
+// Use in your app
+console.log(`MyTool version ${version}`);
+```
+
+<Callout>
+This follows semantic versioning based on your git repository's tags, ensuring version numbers stay in sync with releases.
+</Callout>
+
+---
+
+### pmd-shebang.ts - Programmable Markdown
+
+Handle executable Markdown files with shebangs.
+
+```typescript
+import { generateShebang, isExecutableMarkdown } from "./pmd-shebang.ts";
+
+// Generate proper shebang for executable Markdown
+const shebang = generateShebang("./spry.ts");
+// Returns: "#!/usr/bin/env -S deno run -A ./spry.ts runbook -m"
+
+// Check if a file is executable Markdown
+const content = await Deno.readTextFile("README.md");
+if (isExecutableMarkdown(content)) {
+  console.log("This Markdown file can be executed!");
+}
+```
+
+<Callout type="info">
+**What This Enables:**
+
+- Markdown files that run as scripts (`./README.md`)
+- Literate programming (documentation IS the code)
+- Self-documenting build scripts
+</Callout>
+
+---
+
+## File System Modules
+
+### resource.ts - Resource Abstraction
+
+Unified interface for file operations.
+
+```typescript
+import { Resource } from "./resource.ts";
+
+const res = new Resource("path/to/file.txt");
+
+// Read content
+const content = await res.read();
+
+// Write content
+await res.write("new content");
+
+// Check existence
+if (await res.exists()) {
+  console.log("File exists");
+}
+
+// Get metadata
+const info = await res.stat();
+console.log(`Size: ${info.size} bytes`);
+```
+
+<Callout>
+Abstracts away file system details, making it easier to swap between local files, remote URLs, or virtual file systems.
+</Callout>
+
+---
+
+### path-tree.ts - File Tree Representation
+
+Build and display file system trees.
+
+```typescript
+import { PathTree } from "./path-tree.ts";
+
+const tree = new PathTree();
+tree.add("src/main.ts");
+tree.add("src/utils/helper.ts");
+tree.add("src/utils/logger.ts");
+tree.add("tests/main_test.ts");
+
+console.log(tree.render());
+// Output:
+// src/
+//   main.ts
+//   utils/
+//     helper.ts
+//     logger.ts
+// tests/
+//   main_test.ts
+```
+
+<Callout>
+Useful for displaying project structure, generating file lists, or visualizing changes.
+</Callout>
+
+---
+
+### content-acquisition.ts - Content Loading
+
+Load content from various sources (files, URLs, stdin).
+
+```typescript
+import { acquireContent, SourceRelativeTo } from "./content-acquisition.ts";
+
+// Load from local file system
+const local = await acquireContent(
+  "docs/README.md",
+  SourceRelativeTo.LocalFs
+);
+
+// Load from URL
+const remote = await acquireContent(
+  "https://example.com/config.json",
+  SourceRelativeTo.Url
+);
+
+// Load from stdin
+const stdin = await acquireContent(
+  "-",
+  SourceRelativeTo.Stdin
+);
+```
+
+<Callout>
+Handles the complexity of different content sources with a unified API.
+</Callout>
+
+---
+
+## Integration Patterns
+
+### Task Execution + Shell + Events
+
+Common pattern: tasks that execute shell commands with progress tracking.
+
+```typescript
+import { executionPlan, executeDAG } from "./task.ts";
+import { shell, verboseInfoShellEventBus } from "./shell.ts";
+
+const shellBus = verboseInfoShellEventBus({ style: "rich" });
+const sh = shell({ bus: shellBus, cwd: Deno.cwd() });
+
+const plan = executionPlan(tasks);
+const results = await executeDAG(plan, async (task) => {
+  // Each task executes shell commands
+  await sh.denoTaskEval(task.getScript());
+  return { success: true };
+});
+```
+
+---
+
+### File Watching + Task Execution
+
+Watch files and re-run tasks on changes.
+
+```typescript
+import { watcher } from "./watcher.ts";
+import { executionPlan, executeDAG } from "./task.ts";
+
+const run = watcher(
+  ["src/**/*.ts"],
+  async () => {
+    const plan = executionPlan(tasks);
+    await executeDAG(plan, handler);
+  },
+  { debounceMs: 200 }
+);
+
+await run(true);
+```
+
+---
+
+## Best Practices
+
+### 1. Use Event Buses for Monitoring
+
+Don't hardcode console.log in your logic - emit events instead:
+
+<Tabs items={['Bad', 'Good']}>
+<Tab value="Bad">
+```typescript
+// Tight coupling
+function runTask() {
+  console.log("Starting...");
+  // ...
+  console.log("Done!");
+}
+```
+</Tab>
+
+<Tab value="Good">
+```typescript
+// Use event bus
+function runTask(bus: EventBus) {
+  bus.emit("start", { id: taskId });
+  // ...
+  bus.emit("done", { id: taskId });
+}
+```
+</Tab>
+</Tabs>
+
+---
+
+### 2. Leverage Type Safety
+
+Use TypeScript's type system with the event bus:
+
+```typescript
+// Define event types upfront
+type Events = {
+  "build:start": { target: string };
+  "build:done": { target: string; artifacts: string[] };
+};
+
+const bus = eventBus<Events>();
+// Now TypeScript catches payload errors!
+```
+
+---
+
+### 3. Cache Execution Plans
+
+Don't rebuild execution plans unnecessarily:
+
+```typescript
+// Build once, reuse
+const plan = executionPlan(tasks);
+
+// Execute multiple times
+await executeDAG(plan, handler1);
+await executeDAG(plan, handler2);
+```
+
+---
+
+### 4. Handle Shell Errors Gracefully
+
+Always check shell command results:
+
+```typescript
+const result = await sh.spawnText("some-command");
+if (result.code !== 0) {
+  console.error(`Command failed: ${result.stderr}`);
+  throw new Error(`Exit code ${result.code}`);
+}
+```
+
+---
+
+### 5. Use Debouncing for Watchers
+
+Prevent excessive rebuilds with appropriate debounce times:
+
+```typescript
+// 100-500ms is usually good
+const run = watcher(files, rebuild, { debounceMs: 200 });
+```
+
+---
+
+## Performance Considerations
+
+<Callout type="info">
+**Key Performance Points:**
+
+- **Task Execution:** DAG parallelization can significantly speed up builds with independent tasks
+- **File Watching:** Debouncing prevents rebuild storms during rapid file changes
+- **Shell Commands:** Use `spawnText` for simple commands, `denoTaskEval` for complex scripts
+- **Event Buses:** Minimal overhead, but avoid emitting events in hot loops
+</Callout>
+
+---
+
+## Testing
+
+```bash
+# Run all universal tests
+deno test lib/universal/
+
+# Run specific test file
+deno test lib/universal/task_test.ts
+
+# Watch mode for development
+deno test --watch lib/universal/
+
+# Run with coverage
+deno test --coverage=coverage lib/universal/
+deno coverage coverage
+```
+
+---
+
+## Common Patterns
+
+### Pattern: Build System
+
+```typescript
+// Define tasks with dependencies
+const tasks = [
+  { id: "clean", deps: [] },
+  { id: "build", deps: ["clean"] },
+  { id: "test", deps: ["build"] },
+  { id: "deploy", deps: ["test"] }
+];
+
+// Execute with progress
+const plan = executionPlan(tasks);
+await executeDAG(plan, async (task) => {
+  await sh.denoTaskEval(task.script);
+});
+```
+
+---
+
+### Pattern: Development Watch
+
+```typescript
+// Watch and rebuild automatically
+await watcher(
+  ["src/**/*.ts", "Spryfile.md"],
+  async () => {
+    const plan = executionSubplan(fullPlan, ["build"]);
+    await executeDAG(plan, handler);
+  },
+  { debounceMs: 150 }
+);
+```
+
+---
+
+### Pattern: CLI Tool with Doctor
+
+```typescript
+// Check prerequisites before running
+const diags = doctor(["deno --version", "git --version"]);
+const health = await diags.run();
+
+if (health.some(d => !d.success)) {
+  console.error("Missing required tools!");
+  diags.render.cli(health);
+  Deno.exit(1);
+}
+
+// Proceed with main logic...
+```
+
+---
+
+## Summary
+
+<Callout type="info">
+The universal module is the backbone of Spry, providing battle-tested primitives for building sophisticated command-line tools and build systems. Use these modules as building blocks for your own tools and workflows.
+
+**Key Capabilities:**
+
+- DAG-based task execution with parallelization
+- Type-safe event bus for component communication
+- Rich shell command execution with progress tracking
+- Terminal UI components for tables and trees
+- File system utilities and content loading
+- System diagnostics and health checks
+</Callout>

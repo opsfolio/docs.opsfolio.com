@@ -1,0 +1,7 @@
+{
+  "title": "Surveilr CLI",
+  "pages": [
+    "cli-commands",
+    "ingest-commands"
+]
+  }

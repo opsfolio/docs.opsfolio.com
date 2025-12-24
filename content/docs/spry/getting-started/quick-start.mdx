@@ -1,0 +1,288 @@
+---
+title: Quick Start
+description: Build reproducible data and AI pipelines with executable Markdown
+icon: Play
+index  : 2
+---
+
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+
+## Quick Start
+
+Let's create and execute your first executable Markdown file in under 5 minutes. By the end of this guide, you'll have a working Spry project with a simple task that you can execute.
+
+<Steps>
+  <Step>
+    ### Initialize a Project
+    
+    Create a new directory and initialize a Spry project:
+
+    ```bash
+    # Create project directory
+    mkdir my-spry-project && cd my-spry-project
+
+    # Initialize with SQLPage template
+    spry sp init
+    ```
+
+    This creates three important files:
+
+    | File | Purpose |
+    |------|---------|
+    | `Spryfile.md` | Your executable Markdown document |
+
+  </Step>
+
+  <Step>
+    ### Examine the Generated Spryfile
+    
+    Open `Spryfile.md` to see the structure. It contains:
+
+    **YAML Frontmatter** - Configuration settings:
+    
+    ````yaml
+    ---
+    sqlpage-conf:
+      allow_exec: true
+      port: ${env.PORT}
+      database_url: ${env.SPRY_DB}
+      web_root: ./dev-src.auto
+    ---
+    ````
+
+    **Environment Setup** - Environment variables in an executable code block:
+    
+    ````markdown
+    ```envrc prepare-env -C ./.envrc --gitignore --descr "Generate .envrc file and add it to local .gitignore if it's not already there"
+    export SPRY_DB="sqlite://sqlpage.db?mode=rwc"
+    export PORT=9227
+    ```
+    ````
+
+    **Development Task** - A task to start the development server:
+    
+    ````markdown
+    ```bash prepare-sqlpage-dev
+    spry sp spc --fs dev-src.auto --destroy-first --conf sqlpage/sqlpage.json
+    ```
+    ````
+
+    <Callout>
+    Notice how each code block has a **task ID** (like `prepare-env`) after the language name. This makes the block executable.
+    </Callout>
+  </Step>
+
+  <Step>
+    ### List Available Tasks
+    
+    See all executable tasks in your Spryfile:
+
+    ```bash
+    spry rb ls
+    ```
+
+    Output:
+    ```
+    Tasks in Spryfile.md:
+      - prepare-env (envrc)
+      - prepare-sqlpage-dev (bash)
+    ```
+
+    The `rb ls` command shows you every executable code block with its task ID and language.
+  </Step>
+
+  <Step>
+    ### Execute a Specific Task
+    
+    Run the environment setup task:
+
+    ```bash
+    spry rb task prepare-env
+    ```
+
+    This creates a `.envrc` file with your environment variables and automatically adds it to `.gitignore`.
+
+    <Callout type="success">
+    **Task Executed Successfully!**
+    
+    Check your directory - you should now see a `.envrc` file with your environment variables.
+    </Callout>
+  </Step>
+
+  <Step>
+    ### Execute All Tasks
+    
+    Run all tasks in dependency order:
+
+    ```bash
+    spry rb run
+    ```
+
+    Spry automatically determines the correct execution order based on dependencies between tasks.
+  </Step>
+</Steps>
+
+### Create a Simple Task
+
+Let's add a custom task to the Spryfile to understand the structure better.
+
+<Steps>
+  <Step>
+    ### Add a New Task
+    
+    Open `Spryfile.md` and add this section:
+
+    ````markdown
+    ## Hello World Task
+
+    This task demonstrates basic Spry execution.
+
+    ```bash hello-world --descr "Print a greeting message"
+    #!/usr/bin/env -S bash
+    echo "Hello from Spry!"
+    echo "Current directory: $(pwd)"
+    echo "Task executed at: $(date)"
+    ```
+    ````
+
+    The task structure is:
+    - **Language**: `bash`
+    - **Task ID**: `hello-world`
+    - **Description**: `--descr "Print a greeting message"`
+    - **Content**: The actual shell script
+  </Step>
+
+  <Step>
+    ### Execute Your New Task
+    
+    Run the task you just created:
+
+    ```bash
+    spry rb task hello-world
+    ```
+
+    You should see:
+    ```
+    Hello from Spry!
+    Current directory: /path/to/my-spry-project
+    Task executed at: Thu Dec 11 10:30:00 UTC 2025
+    ```
+  </Step>
+
+  <Step>
+    ### View Execution Details
+    
+    Get detailed output with the verbose flag:
+
+    ```bash
+    spry rb task hello-world --verbose rich
+    ```
+
+    This shows additional information about the task execution, including timing and status.
+  </Step>
+</Steps>
+
+### Add Task Dependencies
+
+Let's create tasks that depend on each other to see how Spry orchestrates execution.
+
+````markdown
+## Multi-Step Workflow
+
+### Step 1: Clean
+
+```bash clean --descr "Remove old files"
+echo "Cleaning up..."
+rm -rf output/
+mkdir -p output/
+echo "Clean complete!"
+```
+
+### Step 2: Build
+
+```bash build --dep clean --descr "Build the project"
+echo "Building..."
+echo "Build artifact" > output/app.txt
+echo "Build complete!"
+```
+
+### Step 3: Deploy
+
+```bash deploy --dep build --descr "Deploy the application"
+echo "Deploying..."
+cat output/app.txt
+echo "Deploy complete!"
+```
+````
+
+Now execute the deployment task:
+
+```bash
+spry rb task deploy
+```
+
+<Callout type="info">
+**Automatic Dependency Resolution**
+
+When you run `deploy`, Spry automatically executes `clean` first, then `build`, and finally `deploy` - all in the correct order!
+</Callout>
+
+### Visualize Your Workflow
+
+See the task execution flow visually:
+
+```bash
+spry rb run --visualize ascii-tree
+```
+
+This shows a directed acyclic graph (DAG) of your tasks:
+
+```
+clean
+  └─→ build
+       └─→ deploy
+```
+
+### Development with Live Reload
+
+For SQLPage applications, you can enable watch mode for automatic rebuilding:
+
+```bash
+spry sp spc --fs dev-src.auto --destroy-first \
+  --conf sqlpage/sqlpage.json --watch --with-sqlpage
+```
+
+This:
+1. Watches `Spryfile.md` for changes
+2. Automatically rebuilds when you save
+3. Restarts the SQLPage server
+4. Opens your browser to `http://localhost:9227`
+
+<Callout type="warning">
+**Development Mode Only**
+
+Watch mode is intended for development. For production, use `--package` to bundle your application into the database.
+</Callout>
+
+### Common Task Options
+
+Here are the most useful options for code blocks:
+
+| Option | Purpose | Example |
+|--------|---------|---------|
+| `--descr "..."` | Human-readable description | `--descr "Build the app"` |
+| `--dep task1,task2` | Task dependencies | `--dep clean,test` |
+| `--silent` | Suppress output | `--silent` |
+| `-C <path>` | Capture output to file | `-C ./results.json` |
+| `--gitignore` | Add captured file to .gitignore | `--gitignore` |
+
+Example with multiple options:
+
+````markdown
+```bash test --descr "Run test suite" --dep build --silent
+npm test
+```
+````

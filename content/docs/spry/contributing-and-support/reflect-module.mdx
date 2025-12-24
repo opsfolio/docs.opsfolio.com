@@ -1,0 +1,411 @@
+---
+title: Reflect Module
+description: TypeScript/JavaScript analysis and introspection capabilities in Spry.
+icon: Search
+index: 8
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+
+## Introduction
+
+The **reflect** module provides runtime TypeScript/JavaScript analysis and introspection capabilities, allowing you to examine and understand code structure during execution.
+
+---
+
+## Purpose
+
+The reflect module helps you:
+
+- **Analyze function signatures at runtime** - Inspect parameters, names, and structure of functions without needing the source code
+- **Extract parameter information** - Determine which parameters are required vs optional, their names, and positions
+- **Track code provenance** - Keep track of where data and code originated from (file paths, line numbers, timestamps)
+- **Inspect TypeScript source content** - Parse and analyze TypeScript code to extract exports, functions, and other declarations
+
+---
+
+## Directory Structure
+
+```text
+lib/reflect/
+├── callable.ts       # Function analysis and signature inspection
+├── callable_test.ts  # Tests for callable functionality
+├── provenance.ts     # Source tracking and origin information
+├── provenance_test.ts
+├── reflect.ts        # Core reflection utilities
+├── reflect_test.ts
+├── ts-content.ts     # TypeScript source code analysis
+├── ts-content_test.ts
+├── value.ts          # Runtime value inspection
+├── value_test.ts
+└── deps-test.ts      # Dependency tests
+```
+
+---
+
+## File Reference
+
+### callable.ts
+
+Analyzes functions and callable objects to extract their signatures and parameter information.
+
+#### Function Analysis
+
+```typescript
+import { analyzeCallable } from "./callable.ts";
+
+function greet(name: string, age?: number): string {
+  return `Hello ${name}`;
+}
+
+const info = analyzeCallable(greet);
+// Returns:
+// {
+//   name: "greet",
+//   params: [
+//     { name: "name", required: true },
+//     { name: "age", required: false }
+//   ]
+// }
+```
+
+<Callout type="info">
+This is particularly useful when you need to understand function signatures at runtime, such as when building tools that work with arbitrary functions.
+</Callout>
+
+#### Use Cases
+
+- **Generating CLI help from functions** - Automatically create command-line help text based on function parameters
+- **Validating function arguments** - Check if the right arguments are being passed before calling a function
+- **Building documentation** - Auto-generate API documentation from actual function definitions
+
+---
+
+### provenance.ts
+
+Tracks where code and data originated, providing an audit trail for debugging and error reporting.
+
+#### Tracking Sources
+
+```typescript
+import { trackProvenance, getProvenance } from "./provenance.ts";
+
+// Attach provenance information to data
+const data = trackProvenance({ value: 42 }, {
+  source: "config.json",
+  line: 10
+});
+
+// Later, retrieve the origin information
+const origin = getProvenance(data);
+// Returns: { source: "config.json", line: 10 }
+```
+
+<Callout type="info">
+This is especially valuable in complex applications where data flows through multiple transformations and you need to trace back to the original source.
+</Callout>
+
+#### Use Cases
+
+- **Error messages with source locations** - Show users exactly where in their config file an error occurred
+- **Debugging generated content** - Track which template or generator created specific output
+- **Audit trails** - Maintain records of where data came from for compliance or debugging
+
+---
+
+### reflect.ts
+
+Core reflection utilities for runtime type checking and object inspection.
+
+```typescript
+import { getTypeOf, isObject, isFunction } from "./reflect.ts";
+
+console.log(getTypeOf(42));        // "number"
+console.log(getTypeOf([]));        // "array" (not just "object")
+console.log(isObject({}));         // true
+console.log(isFunction(() => {})); // true
+```
+
+<Callout>
+These utilities provide more accurate type detection than JavaScript's built-in `typeof` operator, which has limitations (e.g., `typeof []` returns `"object"` instead of `"array"`).
+</Callout>
+
+---
+
+### ts-content.ts
+
+Analyzes TypeScript source code to extract structural information without executing it.
+
+```typescript
+import { analyzeTypeScript } from "./ts-content.ts";
+
+const source = `
+export function hello(name: string): string {
+  return "Hello " + name;
+}
+`;
+
+const analysis = analyzeTypeScript(source);
+// Returns:
+// {
+//   exports: ["hello"],
+//   functions: [{ name: "hello", exported: true }]
+// }
+```
+
+<Callout type="info">
+This is useful for build tools, documentation generators, or any system that needs to understand TypeScript code structure without executing it.
+</Callout>
+
+---
+
+### value.ts
+
+Provides deep runtime value inspection, going beyond simple type checking to analyze structure.
+
+```typescript
+import { inspectValue, describeType } from "./value.ts";
+
+const info = inspectValue({ a: 1, b: [2, 3] });
+// Returns detailed structure:
+// {
+//   type: "object",
+//   keys: ["a", "b"],
+//   properties: {
+//     a: { type: "number" },
+//     b: { type: "array", length: 2 }
+//   }
+// }
+
+// More precise type descriptions
+console.log(describeType(null));      // "null" (not "object")
+console.log(describeType(undefined)); // "undefined"
+console.log(describeType(42));        // "number"
+```
+
+---
+
+## Usage Examples
+
+### Function Documentation Generator
+
+Automatically generate documentation for functions based on their signatures:
+
+```typescript
+import { analyzeCallable } from "./callable.ts";
+
+function buildTask(
+  name: string,
+  depends?: string[],
+  options?: { timeout?: number }
+): void {
+  // Task implementation...
+}
+
+const info = analyzeCallable(buildTask);
+console.log(`Function: ${info.name}`);
+console.log("Parameters:");
+for (const param of info.params) {
+  const req = param.required ? "(required)" : "(optional)";
+  console.log(`  - ${param.name} ${req}`);
+}
+
+// Output:
+// Function: buildTask
+// Parameters:
+//   - name (required)
+//   - depends (optional)
+//   - options (optional)
+```
+
+---
+
+### Source Tracking for Better Error Messages
+
+Track configuration sources so you can provide helpful error messages:
+
+```typescript
+import { trackProvenance, getProvenance } from "./provenance.ts";
+
+// When loading config, attach source information
+const config = trackProvenance(
+  JSON.parse(content),
+  { source: filePath, timestamp: Date.now() }
+);
+
+// Later, when validation fails
+function validateConfig(cfg: unknown) {
+  if (!isValidConfig(cfg)) {
+    const source = getProvenance(cfg);
+    throw new Error(
+      `Invalid configuration in ${source.source}\n` +
+      `Loaded at ${new Date(source.timestamp)}`
+    );
+  }
+}
+```
+
+---
+
+### Type Validation with Custom Assertions
+
+Create type guards with better error messages:
+
+```typescript
+import { getTypeOf, isObject } from "./reflect.ts";
+
+function validate(input: unknown): asserts input is Record<string, unknown> {
+  if (!isObject(input)) {
+    throw new Error(
+      `Expected object, got ${getTypeOf(input)}. ` +
+      `Value: ${JSON.stringify(input)}`
+    );
+  }
+}
+
+// Usage
+validate(someData);
+// Now TypeScript knows someData is an object
+someData.property = "value"; // Type-safe!
+```
+
+---
+
+## Integration Points
+
+### With axiom/
+
+The reflect module integrates with the axiom parser to track source locations in error messages:
+
+```typescript
+import { trackProvenance } from "../reflect/provenance.ts";
+
+// During parsing, attach file location to AST nodes
+const node = trackProvenance(parsed, { 
+  source: filePath, 
+  line: lineNum,
+  column: colNum 
+});
+
+// Later, errors can reference the exact source location
+```
+
+### With task/
+
+Used for analyzing task functions to validate arguments and generate help:
+
+```typescript
+import { analyzeCallable } from "../reflect/callable.ts";
+
+// Analyze a task function to understand its parameters
+const taskInfo = analyzeCallable(taskFn);
+
+// Use this to validate task invocations
+if (args.length < requiredParamCount) {
+  throw new Error(`Task ${taskInfo.name} requires ${requiredParamCount} arguments`);
+}
+```
+
+---
+
+## Design Notes
+
+### Runtime vs Static Analysis
+
+This module performs **runtime** analysis, which has both advantages and limitations:
+
+<Tabs items={['Advantages', 'Limitations']}>
+<Tab value="Advantages">
+**Advantages:**
+
+- Works with actual values and functions as they exist during execution
+- No need for TypeScript compiler API or complex AST parsing
+- Can inspect values that were dynamically created
+</Tab>
+
+<Tab value="Limitations">
+**Limitations:**
+
+- Cannot access private TypeScript type information (generics, union types, etc.) at runtime
+- Function parameter names may be minified in production builds
+- Complex TypeScript features are erased during compilation
+</Tab>
+</Tabs>
+
+<Callout type="info">
+For static analysis (parsing source code without execution), use `ts-content.ts`, which can analyze TypeScript files as text.
+</Callout>
+
+---
+
+### Performance Considerations
+
+Reflection operations have some overhead:
+
+- Function analysis requires iterating over parameters
+- Provenance tracking adds metadata to objects
+- Deep value inspection can be expensive for large objects
+
+<Callout type="warn">
+Use caching when analyzing the same functions repeatedly, and consider lazy evaluation for expensive operations.
+</Callout>
+
+---
+
+### Limitations
+
+<Callout type="warn">
+**Key Limitations:**
+
+- **No access to TypeScript type information** - Types are erased at runtime, so you can't inspect generic parameters or union types
+- **Minification affects parameter names** - In production, `function greet(name)` might become `function a(b)`
+- **Complex generics not captured** - Runtime only sees JavaScript, not TypeScript's type system
+- **Circular references** - Deep value inspection may need special handling for circular object graphs
+</Callout>
+
+---
+
+## Testing
+
+Run the test suite to verify functionality:
+
+```bash
+# Test all reflect modules
+deno test lib/reflect/
+
+# Test specific module
+deno test lib/reflect/callable_test.ts
+
+# Run with coverage
+deno test --coverage=coverage lib/reflect/
+```
+
+---
+
+## Best Practices
+
+<Callout type="info">
+**Follow these best practices when using the reflect module:**
+
+1. **Cache function analysis** - If you analyze the same function multiple times, cache the results
+2. **Use type guards** - Combine with TypeScript's type system for maximum safety
+3. **Provide context in errors** - Use provenance tracking to give users helpful error messages
+4. **Document runtime limitations** - Let users know when type information is unavailable
+5. **Test with minified code** - Ensure your reflection-based code works in production builds
+</Callout>
+
+---
+
+## Summary
+
+<Callout>
+The Reflect module provides powerful runtime introspection capabilities for TypeScript/JavaScript code, enabling:
+
+- Function signature analysis
+- Source tracking and provenance
+- Deep value inspection
+- TypeScript source code analysis
+
+These capabilities are essential for building tools that work with dynamic code and need to provide helpful debugging information.
+</Callout>

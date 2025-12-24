@@ -1,0 +1,131 @@
+---
+title: Axiom Web-UI
+description: Spry ontology controller
+icon: Network
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+The Axiom Web-UI is an interactive web interface built into the Spry platform to visualize, explore, and interact with Spry Ontology Graphs (SOGs) and Markdown-based mdAST structures. It serves as the graphical environment for inspecting ontology models, relationships, documentation graphs, workflow structures, and real-time introspection of Spry-based knowledge graphs.
+
+The Web-UI provides a rich, browser-based visual exploration layer on top of the Spry Ontology engine, enabling developers, analysts, and documentation authors to graphically understand and navigate interconnected domain concepts without needing to manually inspect JSON or command-line output.
+
+## Installation and Initialization
+
+<Steps>
+
+<Step>
+
+### Install Deno
+
+Install Deno 2.5 or higher and bootstrap your project:
+
+```bash
+cd <your-project>
+deno run --node-modules-dir=auto -A https://raw.githubusercontent.com/programmablemd/spry/main/lib/sqlpage/cli.ts init
+./spry.ts help
+```
+
+</Step>
+
+<Step>
+
+### Created Files
+
+This creates the following files:
+
+- `spry.ts` - Executable wrapper to run Spry commands locally
+- `Spryfile.md` - Executable Markdown defining tasks, SQL, and routes
+
+</Step>
+
+</Steps>
+
+## Using the Web-UI Service
+
+After installation and initialization, update your `spry.ts` content as follows:
+
+```ts title="spry.ts"
+#!/usr/bin/env -S deno run -A --node-modules-dir=auto
+// Use `deno run -A --watch` in the shebang if you're contributing / developing Spry itself.
+
+import { CLI } from "../../../lib/axiom/text-ui/cli.ts";
+
+await new CLI({ defaultFiles: ["Qualityfolio.md"] }).run();
+```
+
+## Commands
+
+### help
+
+Show general help or help for a specific sub-command.
+
+The `help` command is used to view general usage guidance for the CLI or to display detailed help information for a specific sub-command. It provides descriptions and available options to assist users in understanding how to run each command.
+
+```bash
+./spry.ts help [command]
+```
+
+### completions
+
+Generate shell completions for bash, zsh, or fish.
+
+The `completions` command generates auto-completion scripts for supported shells. Shell completions make the command-line interface more user-friendly by enabling features like:
+
+- Command suggestions as you type
+- Auto-completing command names and options when pressing Tab
+- Reducing typing errors and speeding up workflow
+
+```bash
+./spry.ts completions [shell]
+```
+
+<Tabs items={['bash', 'fish', 'zsh', 'custom']}>
+
+<Tab value="bash">
+```bash
+./spry.ts completions bash
+```
+</Tab>
+
+<Tab value="fish">
+```bash
+./spry.ts completions fish
+```
+</Tab>
+
+<Tab value="zsh">
+```bash
+./spry.ts completions zsh
+```
+</Tab>
+
+<Tab value="custom">
+```bash
+./spry.ts completions bash --name myspry
+```
+</Tab>
+
+</Tabs>
+
+### web-ui
+
+Serve the markdown mdASTs and Spry Ontology Graphs (SOGs).
+
+The `web-ui` command launches an interactive browser-based interface for visualizing **Spry Ontology Graphs (SOGs)** and **Markdown document structures (mdASTs)**. When executed, it starts a local web server and renders the selected files or directories as interactive graphs and document trees.
+
+<Callout type="info">
+This tool is useful for exploring knowledge models, documentation structures, and graph relationships visually instead of using raw CLI or JSON outputs.
+</Callout>
+
+```bash
+./spry.ts web-ui [paths...]
+```
+
+**Example:**
+
+```bash
+./spry.ts web-ui ./Spryfile.md
+```

@@ -1,0 +1,130 @@
+---
+title: CLI Commands
+description: Manage Spry CLI Commands
+icon: Terminal
+index: 1
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+## Command Overview
+
+The Spry CLI provides commands for managing executable Markdown notebooks, SQLPage content, and task orchestration.
+
+### General Commands
+
+- [`spry help`](./cli/options) - Display help information for the CLI
+- [`spry -h`](./cli/options) - Display help information for the CLI
+- [`spry --version`](./cli/options) - Show the current version number
+- [`spry -V`](./cli/options) - Show the current version number
+
+
+### axiom Commands
+
+- [`spry axiom web-ui`](./cli/spry-axiom#1-web-ui---markdown-ast--sog-browser) - Start Web UI with default file on default port
+- [`spry axiom web-ui Spryfile.md`](./cli/spry-axiom#1-web-ui---markdown-ast--sog-browser) - Show document hierarchy
+- [`spry axiom web-ui docs/*.md`](./cli/spry-axiom#1-web-ui---markdown-ast--sog-browser) - Show hierarchy for all docs of docs directory
+- [`spry axiom web-ui --port 9090`](./cli/spry-axiom#1-web-ui---markdown-ast--sog-browser) - Start on custom port
+- [`spry axiom web-ui docs/*.md --port 9090`](./cli/spry-axiom#1-web-ui---markdown-ast--sog-browser) - Start all document files of docs directory on custom port
+- [`spry axiom web-ui --listen 127.0.0.1`](./cli/spry-axiom#1-web-ui---markdown-ast--sog-browser) - Specify network interface
+- [`spry axiom web-ui --no-open`](./cli/spry-axiom#1-web-ui---markdown-ast--sog-browser) - Start without opening browser
+- [`spry axiom web-ui docs/*.md --no-open`](./cli/spry-axiom#1-web-ui---markdown-ast--sog-browser) - Start all document files of docs directory without opening browser
+- [`spry axiom ls`](./cli/spry-axiom#2-ls---browse-document-hierarchy) - List all nodes in default document
+- [`spry axiom ls Spryfile.md`](./cli/spry-axiom#2-ls---browse-document-hierarchy) - List all nodes in Spryfile
+- [`spry axiom ls README.md docs/guide.md`](./cli/spry-axiom#p2-ls---browse-document-hierarchy) - List nodes from multiple files
+- [`spry axiom ls docs/*.md`](./cli/spry-axiom#2-ls---browse-document-hierarchy) - List nodes from all Markdown files in docs directory
+- [`spry axiom ls -n paragraph`](./cli/spry-axiom#2-ls---browse-document-hierarchy) - Include additional node types
+- [`spry axiom ls --node paragraph`](./cli/spry-axiom#2-ls---browse-document-hierarchy) - Include additional node types
+- [`spry axiom ls docs/*.md -n paragraph`](./cli/spry-axiom#2-ls---browse-document-hierarchy) - Include additional node types for all files of docs directory
+- [`spry axiom ls docs/*.md --node paragraph`](./cli/spry-axiom#2-ls---browse-document-hierarchy) - Include additional node types for all files
+- [`spry axiom ls --no-color`](./cli/spry-axiom#2-ls---browse-document-hierarchy) - List default file without colors
+- [`spry axiom ls docs/*.md --no-color`](./cli/spry-axiom#2-ls---browse-document-hierarchy) - List all files of docs directory without colors
+- [`spry axiom inspect`](./cli/spry-axiom#3-inspect---analyze-document-structure) - Inspect default file 
+- [`spry axiom inspect docs/*.md`](./cli/spry-axiom#3-inspect---analyze-document-structure) - Inspect all files in docs directory
+- [`spry axiom inspect --no-color`](./cli/spry-axiom#3-inspect---analyze-document-structure) - Inspect default file without colors
+- [`spry axiom inspect --no-color docs/*.md`](./cli/spry-axiom#3-inspect---analyze-document-structure) - Inspect all files in docs directory without colors
+- [`spry axiom projection`](./cli/spry-axiom#4-projection---generate-json-projection) - Generate projection from default file
+- [`spry axiom projection docs/*.md`](./cli/spry-axiom#4-projection---generate-json-projection) -  Generate projection from all files
+- [`spry axiom projection --pretty`](./cli/spry-axiom#4-projection---generate-json-projection) - Pretty-print JSON output of default
+- [`spry axiom projection docs/*.md --pretty`](./cli/spry-axiom#4-projection---generate-json-projection) - Pretty-print JSON output of all files
+- [`spry axiom projection --jsonl`](./cli/spry-axiom#4-projection---generate-json-projection) - Generate JSONL (JSON Lines) output of default file
+- [`spry axiom projection --jsonl docs/*.md`](./cli/spry-axiom#4-projection---generate-json-projection) - Generate JSONL (JSON Lines) output of all files
+- [`spry axiom shebang`](./cli/spry-axiom#5-shebang---convert-to-executable) -  Add shebang to default file
+- [`spry axiom shebang docs/*.md`](./cli/spry-axiom#5-shebang---convert-to-executable) - Add shebang to all files in docs directory
+- [`spry axiom shebang --dry-run`](./cli/spry-axiom#5-shebang---convert-to-executable) - Preview without modifying (dry-run)
+- [`spry axiom shebang docs/*.md --dry-run`](./cli/spry-axiom#5-shebang---convert-to-executable) - Preview without modifying the files in docs directory (dry-run)
+- [`spry axiom shebang --entrypoint ./cli.ts`](./cli/spry-axiom#5-shebang---convert-to-executable) - Specify custom entrypoint (default is ./cli.ts)
+- [`spry axiom shebang docs/*.md --entrypoint ./cli.ts`](./cli/spry-axiom#5-shebang---convert-to-executable) - Specify custom entrypoint for all files in docs directory (default
+
+
+### rb Commands
+
+- [`spry rb run`](./cli/rb#run) - Execute all code cells in default markdown documents as a DAG (Directed Acyclic Graph).
+- [`spry rb run Spryfile.md`](./cli/rb#run) - Execute all code cells in Spryfile.md as a DAG (Directed Acyclic Graph).
+- [`spry rb run --verbose plain`](./cli/rb#run) - Plain text output.
+- [`spry rb run --verbose rich`](./cli/rb#run) - Colored detailed output
+- [`spry rb run --verbose markdown`](./cli/rb#run) -Markdown formatted output
+- [`spry rb run --graph A`](./cli/rb#run) - Run only Graph A tasks
+- [`spry rb run --graph "A,B"`](./cli/rb#run) - Run Graphs A and B
+- [`spry rb run --summarize`](./cli/rb#run) - JSON execution summary
+- [`spry rb run --visualize ascii-tree`](./cli/rb#run) - Show task tree structure
+- [`spry rb run --visualize ascii-workflow`](./cli/rb#run) - Show workflow sequence
+- [`spry rb run --visualize ascii-flowchart`](./cli/rb#run) - Show detailed flowchart
+- [`spry rb run --visualize mermaid-js`](./cli/rb#run) - Show Mermaid diagram
+- [`spry rb issues`](./cli/rb#issues) - Check default file (Spryfile.md) for issues
+- [`spry rb issues Spryfile.md`](./cli/rb#issues) - Check specific file Spryfile.md for issues
+- [`spry rb issues docs/*.md`](./cli/rb#issues) - Check all markdown files of docs directory
+- [`spry rb report`](./cli/rb#report) -  Generate report from default directory/file
+- [`spry rb report Spryfile.md`](./cli/rb#report) - Generate report from specific file
+- [`spry rb report docs/*.md`](./cli/rb#report) - Generate reports from all files of docs directory
+- [`spry rb task task-1 --verbose rich`](.cli/rb#task) - Execute with verbose output and summary
+- [`spry rb task task-1 --summarize`](.cli/rb#task) - Run with JSON summary of results.
+- [`spry rb task task-1 --verbose rich --summarize`](.cli/rb#task) - Execute with verbose output and summary
+
+### SP Commands
+
+- [`spry sp init`](./cli/sp#sp-init---initialize-development-environment) - Initialize Spryfile.md and import_map.json for local development (default SQLite)
+- [`spry sp init --dialect postgres`](./cli/sp#sp-init---initialize-development-environment) - Initialize with PostgreSQL (default SQLite)
+- [`spry sp init --force`](./cli/sp#sp-init---initialize-development-environment) - Force reinitialize
+
+SQLPage Content generation and management:
+
+#### Package Generation
+
+- [`spry sp spc --package`](./cli/sp#package-generation) - Generate SQL package for SQLite
+- [`spry sp spc --package --dialect postgres`](./cli/sp#package-generation) - Generate SQL package for PostgreSQL
+
+#### File Materialization
+
+- [`spry sp spc --fs dev-src.auto --conf sqlpage/sqlpage.json`](./cli/sp#file-materialization) - Materialize files with config file
+- [`spry sp spc --fs dev-src.auto --destroy-first --conf sqlpage/sqlpage.json`](./cli/sp#file-materialization) - Clean build (remove existing files first)
+
+#### Development Mode
+
+- [`spry sp spc --fs dev-src.auto --conf sqlpage/sqlpage.json --watch`](./cli/sp#file-materialization) - Watch mode with auto-rebuild
+- [`spry sp spc --fs dev-src.auto --conf sqlpage/sqlpage.json --destroy-first --watch --with-sqlpage`](./cli/sp#file-materialization) - Watch mode with SQLPage server
+- [`spry sp spc --fs dev-src.auto --conf sqlpage/sqlpage.json --watch --with-sqlpage --sqlpage-bin /usr/local/bin/sqlpage`](./cli/sp#file-materialization) - Watch mode with custom SQLPage binary
+
+#### Database Deployment
+
+- [`spry sp spc --package | sqlite3 app.db`](./cli/sp#database-deployment) - Deploy to SQLite database
+- [`spry sp spc --package --dialect postgres | psql $DATABASE_URL`](./cli/sp#database-deployment) - Deploy to PostgreSQL
+- [`spry sp spc --package --dialect postgres | psql postgresql://user:pass@host:5432/db`](./cli/sp#database-deployment) - Deploy to remote PostgreSQL
+
+#### File Operations
+
+- [`spry sp spc ls`](./cli/sp#sp-spc-ls---list-sqlpage-files) - List SQLPage files
+- [`spry sp spc cat -g "*.sql"`](./cli/sp#sp-spc-cat---concatenate-file-contents) - Show file contents matching glob pattern
+
+
+## Command Structure
+
+All commands follow this pattern:
+
+```bash
+spry [command] [subcommand] [options] [arguments]
+```
+
+<Callout>
+See individual command pages for detailed usage and examples.
+</Callout>

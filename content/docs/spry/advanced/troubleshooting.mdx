@@ -1,0 +1,557 @@
+---
+title: Troubleshooting
+description: Common issues and solutions when using Spry
+icon: LifeBuoy
+---
+
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+Common issues and solutions when using Spry.
+
+## Installation Issues
+
+### Homebrew Installation Fails
+
+<Callout type="error" title="Symptom">
+`brew install` reports tap not found or formula errors.
+</Callout>
+
+**Solutions:**
+
+1. Update Homebrew:
+
+```bash
+brew update
+```
+
+2. Re-add the tap:
+
+```bash
+brew untap programmablemd/tap
+brew tap programmablemd/tap
+brew install spry
+```
+
+3. Check for conflicting installations:
+
+```bash
+which spry
+brew list --versions spry
+```
+
+### Binary Not Found After Installation
+
+<Callout type="error" title="Symptom">
+`spry: command not found` after installation.
+</Callout>
+
+**Solutions:**
+
+1. Verify installation location:
+
+```bash
+# Homebrew
+ls $(brew --prefix)/bin/spry
+
+# Manual install
+ls ~/.local/bin/spry
+```
+
+2. Add to PATH:
+
+```bash
+# Add to ~/.bashrc or ~/.zshrc
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+3. Reload shell:
+
+```bash
+source ~/.bashrc  # or ~/.zshrc
+```
+
+### Deno Version Mismatch
+
+<Callout type="error" title="Symptom">
+Errors about incompatible Deno version or missing APIs.
+</Callout>
+
+**Solutions:**
+
+1. Check current version:
+
+```bash
+deno --version
+```
+
+2. Update Deno:
+
+```bash
+deno upgrade
+```
+
+3. Verify minimum version (2.5+):
+
+```bash
+deno --version | head -1
+# Should show: deno 2.5.x or higher
+```
+
+## Execution Errors
+
+### Task Not Found
+
+<Callout type="error" title="Symptom">
+`Error: Task 'task-name' not found`
+</Callout>
+
+**Causes and Solutions:**
+
+1. **Typo in task ID:**
+
+```bash
+# List available tasks
+spry rb ls Spryfile.md
+```
+
+2. **Task ID not in code fence meta:**
+
+Incorrect - no task ID:
+
+````markdown
+```bash
+echo "hello"
+```
+````
+
+Correct - has task ID:
+
+````markdown
+```bash my-task
+echo "hello"
+```
+````
+
+3. **File not included:**
+
+```bash
+# Check if file is being parsed
+spry axiom ls Spryfile.md --verbose
+```
+
+### Circular Dependency Detected
+
+<Callout type="error" title="Symptom">
+`Error: Cycle detected in task dependencies`
+</Callout>
+
+**Solution:**
+
+1. Visualize dependencies:
+
+```bash
+spry axiom projection Spryfile.md --pretty | jq '.edges'
+```
+
+2. Look for cycles like:
+
+```text
+task-a depends on task-b
+task-b depends on task-c
+task-c depends on task-a  # Creates cycle
+```
+
+3. Fix by restructuring dependencies or removing one edge.
+
+### Shell Command Fails
+
+<Callout type="error" title="Symptom">
+Task exits with non-zero code.
+</Callout>
+
+**Solutions:**
+
+1. Run with verbose output:
+
+```bash
+spry rb run Spryfile.md --verbose rich
+```
+
+2. Check environment variables:
+
+```bash
+# Verify required variables are set
+env | grep EXPECTED_VAR
+```
+
+3. Test command manually:
+
+```bash
+# Copy the command from code cell and run directly
+bash -c 'your-command-here'
+```
+
+### Permission Denied
+
+<Callout type="error" title="Symptom">
+`Permission denied` when running tasks.
+</Callout>
+
+**Solutions:**
+
+1. Check file permissions:
+
+```bash
+ls -la ./script.sh
+chmod +x ./script.sh
+```
+
+2. Verify Deno permissions:
+
+```bash
+# Run with all permissions
+deno run -A bin/spry.ts rb run Spryfile.md
+```
+
+3. Check directory write access:
+
+```bash
+ls -la ./output-directory/
+```
+
+## SQLPage Issues
+
+### SQLPage Not Starting
+
+<Callout type="error" title="Symptom">
+`sqlpage` command fails or port not accessible.
+</Callout>
+
+**Solutions:**
+
+1. Check if SQLPage is installed:
+
+```bash
+which sqlpage
+sqlpage --version
+```
+
+2. Verify port availability:
+
+```bash
+lsof -i :8080
+```
+
+3. Check configuration:
+
+```bash
+cat sqlpage.json
+```
+
+### Database Connection Failed
+<Tabs items={['SQLite', 'PostgreSQL']}>
+    <Tab value="SQLite">
+        #### SQLite Connection Error
+        <Callout type="error" title="Symptom">
+        SQLPage can't connect to database.
+        </Callout>
+
+        **Solutions:**
+
+        1. Verify database file exists:
+
+        ```bash
+        ls -la *.db
+        ```
+
+        2. Check connection string:
+
+        ```json
+        {
+        "database_url": "sqlite://./data.db"
+        }
+        ```
+
+        3. Test database directly:
+
+        ```bash
+        sqlite3 ./data.db ".tables"
+        ```
+    </Tab>
+    <Tab value="PostgreSQL">
+        #### Connection refused (PostgreSQL)
+        <Callout type="error" title="Symptom">
+        Cannot connect to PostgreSQL
+        </Callout>
+        **Solutions:**
+        ``` text
+        # Verify PostgreSQL is running
+        pg_isready
+
+        # Check connection string
+        echo $DATABASE_URL
+
+        # Test connection manually
+        psql $DATABASE_URL
+        ```
+        #### Migration failed
+        <Callout type="error" title="Symptom">
+        Database schema migration errors
+        </Callout>
+        **Solutions:**
+        * Check SQL syntax in schema files
+        * Ensure migrations run in correct order
+        * Verify database user has CREATE permissions
+        * Try running migrations manually to see detailed errors
+    </Tab>
+</Tabs>
+
+### SQL Files Not Generated
+
+<Callout type="error" title="Symptom">
+Expected `.sql` files missing after `spry sp init`.
+</Callout>
+
+**Solutions:**
+
+1. Verify Spryfile has SQL cells:
+
+```bash
+spry axiom ls Spryfile.md | grep sql
+```
+
+2. Check output directory:
+
+```bash
+ls -la sqlpage/
+```
+
+3. Run with verbose output:
+
+```bash
+spry sp init Spryfile.md --verbose
+```
+
+## Configuration Issues
+
+### Environment Variables Not Interpolated
+
+<Callout type="error" title="Symptom">
+`$\{env.VAR_NAME\}` appears literally in output.
+</Callout>
+
+**Solutions:**
+
+1. Check variable is exported:
+
+```bash
+export MY_VAR="value"
+echo $MY_VAR
+```
+
+2. Verify frontmatter syntax (quotes required):
+
+```yaml
+---
+config:
+  value: "${env.MY_VAR}"
+---
+```
+
+3. Check for typos in variable name.
+
+### Frontmatter Parse Error
+
+<Callout type="error" title="Symptom">
+YAML parsing errors in Spryfile.
+</Callout>
+
+**Solutions:**
+
+1. Validate YAML syntax:
+
+```bash
+# Use online validator or test with Deno
+deno eval "import * as yaml from 'yaml'; console.log(yaml.parse(Deno.readTextFileSync('Spryfile.md').split('---')[1]))"
+```
+
+2. Common issues:
+   - Missing quotes around special characters
+   - Incorrect indentation (use spaces, not tabs)
+   - Missing closing `---`
+
+3. Example correct frontmatter:
+
+```yaml
+---
+title: "My Spryfile"
+config:
+  key: "value with: special chars"
+---
+```
+
+### Import Resolution Failed
+
+<Callout type="error" title="Symptom">
+`Error: Could not resolve import`
+</Callout>
+
+**Solutions:**
+
+1. Verify imported file exists:
+
+```bash
+ls -la ./path/to/imported.md
+```
+
+2. Check import syntax:
+
+Use relative paths:
+
+```markdown
+@import ./shared/common.md
+```
+
+Absolute paths won't work:
+
+```markdown
+@import /home/user/common.md
+```
+
+3. Check for circular imports.
+
+## Graph and Projection Issues
+
+### Empty Graph Output
+
+<Callout type="error" title="Symptom">
+`spry axiom projection` returns empty or minimal data.
+</Callout>
+
+**Solutions:**
+
+1. Check file has content:
+
+```bash
+wc -l Spryfile.md
+```
+
+2. Verify markdown structure:
+
+```bash
+spry axiom inspect Spryfile.md
+```
+
+3. Check for parsing errors:
+
+```bash
+spry axiom ls Spryfile.md --verbose
+```
+
+### DOT Export Fails
+
+<Callout type="error" title="Symptom">
+Graphviz export produces invalid DOT.
+</Callout>
+
+**Solutions:**
+
+1. Export to JSON first:
+
+```bash
+spry axiom projection Spryfile.md --pretty > graph.json
+```
+
+2. Check for special characters in node labels.
+
+3. Use simpler graph options:
+
+```bash
+spry axiom projection Spryfile.md --format dot --simple
+```
+
+## Performance Issues
+
+### Slow Execution
+
+<Callout type="warn" title="Symptom">
+Tasks take longer than expected.
+</Callout>
+
+**Solutions:**
+
+1. Check for unnecessary dependencies:
+
+```bash
+spry rb ls Spryfile.md
+# Review dependency chains
+```
+
+2. Enable parallel execution:
+
+```bash
+spry rb run Spryfile.md --parallel
+```
+
+3. Profile slow tasks:
+
+```bash
+time spry rb run Spryfile.md task-name
+```
+
+### High Memory Usage
+
+<Callout type="warn" title="Symptom">
+Process uses excessive memory.
+</Callout>
+
+**Solutions:**
+
+1. Process large files in chunks.
+2. Use streaming for data operations.
+3. Check for memory leaks in custom scripts.
+
+## Debugging Tips
+
+### Enable Verbose Output
+
+```bash
+# Runbook verbose
+spry rb run Spryfile.md --verbose rich
+
+### Inspect AST
+
+```bash
+# View parsed structure
+spry axiom inspect Spryfile.md
+
+# Export full graph
+spry axiom projection Spryfile.md --pretty > debug.json
+```
+
+### Test Individual Tasks
+
+```bash
+# Run single task
+spry rb run Spryfile.md specific-task
+
+# Dry run to see plan
+spry rb ls Spryfile.md
+```
+
+## Getting More Help
+
+<Callout type="info" title="Need Additional Support?">
+If these solutions don't resolve your issue, here's how to get help:
+</Callout>
+
+1. **Check GitHub Issues** - Search [existing issues](https://github.com/programmablemd/spry/issues) for similar problems
+
+2. **Open a New Issue** - Include the following information:
+   - Spry version (`spry --version`)
+   - Deno version (`deno --version`)
+   - Operating system
+   - Minimal reproduction steps
+   - Error messages and logs

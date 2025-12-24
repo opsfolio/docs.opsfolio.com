@@ -1,0 +1,209 @@
+---
+title: Audit-Ready Evidence (Policies as Code)
+description: Create verifiable test case documents for compliance frameworks
+icon: Shield
+index: 1
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+
+## Recipe 1: Audit-Ready Evidence (Policies as Code)
+
+**Goal:** Create verifiable test case documents that capture status and link to automated results - perfect for compliance frameworks like CMMC, SOC2, or ISO 27001.
+
+<Callout type="success">
+**Why This Pattern Works**
+
+By embedding tests directly in documentation, you ensure evidence collection is automated, repeatable, and version-controlled. The test cases become living documents that prove compliance.
+</Callout>
+
+<Steps>
+  <Step>
+    ## Create a Test Case Document
+    
+    Create `test-case-TC001.md` with frontmatter classification:
+
+    ```markdown
+    ---
+    doc-classify:
+      role: evidence
+      framework: CMMC
+      control: AC.L1-3.1.1
+      status: pending
+    ---
+
+    # Test Case TC-001: Access Control Verification
+
+    ## Objective
+
+    Verify that system access is limited to authorized users.
+
+    ## Prerequisites
+
+    - Access to the production system
+    - Admin credentials (stored in vault)
+
+    ## Test Steps
+
+    ```bash tc001-check-access --descr "Verify access controls are in place"
+    #!/usr/bin/env -S bash
+    set -e
+
+    # Check that only authorized users have access
+    authorized_users=$(cat /etc/security/authorized_users)
+    current_users=$(who | awk '{print $1}' | sort -u)
+
+    for user in $current_users; do
+      if ! echo "$authorized_users" | grep -q "^$user$"; then
+        echo "FAIL: Unauthorized user detected: $user"
+        exit 1
+      fi
+    done
+
+    echo "PASS: All current users are authorized"
+    ```
+
+    ## Evidence Artifacts
+
+    ```bash tc001-capture-evidence -C ./evidence/tc001-results.json --gitignore
+    #!/usr/bin/env -S bash
+    cat << EOF
+    {
+      "testCase": "TC-001",
+      "executedAt": "$(date -Iseconds)",
+      "result": "PASS",
+      "authorizedUserCount": $(wc -l < /etc/security/authorized_users),
+      "currentUserCount": $(who | wc -l)
+    }
+    EOF
+    ```
+
+    ## Results
+
+    | Check | Status | Evidence |
+    |-------|--------|----------|
+    | User Authorization | Pending | [Results JSON](./evidence/tc001-results.json) |
+    ```
+
+    <Callout>
+    **Frontmatter Classification**
+
+    The `doc-classify` frontmatter enables filtering and reporting across multiple test cases, making it easy to generate compliance reports.
+    </Callout>
+  </Step>
+
+  <Step>
+    ## Execute the Test Case
+    
+    Run the test and capture evidence automatically:
+
+    ```bash
+    # Run the test case
+    spry rb run test-case-TC001.md
+
+    # View the captured evidence
+    cat ./evidence/tc001-results.json
+    ```
+
+    **Example Output:**
+    ```json
+    {
+      "testCase": "TC-001",
+      "executedAt": "2025-01-15T10:30:00-05:00",
+      "result": "PASS",
+      "authorizedUserCount": 12,
+      "currentUserCount": 3
+    }
+    ```
+  </Step>
+
+  <Step>
+    ## Update Status Based on Results
+    
+    After execution, update the frontmatter to reflect the test outcome:
+
+    ```yaml
+    ---
+    doc-classify:
+      role: evidence
+      framework: CMMC
+      control: AC.L1-3.1.1
+      status: passed
+      last-executed: 2025-01-15T10:30:00Z
+    ---
+    ```
+
+    <Callout type="success">
+    **Audit Trail**
+
+    The combination of version-controlled test cases, automated execution, and timestamped evidence creates a complete audit trail that satisfies compliance requirements.
+    </Callout>
+  </Step>
+</Steps>
+
+## Extending This Pattern
+
+<Tabs items={['Multiple Controls', 'Scheduled Testing', 'Report Generation']}>
+  <Tab value="Multiple Controls">
+    **Testing Multiple Controls**
+
+    Create a directory structure organized by control:
+
+    ```
+    compliance/
+    ├── AC-L1-3.1.1/
+    │   ├── TC-001-access-control.md
+    │   └── TC-002-session-timeout.md
+    ├── AU-L2-3.3.1/
+    │   └── TC-003-audit-logging.md
+    └── run-all-tests.sh
+    ```
+
+    Run all tests:
+    ```bash
+    spry rb run compliance/**/*.md --summarize
+    ```
+  </Tab>
+
+  <Tab value="Scheduled Testing">
+    **Automated Scheduled Testing**
+
+    Add a cron job for continuous compliance:
+
+    ```bash
+    # Run tests daily at 2 AM
+    0 2 * * * cd /opt/compliance && spry rb run **/*.md --verbose json > daily-results.json
+    ```
+
+    Or use GitHub Actions:
+    ```yaml
+    name: Compliance Tests
+    on:
+      schedule:
+        - cron: '0 2 * * *'
+    jobs:
+      test:
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v2
+          - run: spry rb run compliance/**/*.md
+    ```
+  </Tab>
+
+  <Tab value="Report Generation">
+    **Generate Compliance Reports**
+
+    Create a summary report generator:
+
+    ```bash
+    # Generate HTML report
+    spry rb run compliance/**/*.md --format html > compliance-report.html
+
+    # Generate JSON for dashboard integration
+    spry rb run compliance/**/*.md --format json | \
+      jq '.results[] | {control, status, lastExecuted}' > dashboard-data.json
+    ```
+  </Tab>
+</Tabs>

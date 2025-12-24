@@ -1,0 +1,210 @@
+---
+title: Authoring Executable Test Cases with Spry Axiom
+description: Detailed guide for QC teams to structure Markdown test documentation using the Spry Axiom engine.
+icon: FileCheck
+index: 4
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+
+The **Spry engine** uses a Heading-to-Role classification system. It treats Markdown headings as functional nodes in a database rather than just text styles. This enables automated SQL telemetry and audit-ready reporting.
+
+
+
+<Callout type="info">
+  **Visualize Structure:** To see the structure using the Spry Axiom Web-UI, use the command or navigation: `spry axiom web-ui [markdown file path]`
+</Callout>
+
+## 1. The Core Architecture
+
+Every file must begin with a `doc-classify` YAML block. This maps the visual depth of a heading (`#`, `##`, etc.) to a specific **Assurance Role**.
+
+### Role Definitions
+- **Project**: The high-level objective/repository.
+- **Strategy**: Governance (e.g., ISO27001, SOC2, CMMC compliance).
+- **Plan**: Tactical execution window (e.g., Sprint 24, Q1 Release).
+- **Suite**: Logical grouping of functionality.
+- **Case**: The specific test logic and expected behavior.
+- **Evidence**: The lowest level containing logs, screenshots, or checkmarks.
+
+---
+
+## 2. Selection of Hierarchy Models
+
+Depending on your project's complexity, you must choose one of the four standard models. **Consistency is key**: do not skip heading levels within a file.
+
+| Model | H1 | H2 | H3 | H4 | H5 | H6 |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Small** | Project | Case | Evidence | - | - | - |
+| **Medium** | Project | Suite | Case | Evidence | - | - |
+| **Large** | Project | Plan | Suite | Case | Evidence | - |
+| **Complex** | Project | Strategy | Plan | Suite | Case | Evidence |
+
+---
+
+## 3. Implementation Samples
+
+<Tabs items={['Small', 'Medium', 'Large', 'Complex']}>
+  <Tab value="Small">
+    ### Small Model
+    *Use for simple unit-level checks or quick smoke tests.*
+    
+    [View Full Template (qf-small.md)](/qf-small.md)
+
+    ```md
+    ---
+    doc-classify:
+      - select: heading[depth="1"]
+        role: project
+      - select: heading[depth="2"]
+        role: case
+      - select: heading[depth="3"]
+        role: evidence
+    ---
+
+    # API Validation Project
+    ## Verify User Endpoint returns 200
+    ### Evidence
+    - [x] Response status is 200 OK.
+    ```
+  </Tab>
+
+  <Tab value="Medium">
+    ### Medium Model
+    *The industry standard for feature-based regression testing.*
+
+    [View Full Template (qf-medium.md)](/qf-medium.md)
+
+    ```md
+    ---
+    doc-classify:
+      - select: heading[depth="1"]
+        role: project
+      - select: heading[depth="2"]
+        role: suite
+      - select: heading[depth="3"]
+        role: case
+      - select: heading[depth="4"]
+        role: evidence
+    ---
+
+    # E-Commerce Dashboard
+    ## Checkout Flow
+    ### TC-102: Guest Checkout with Credit Card
+    #### Evidence
+    - [x] Item added to cart.
+    ```
+  </Tab>
+
+  <Tab value="Large">
+    ### Large Model
+    *Use when managing multiple execution plans or sprints.*
+
+    [View Full Template (qf-large.md)](/qf-large.md)
+
+    ```md
+    ---
+    doc-classify:
+      - select: heading[depth="1"]
+        role: project
+      - select: heading[depth="2"]
+        role: plan
+      - select: heading[depth="3"]
+        role: suite
+      - select: heading[depth="4"]
+        role: case
+      - select: heading[depth="5"]
+        role: evidence
+    ---
+
+    # Finance App
+    ## Sprint 45 - Payment Rails
+    ### International Wire Transfers
+    #### TC-W-01: Transfer to EU IBAN
+    ##### Evidence
+    - [x] Currency conversion applied correctly.
+    ```
+  </Tab>
+
+  <Tab value="Complex">
+    ### Complex Model
+    *Mandatory for high-compliance environments (SOC2/CMMC).*
+
+    [View Full Template (qf-complex.md)](/qf-complex.md)
+
+    ```md
+    ---
+    doc-classify:
+      - select: heading[depth="1"]
+        role: project
+      - select: heading[depth="2"]
+        role: strategy
+      - select: heading[depth="3"]
+        role: plan
+      - select: heading[depth="4"]
+        role: suite
+      - select: heading[depth="5"]
+        role: case
+      - select: heading[depth="6"]
+        role: evidence
+    ---
+
+    # Opsfolio Infrastructure
+    ## CMMC Level 2 Compliance
+    ### Annual Security Audit 2025
+    #### Access Control (AC)
+    ##### AC.L2-3.1.1: Limit Access
+    ###### Evidence
+    - [x] RBAC configuration verified.
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## 4. Advanced Metadata & Overrides
+
+To make your QC reports more powerful, you can use **HFM (Header Frontmatter)** blocks or **ID tags** (`@id`) directly under headings.
+
+- **ID Tagging**: Use `@id unique-id` to link cases across different documents.
+- **YAML Overrides**: Change the status or assignee of a specific case inline.
+
+```md
+### Verify Password Complexity
+@id TC-AUTH-09
+{
+  "role": "case",
+  "priority": "high",
+  "status": "passed",
+  "assignee": "QC_Lead"
+}
+
+```
+
+---
+
+## 5. QC Authoring Rules
+
+<Steps>
+<Step>
+**Never Skip Levels**: If you are using the Medium model, don't jump from `#` directly to `###`.
+</Step>
+<Step>
+**One Project Per File**: Only one H1 (`#`) is allowed per document to ensure clean telemetry.
+</Step>
+<Step>
+**Evidence at the Leaf**: Always ensure the `evidence` role is the lowest level of your heading hierarchy.
+</Step>
+<Step>
+**GFM Compliance**: Use standard GitHub Flavored Markdown for checkboxes (`- [x]`) and tables.
+</Step>
+</Steps>
+
+<Callout type="info">
+Properly structured files allow Qualityfolio to automatically build **Traceability Matrices** used for coverage reporting and risk analysis.
+</Callout>
+
+
+
