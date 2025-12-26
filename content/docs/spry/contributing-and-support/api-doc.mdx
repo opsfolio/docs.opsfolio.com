@@ -1,144 +1,394 @@
 ---
-title: API Reference
-description: Use Spry's libraries directly in TypeScript code
+title: Programmatic API Reference
+description: Use Spry's libraries directly in TypeScript code for custom tools and integrations
 icon: Code
 ---
 
 import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
 import { Callout } from 'fumadocs-ui/components/callout';
-import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+import { Card, Cards } from 'fumadocs-ui/components/card';
 
 ## Overview
 
-Spry's functionality is available as modular TypeScript libraries that can be imported and used programmatically. This enables:
+Spry's functionality is available as modular TypeScript libraries that can be imported and used programmatically. This enables powerful use cases beyond the CLI:
 
-- Building custom tools
-- Integrating Spry into larger applications
-- Creating specialized processing pipelines
-- Automated testing of Spryfiles
+<Cards>
+  <Card title="Custom Tools" icon="Wrench">
+    Build specialized tools tailored to your workflow
+  </Card>
+  
+  <Card title="Application Integration" icon="Plug">
+    Embed Spry into larger applications and platforms
+  </Card>
+  
+  <Card title="Processing Pipelines" icon="GitBranch">
+    Create custom document processing workflows
+  </Card>
+  
+  <Card title="Automated Testing" icon="TestTube">
+    Test and validate Spryfiles programmatically
+  </Card>
+</Cards>
+
+---
 
 ## Installation
 
-Import from the Spry repository:
+Import Spry modules directly from the repository or use local imports after cloning.
 
-<Tabs items={['Deno', 'Local']}>
-<Tab value="Deno">
-```typescript
-// Deno
-import { markdownASTs } from "https://raw.githubusercontent.com/programmablemd/spry/main/lib/axiom/io/mod.ts";
-import { graph, typicalRules } from "https://raw.githubusercontent.com/programmablemd/spry/main/lib/axiom/graph.ts";
-```
-</Tab>
-<Tab value="Local">
-```typescript
-// Clone and import locally
-import { markdownASTs } from "./lib/axiom/io/mod.ts";
-import { graph, typicalRules } from "./lib/axiom/graph.ts";
-```
-</Tab>
+<Tabs items={['Remote (Deno)', 'Local Development']}>
+  <Tab value="Remote (Deno)">
+    **Import from GitHub:**
+    ```typescript
+    import { markdownASTs } from "https://raw.githubusercontent.com/programmablemd/spry/main/lib/axiom/io/mod.ts";
+    import { graph, typicalRules } from "https://raw.githubusercontent.com/programmablemd/spry/main/lib/axiom/graph.ts";
+    import { buildPlaybookProjection } from "https://raw.githubusercontent.com/programmablemd/spry/main/lib/axiom/projection/playbook.ts";
+    ```
+
+    <Callout>
+    **Version Pinning**
+    
+    For production use, pin to a specific commit hash or tag instead of `main` to ensure stability.
+    </Callout>
+  </Tab>
+
+  <Tab value="Local Development">
+    **Clone and import locally:**
+    ```bash
+    git clone https://github.com/programmablemd/spry.git
+    cd spry
+    ```
+
+    ```typescript
+    import { markdownASTs } from "./lib/axiom/io/mod.ts";
+    import { graph, typicalRules } from "./lib/axiom/graph.ts";
+    import { buildPlaybookProjection } from "./lib/axiom/projection/playbook.ts";
+    ```
+  </Tab>
 </Tabs>
+
+---
 
 ## Core Modules
 
-### Loading Markdown
+### Loading and Parsing Markdown
 
-Load and parse Markdown files into AST representations:
+The `markdownASTs` function loads Markdown files and parses them into Abstract Syntax Trees (ASTs).
 
 ```typescript
 import { markdownASTs } from "@spry/axiom/io";
 
-// Load from file
+// Load single file
 const [doc] = await markdownASTs({
   sources: ["./runbook.md"],
   cwd: Deno.cwd(),
 });
 
-// Load from multiple sources
+// Load multiple sources
 const docs = await markdownASTs({
-  sources: ["./docs/*.md", "https://example.com/doc.md"],
+  sources: [
+    "./docs/*.md",                    // Glob patterns
+    "https://example.com/doc.md",     // Remote URLs
+    "./another-file.md"                // Direct paths
+  ],
   cwd: Deno.cwd(),
 });
 
-// Access the AST
-console.log(doc.root.type); // "root"
-console.log(doc.vfile.path); // File path
+// Access the parsed AST
+console.log(doc.root.type);        // "root"
+console.log(doc.vfile.path);       // File path
+console.log(doc.root.children);    // Child nodes
 ```
 
-### Building Graphs
+**Return Value:**
+- Array of documents, each containing:
+  - `root` - The mdast Root node
+  - `vfile` - Virtual file with path and metadata
+  - Additional parsed metadata
 
-Build semantic graphs from parsed ASTs:
+### Building Semantic Graphs
+
+Convert ASTs into semantic graphs that represent relationships between document elements.
 
 ```typescript
 import { graph, typicalRules } from "@spry/axiom/graph";
 
-// Build semantic graph
+// Build semantic graph with default rules
 const g = graph(doc.root, typicalRules());
+
+// Explore the graph structure
+console.log(`Nodes: ${g.nodes.length}`);
+console.log(`Edges: ${g.edges.length}`);
 
 // Access relationships
 for (const edge of g.edges) {
   console.log(`${edge.rel}: ${edge.from.type} -> ${edge.to.type}`);
 }
+
+// Filter by relationship type
+const containmentEdges = g.edges.filter(e => e.rel === "containedInSection");
+const dependencyEdges = g.edges.filter(e => e.rel === "dependsOn");
 ```
+
+**Graph Structure:**
+- `nodes` - All document nodes (headings, code blocks, etc.)
+- `edges` - Relationships between nodes with typed connections
+- Common edge types: `containedInSection`, `dependsOn`, `followedBy`
 
 ### Creating Projections
 
-Transform graphs into domain-specific models:
+Transform semantic graphs into domain-specific models optimized for different use cases.
 
-```typescript
-import { buildFlexibleProjection } from "@spry/axiom/projection/flexible";
-import { buildPlaybookProjection } from "@spry/axiom/projection/playbook";
+<Tabs items={['Playbook Projection', 'Flexible Projection']}>
+  <Tab value="Playbook Projection">
+    **Execution-focused projection for running tasks:**
 
-// UI-neutral projection
-const flex = buildFlexibleProjection(g);
-console.log("Documents:", flex.documents.length);
-console.log("Nodes:", flex.nodes.length);
-console.log("Edges:", flex.edges.length);
+    ```typescript
+    import { buildPlaybookProjection } from "@spry/axiom/projection/playbook";
 
-// Execution-focused projection
-const playbook = buildPlaybookProjection(g);
-console.log("Executables:", playbook.executables.length);
-console.log("Tasks:", playbook.tasks.length);
-```
+    const playbook = buildPlaybookProjection(g);
 
-### Executing Tasks
+    // Access executable tasks
+    console.log("Tasks:", playbook.tasks.length);
+    console.log("Executables:", playbook.executables.length);
 
-Execute tasks in dependency order:
+    // Inspect individual tasks
+    for (const task of playbook.tasks) {
+      console.log(`Task: ${task.taskId()}`);
+      console.log(`  Deps: ${task.taskDeps()?.join(", ") || "none"}`);
+      console.log(`  Description: ${task.spawnableArgs?.descr || "N/A"}`);
+      console.log(`  Language: ${task.origin.lang}`);
+    }
+    ```
+
+    **Use Cases:**
+    - Task execution and orchestration
+    - Dependency analysis
+    - Runbook automation
+  </Tab>
+
+  <Tab value="Flexible Projection">
+    **UI-neutral projection for generic processing:**
+
+    ```typescript
+    import { buildFlexibleProjection } from "@spry/axiom/projection/flexible";
+
+    const flex = buildFlexibleProjection(g);
+
+    console.log("Documents:", flex.documents.length);
+    console.log("Nodes:", flex.nodes.length);
+    console.log("Edges:", flex.edges.length);
+
+    // Access structured data
+    for (const node of flex.nodes) {
+      console.log(`${node.type}: ${node.id}`);
+    }
+    ```
+
+    **Use Cases:**
+    - Documentation generation
+    - Content analysis
+    - Custom visualizations
+  </Tab>
+</Tabs>
+
+### Task Execution
+
+Execute tasks with dependency resolution and orchestration.
 
 ```typescript
 import { executionPlan, executeDAG } from "@spry/axiom/orchestrate/task";
 import { tasksRunbook } from "@spry/axiom/orchestrate/runbook";
 
-// Build execution plan from tasks
+// 1. Build execution plan (resolves dependencies)
 const plan = executionPlan(playbook.tasks);
 
-// View execution order
+// View execution layers (tasks that can run in parallel)
 console.log("Execution order:");
 for (const layer of plan.layers) {
   console.log("  Layer:", layer.map(t => t.taskId()));
 }
 
-// Execute tasks
+// 2. Create runbook executor with context
 const runbook = tasksRunbook(playbook.tasks, {
-  interpolationContext: { env: Deno.env.toObject() },
+  interpolationContext: { 
+    env: Deno.env.toObject(),
+    config: { version: "1.0.0" }
+  },
 });
 
+// 3. Execute with lifecycle hooks
 await executeDAG(plan, {
   executor: runbook.executor,
-  onTaskStart: (task) => console.log(`Starting: ${task.taskId()}`),
-  onTaskComplete: (task, result) => {
-    console.log(`Completed: ${task.taskId()} (${result.exitCode})`);
+  
+  onTaskStart: (task) => {
+    console.log(`▶ Starting: ${task.taskId()}`);
   },
+  
+  onTaskComplete: (task, result) => {
+    console.log(`✓ Completed: ${task.taskId()}`);
+    console.log(`  Exit code: ${result.exitCode}`);
+    if (result.stdout) console.log(`  Output: ${result.stdout}`);
+  },
+  
   onTaskFailed: (task, error) => {
-    console.error(`Failed: ${task.taskId()}`, error);
+    console.error(`✗ Failed: ${task.taskId()}`);
+    console.error(`  Error: ${error.message}`);
   },
 });
 ```
+
+**Execution Plan:**
+- Resolves dependencies using topological sort
+- Groups independent tasks into parallel layers
+- Detects circular dependencies
+
+**Lifecycle Hooks:**
+- `onTaskStart` - Called when task begins
+- `onTaskComplete` - Called on successful completion
+- `onTaskFailed` - Called on task failure
+
+---
+
+## Utility Modules
+
+### Shell Execution
+
+Execute shell commands with full control over environment and output.
+
+```typescript
+import { shell, spawn } from "@spry/universal/shell";
+
+// Simple command execution
+const result = await shell.bash("echo 'Hello, World!'");
+console.log(result.stdout);     // "Hello, World!\n"
+console.log(result.exitCode);   // 0
+
+// Execute with options
+const { exitCode, stdout, stderr } = await spawn("npm", ["test"], {
+  cwd: "./project",
+  env: { NODE_ENV: "test", CI: "true" },
+  timeout: 60000,  // 60 seconds
+});
+
+if (exitCode === 0) {
+  console.log("Tests passed!");
+} else {
+  console.error("Tests failed:", stderr);
+}
+```
+
+**Supported Shells:**
+- `shell.bash(command)` - Execute in Bash
+- `shell.sh(command)` - Execute in sh
+- `spawn(cmd, args, options)` - Low-level process spawning
+
+### Template Rendering
+
+Render templates with variable interpolation.
+
+```typescript
+import { render, createContext } from "@spry/universal/render";
+
+// Create interpolation context
+const context = createContext({
+  env: Deno.env.toObject(),
+  config: { 
+    version: "1.0.0",
+    region: "us-east-1" 
+  },
+  memory: new Map(),
+});
+
+// Render template string
+const template = "Deploying version ${config.version} to ${env.DEPLOY_ENV} (${config.region})";
+const result = await render(template, context);
+console.log(result); 
+// "Deploying version 1.0.0 to production (us-east-1)"
+```
+
+**Context Structure:**
+- `env` - Environment variables
+- `config` - Configuration object
+- `memory` - Shared state map
+
+### Language Registry
+
+Access programming language metadata and detection.
+
+```typescript
+import { languageRegistry, detectLanguage } from "@spry/universal/code";
+
+// Get language information
+const bash = languageRegistry.get("bash");
+console.log(bash?.extensions);   // [".sh", ".bash"]
+console.log(bash?.comment);      // { line: "#" }
+console.log(bash?.aliases);      // ["sh", "shell"]
+
+// Detect language from filename
+const pythonLang = detectLanguage("script.py");
+console.log(pythonLang?.id);     // "python"
+
+const jsLang = detectLanguage("app.js");
+console.log(jsLang?.id);         // "javascript"
+
+// Check if language exists
+if (languageRegistry.has("rust")) {
+  console.log("Rust is supported!");
+}
+```
+
+**Language Information:**
+- `id` - Canonical language identifier
+- `extensions` - Common file extensions
+- `aliases` - Alternative names
+- `comment` - Comment syntax (line/block)
+
+### DAG Utilities
+
+Work with directed acyclic graphs for task orchestration.
+
+```typescript
+import { executionPlan, topologicalSort } from "@spry/universal/task";
+
+// Define tasks with dependencies
+const tasks = [
+  { taskId: () => "setup", taskDeps: () => [] },
+  { taskId: () => "build", taskDeps: () => ["setup"] },
+  { taskId: () => "test", taskDeps: () => ["build"] },
+  { taskId: () => "lint", taskDeps: () => ["setup"] },
+  { taskId: () => "deploy", taskDeps: () => ["test", "lint"] },
+];
+
+// Build execution plan (layers can run in parallel)
+const plan = executionPlan(tasks);
+
+console.log("Execution layers:");
+for (const layer of plan.layers) {
+  console.log("  ", layer.map(t => t.taskId()).join(", "));
+}
+
+// Output:
+// Execution layers:
+//   setup
+//   build, lint
+//   test
+//   deploy
+```
+
+**Features:**
+- Topological sorting with cycle detection
+- Parallel execution layer calculation
+- Dependency validation
+
+---
 
 ## Common Patterns
 
 ### Parse and Analyze
 
-Analyze a Spryfile and extract task information:
+Extract structured information from Spryfiles.
 
 ```typescript
 import { markdownASTs } from "@spry/axiom/io";
@@ -146,85 +396,119 @@ import { graph, typicalRules } from "@spry/axiom/graph";
 import { buildPlaybookProjection } from "@spry/axiom/projection/playbook";
 
 async function analyzeSpryfile(path: string) {
+  // Load and parse
   const [doc] = await markdownASTs({ sources: [path] });
+  
+  // Build semantic graph
   const g = graph(doc.root, typicalRules());
+  
+  // Create playbook projection
   const playbook = buildPlaybookProjection(g);
 
+  // Extract task information
   return {
     taskCount: playbook.tasks.length,
     tasks: playbook.tasks.map(t => ({
       id: t.taskId(),
       deps: t.taskDeps(),
       description: t.spawnableArgs?.descr,
+      language: t.origin.lang,
     })),
+    executableCount: playbook.executables.length,
   };
 }
 
+// Usage
 const analysis = await analyzeSpryfile("./runbook.md");
 console.log(JSON.stringify(analysis, null, 2));
 ```
 
 ### Custom Validation
 
-Implement custom validation logic for Spryfiles:
+Implement domain-specific validation rules.
 
 ```typescript
 import { visit } from "unist-util-visit";
-import type { Code } from "mdast";
+import type { Code, Root } from "mdast";
 
 interface ValidationResult {
   valid: boolean;
   errors: string[];
+  warnings: string[];
 }
 
 function validateSpryfile(root: Root): ValidationResult {
   const errors: string[] = [];
+  const warnings: string[] = [];
   const taskIds = new Set<string>();
 
   visit<Root, "code">(root, "code", (node: Code) => {
     const fm = node.data?.codeFM;
     if (!fm?.identity) return;
 
-    // Check for duplicates
+    // Check for duplicate task IDs
     if (taskIds.has(fm.identity)) {
       errors.push(`Duplicate task ID: ${fm.identity}`);
     }
     taskIds.add(fm.identity);
 
-    // Check for missing descriptions
+    // Warn about missing descriptions
     if (!fm.spawnableArgs?.descr) {
-      errors.push(`Task "${fm.identity}" missing description`);
+      warnings.push(`Task "${fm.identity}" missing description`);
     }
 
-    // Check dependencies exist
+    // Validate dependency references
     for (const dep of fm.spawnableArgs?.dep || []) {
       if (!taskIds.has(dep) && dep !== fm.identity) {
-        // Note: This simple check doesn't account for order
-        // A real implementation would do a second pass
+        warnings.push(`Task "${fm.identity}" references unknown dependency "${dep}"`);
       }
+    }
+
+    // Check for long task names
+    if (fm.identity.length > 50) {
+      warnings.push(`Task ID "${fm.identity}" is very long (${fm.identity.length} chars)`);
     }
   });
 
   return {
     valid: errors.length === 0,
     errors,
+    warnings,
   };
+}
+
+// Usage
+const [doc] = await markdownASTs({ sources: ["./runbook.md"] });
+const validation = validateSpryfile(doc.root);
+
+if (!validation.valid) {
+  console.error("Validation errors:");
+  validation.errors.forEach(e => console.error(`  ❌ ${e}`));
+}
+
+if (validation.warnings.length > 0) {
+  console.warn("Warnings:");
+  validation.warnings.forEach(w => console.warn(`  ⚠️  ${w}`));
 }
 ```
 
 ### Generate Reports
 
-Generate detailed reports about tasks:
+Create detailed reports about document structure and tasks.
 
 ```typescript
 import { toString } from "mdast-util-to-string";
+import type { PlaybookProjection } from "@spry/axiom/projection/playbook";
+import type { Graph } from "@spry/axiom/graph";
 
 interface TaskReport {
   id: string;
   description: string;
   dependencies: string[];
   section: string;
+  language: string;
   lineCount: number;
+  hasInterpolation: boolean;
 }
 
 function generateTaskReport(playbook: PlaybookProjection, graph: Graph): TaskReport[] {
@@ -240,130 +524,167 @@ function generateTaskReport(playbook: PlaybookProjection, graph: Graph): TaskRep
       description: task.spawnableArgs?.descr || "",
       dependencies: task.taskDeps() || [],
       section,
+      language: task.origin.lang || "unknown",
       lineCount: task.origin.value.split("\n").length,
+      hasInterpolation: task.spawnableArgs?.interpolate || false,
     };
   });
 }
+
+// Usage
+const report = generateTaskReport(playbook, g);
+
+// Export as JSON
+await Deno.writeTextFile(
+  "./task-report.json",
+  JSON.stringify(report, null, 2)
+);
+
+// Generate Markdown table
+const markdown = [
+  "# Task Report",
+  "",
+  "| Task | Description | Dependencies | Section | Language |",
+  "|------|-------------|--------------|---------|----------|",
+  ...report.map(t => 
+    `| ${t.id} | ${t.description} | ${t.dependencies.join(", ") || "none"} | ${t.section} | ${t.language} |`
+  ),
+].join("\n");
+
+await Deno.writeTextFile("./task-report.md", markdown);
 ```
 
 ### Watch and Rebuild
 
-Watch for file changes and rebuild automatically:
+Implement file watching for automatic rebuilds.
 
 ```typescript
 import { markdownASTs } from "@spry/axiom/io";
 
-async function watchSpryfile(path: string, onChange: (doc: any) => void) {
+async function watchSpryfile(
+  path: string, 
+  onChange: (doc: any) => void | Promise<void>
+) {
   const watcher = Deno.watchFs(path);
 
   // Initial load
+  console.log(`👀 Watching: ${path}`);
   const [doc] = await markdownASTs({ sources: [path] });
-  onChange(doc);
+  await onChange(doc);
 
   // Watch for changes
   for await (const event of watcher) {
     if (event.kind === "modify") {
-      const [doc] = await markdownASTs({ sources: [path] });
-      onChange(doc);
+      console.log("📝 File changed, reloading...");
+      try {
+        const [doc] = await markdownASTs({ sources: [path] });
+        await onChange(doc);
+        console.log("✓ Reload complete");
+      } catch (error) {
+        console.error("❌ Error reloading:", error.message);
+      }
     }
   }
 }
 
-// Usage
-watchSpryfile("./runbook.md", (doc) => {
-  console.log("Document updated!");
-  // Rebuild, validate, etc.
+// Usage with validation and rebuild
+await watchSpryfile("./runbook.md", async (doc) => {
+  const g = graph(doc.root, typicalRules());
+  const playbook = buildPlaybookProjection(g);
+  
+  console.log(`Found ${playbook.tasks.length} tasks`);
+  
+  // Validate
+  const validation = validateSpryfile(doc.root);
+  if (!validation.valid) {
+    console.error("Validation failed:", validation.errors);
+  }
+  
+  // Regenerate artifacts
+  await generateTaskReport(playbook, g);
 });
 ```
 
-## Shell Execution
+### Build Custom CLI
 
-Execute shell commands programmatically:
-
-```typescript
-import { shell, spawn } from "@spry/universal/shell";
-
-// Simple command execution
-const result = await shell.bash("echo 'Hello, World!'");
-console.log(result.stdout); // "Hello, World!\n"
-
-// Spawn with options
-const { exitCode, stdout, stderr } = await spawn("npm", ["test"], {
-  cwd: "./project",
-  env: { NODE_ENV: "test" },
-  timeout: 60000,
-});
-```
-
-## Template Rendering
-
-Render templates with interpolation:
+Create a custom command-line tool using Spry's APIs.
 
 ```typescript
-import { render, createContext } from "@spry/universal/render";
+#!/usr/bin/env -S deno run -A
 
-// Create interpolation context
-const context = createContext({
-  env: Deno.env.toObject(),
-  config: { version: "1.0.0" },
-  memory: new Map(),
+import { parseArgs } from "https://deno.land/std@0.208.0/cli/parse_args.ts";
+import { markdownASTs } from "@spry/axiom/io";
+import { graph, typicalRules } from "@spry/axiom/graph";
+import { buildPlaybookProjection } from "@spry/axiom/projection/playbook";
+
+const args = parseArgs(Deno.args, {
+  string: ["file", "task"],
+  boolean: ["list", "validate", "help"],
+  alias: { f: "file", t: "task", l: "list", v: "validate", h: "help" },
 });
 
-// Render template
-const template = "Deploying version ${config.version} to ${env.DEPLOY_ENV}";
-const result = await render(template, context);
-console.log(result); // "Deploying version 1.0.0 to production"
-```
+if (args.help) {
+  console.log(`
+Usage: custom-spry [options]
 
-## Language Registry
-
-Work with programming language metadata:
-
-```typescript
-import { languageRegistry, detectLanguage } from "@spry/universal/code";
-
-// Get language info
-const bash = languageRegistry.get("bash");
-console.log(bash?.extensions); // [".sh", ".bash"]
-console.log(bash?.comment); // { line: "#" }
-
-// Detect language from filename
-const lang = detectLanguage("script.py");
-console.log(lang?.id); // "python"
-```
-
-## DAG Utilities
-
-Build and manage directed acyclic graphs:
-
-```typescript
-import { executionPlan, topologicalSort } from "@spry/universal/task";
-
-// Create tasks
-const tasks = [
-  { taskId: () => "a", taskDeps: () => [] },
-  { taskId: () => "b", taskDeps: () => ["a"] },
-  { taskId: () => "c", taskDeps: () => ["a"] },
-  { taskId: () => "d", taskDeps: () => ["b", "c"] },
-];
-
-// Build execution plan
-const plan = executionPlan(tasks);
-
-console.log("Layers:");
-for (const layer of plan.layers) {
-  console.log("  ", layer.map(t => t.taskId()));
+Options:
+  -f, --file <path>     Spryfile path (default: ./Spryfile.md)
+  -l, --list            List all tasks
+  -t, --task <id>       Execute specific task
+  -v, --validate        Validate Spryfile
+  -h, --help            Show this help
+  `);
+  Deno.exit(0);
 }
-// Layers:
-//   ["a"]
-//   ["b", "c"]
-//   ["d"]
+
+const file = args.file || "./Spryfile.md";
+const [doc] = await markdownASTs({ sources: [file] });
+const g = graph(doc.root, typicalRules());
+const playbook = buildPlaybookProjection(g);
+
+if (args.validate) {
+  const validation = validateSpryfile(doc.root);
+  if (validation.valid) {
+    console.log("✓ Validation passed");
+  } else {
+    console.error("✗ Validation failed:");
+    validation.errors.forEach(e => console.error(`  ${e}`));
+    Deno.exit(1);
+  }
+}
+
+if (args.list) {
+  console.log("Available tasks:");
+  for (const task of playbook.tasks) {
+    console.log(`  ${task.taskId()}`);
+    if (task.spawnableArgs?.descr) {
+      console.log(`    ${task.spawnableArgs.descr}`);
+    }
+  }
+}
+
+if (args.task) {
+  const task = playbook.tasks.find(t => t.taskId() === args.task);
+  if (!task) {
+    console.error(`Task not found: ${args.task}`);
+    Deno.exit(1);
+  }
+  
+  console.log(`Executing: ${args.task}`);
+  // Execute task...
+}
 ```
+
+---
 
 ## Complete Example
 
+A fully functional Spryfile runner that demonstrates the complete workflow.
+
 <Callout type="info">
-This example demonstrates a complete Spry runner that loads, analyzes, and executes a Spryfile.
+**Save as `run-spryfile.ts`**
+
+This example shows how to build a production-ready Spry runner with error handling and progress reporting.
 </Callout>
 
 ```typescript title="run-spryfile.ts"
@@ -376,61 +697,210 @@ import { executionPlan, executeDAG } from "./lib/axiom/orchestrate/task.ts";
 import { tasksRunbook } from "./lib/axiom/orchestrate/runbook.ts";
 
 async function runSpryfile(path: string) {
-  console.log(`Loading: ${path}`);
+  console.log(`📖 Loading: ${path}`);
 
-  // 1. Load and parse
-  const [doc] = await markdownASTs({
-    sources: [path],
-    cwd: Deno.cwd(),
-  });
+  try {
+    // 1. Load and parse Markdown
+    const [doc] = await markdownASTs({
+      sources: [path],
+      cwd: Deno.cwd(),
+    });
 
-  // 2. Build semantic graph
-  const g = graph(doc.root, typicalRules());
+    // 2. Build semantic graph
+    const g = graph(doc.root, typicalRules());
+    console.log(`📊 Graph: ${g.nodes.length} nodes, ${g.edges.length} edges`);
 
-  // 3. Create playbook projection
-  const playbook = buildPlaybookProjection(g);
-  console.log(`Found ${playbook.tasks.length} tasks`);
+    // 3. Create playbook projection
+    const playbook = buildPlaybookProjection(g);
+    console.log(`📋 Found ${playbook.tasks.length} tasks`);
 
-  // 4. Build execution plan
-  const plan = executionPlan(playbook.tasks);
+    if (playbook.tasks.length === 0) {
+      console.log("No tasks to execute");
+      return;
+    }
 
-  // 5. Create runbook executor
-  const runbook = tasksRunbook(playbook.tasks, {
-    interpolationContext: {
-      env: Deno.env.toObject(),
-    },
-  });
+    // 4. Build execution plan
+    const plan = executionPlan(playbook.tasks);
+    console.log(`🔀 Execution plan: ${plan.layers.length} layers`);
 
-  // 6. Execute
-  console.log("\nExecuting tasks...\n");
+    // Show execution order
+    console.log("\nExecution order:");
+    for (let i = 0; i < plan.layers.length; i++) {
+      const layer = plan.layers[i];
+      console.log(`  Layer ${i + 1}: ${layer.map(t => t.taskId()).join(", ")}`);
+    }
 
-  await executeDAG(plan, {
-    executor: runbook.executor,
-    onTaskStart: (task) => {
-      console.log(`▶ ${task.taskId()}`);
-    },
-    onTaskComplete: (task, result) => {
-      if (result.stdout) {
-        console.log(result.stdout);
-      }
-      console.log(`✓ ${task.taskId()} (exit: ${result.exitCode})\n`);
-    },
-    onTaskFailed: (task, error) => {
-      console.error(`✗ ${task.taskId()} failed:`, error);
-    },
-  });
+    // 5. Create runbook executor
+    const runbook = tasksRunbook(playbook.tasks, {
+      interpolationContext: {
+        env: Deno.env.toObject(),
+      },
+    });
 
-  console.log("Done!");
+    // 6. Execute with progress reporting
+    console.log("\n🚀 Executing tasks...\n");
+
+    let completedCount = 0;
+    let failedCount = 0;
+
+    await executeDAG(plan, {
+      executor: runbook.executor,
+      
+      onTaskStart: (task) => {
+        console.log(`▶️  ${task.taskId()}`);
+      },
+      
+      onTaskComplete: (task, result) => {
+        completedCount++;
+        
+        if (result.stdout && result.stdout.trim()) {
+          console.log(result.stdout);
+        }
+        
+        console.log(`✅ ${task.taskId()} (exit: ${result.exitCode})`);
+        console.log();
+      },
+      
+      onTaskFailed: (task, error) => {
+        failedCount++;
+        console.error(`❌ ${task.taskId()} failed:`);
+        console.error(`   ${error.message}`);
+        console.log();
+      },
+    });
+
+    // 7. Summary
+    console.log("─".repeat(50));
+    console.log(`✓ Completed: ${completedCount}`);
+    console.log(`✗ Failed: ${failedCount}`);
+    console.log(`Total: ${playbook.tasks.length} tasks`);
+
+    if (failedCount > 0) {
+      Deno.exit(1);
+    }
+
+  } catch (error) {
+    console.error("❌ Error:", error.message);
+    if (error.stack) {
+      console.error(error.stack);
+    }
+    Deno.exit(1);
+  }
 }
 
-// Run
-const file = Deno.args[0] || "runbook.md";
-await runSpryfile(file);
+// CLI handling
+if (import.meta.main) {
+  const file = Deno.args[0] || "runbook.md";
+  
+  console.log("Spry Runner v1.0.0");
+  console.log("─".repeat(50));
+  
+  await runSpryfile(file);
+  
+  console.log("─".repeat(50));
+  console.log("✅ Done!");
+}
+```
+
+**Run the example:**
+```bash
+# Make executable
+chmod +x run-spryfile.ts
+
+# Run with default file
+./run-spryfile.ts
+
+# Run with specific file
+./run-spryfile.ts path/to/Spryfile.md
 ```
 
 ---
 
-## See Also
+## Module Reference Summary
 
-- [Architecture Overview](./architecture-deep-drive)
-- [Creating Extensions](./custom-extensions)
+| Module | Purpose | Key Functions |
+|--------|---------|---------------|
+| `@spry/axiom/io` | File loading and parsing | `markdownASTs()` |
+| `@spry/axiom/graph` | Semantic graph building | `graph()`, `typicalRules()` |
+| `@spry/axiom/projection/playbook` | Task execution model | `buildPlaybookProjection()` |
+| `@spry/axiom/projection/flexible` | Generic document model | `buildFlexibleProjection()` |
+| `@spry/axiom/orchestrate/task` | Task orchestration | `executionPlan()`, `executeDAG()` |
+| `@spry/axiom/orchestrate/runbook` | Task execution | `tasksRunbook()` |
+| `@spry/universal/shell` | Shell command execution | `shell.bash()`, `spawn()` |
+| `@spry/universal/render` | Template rendering | `render()`, `createContext()` |
+| `@spry/universal/code` | Language metadata | `languageRegistry`, `detectLanguage()` |
+| `@spry/universal/task` | DAG utilities | `executionPlan()`, `topologicalSort()` |
+
+---
+
+## Best Practices
+
+<Steps>
+  <Step>
+    **Error Handling**
+    
+    Always wrap API calls in try-catch blocks and handle errors gracefully:
+    
+    ```typescript
+    try {
+      const [doc] = await markdownASTs({ sources: [path] });
+      // Process document...
+    } catch (error) {
+      console.error(`Failed to load ${path}:`, error.message);
+      Deno.exit(1);
+    }
+    ```
+  </Step>
+
+  <Step>
+    **Type Safety**
+    
+    Use TypeScript types for better IDE support and type checking:
+    
+    ```typescript
+    import type { Root, Code } from "mdast";
+    import type { PlaybookProjection } from "@spry/axiom/projection/playbook";
+    
+    function processDocument(root: Root): PlaybookProjection {
+      // Type-safe processing...
+    }
+    ```
+  </Step>
+
+  <Step>
+    **Resource Cleanup**
+    
+    Close file watchers and clean up resources:
+    
+    ```typescript
+    const watcher = Deno.watchFs(path);
+    try {
+      for await (const event of watcher) {
+        // Handle events...
+      }
+    } finally {
+      watcher.close();
+    }
+    ```
+  </Step>
+
+  <Step>
+    **Performance Optimization**
+    
+    Cache parsed documents and graphs when possible:
+    
+    ```typescript
+    const cache = new Map<string, { doc: any, graph: any }>();
+    
+    async function getCachedGraph(path: string) {
+      if (!cache.has(path)) {
+        const [doc] = await markdownASTs({ sources: [path] });
+        const g = graph(doc.root, typicalRules());
+        cache.set(path, { doc, graph: g });
+      }
+      return cache.get(path)!;
+    }
+    ```
+  </Step>
+</Steps>
+
