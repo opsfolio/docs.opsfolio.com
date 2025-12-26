@@ -15,6 +15,5 @@
     "api-doc",
     "faq",
     "playbook"
-  ],
-  "root": true
+  ]
 }
