@@ -13,6 +13,9 @@
     "common-workflows",
     "dag",
     "ast",
-    "architecture-pattern-edge-engineering"
-  ]
+    "architecture-pattern-edge-engineering",
+    "code-default",
+    "capture"
+  ],
+  "root": true
 }

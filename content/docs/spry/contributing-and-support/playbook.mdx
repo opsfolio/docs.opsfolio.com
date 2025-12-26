@@ -1,0 +1,463 @@
+---
+title: Playbook
+description: Domain-specific operational patterns expressed in Markdown
+icon: BookOpen
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+## What is a Playbook?
+
+Playbooks are domain-specific operational patterns expressed in Markdown. They define how Spry processes and emits content for specific use cases.
+
+A Spry Playbook is:
+
+<Cards>
+  <Card title="Human-readable">
+    Written in standard Markdown that anyone can read and understand
+  </Card>
+  <Card title="Machine-actionable">
+    Axiom rules turn it into an executable graph
+  </Card>
+  <Card title="Service-specific">
+    Projection and emitters tailored for specific domains
+  </Card>
+  <Card title="Deterministic">
+    Produces reproducible outputs every time
+  </Card>
+  <Card title="Composable">
+    Supports imports, partials, and reusable behaviors
+  </Card>
+</Cards>
+
+## The Playbook Pipeline
+
+Every playbook follows the same conceptual flow:
+
+```mermaid
+graph LR
+    A[Markdown] --> B[Parse]
+    B --> C[Analyze]
+    C --> D[Project]
+    D --> E[Emit]
+```
+
+<Steps>
+  <Step>
+    ### Define
+    Author Markdown with fenced blocks, frontmatter, decorators, and attributes.
+  </Step>
+  
+  <Step>
+    ### Parse
+    remark parses Markdown into an AST (mdast).
+  </Step>
+  
+  <Step>
+    ### Analyze
+    Axiom rules establish structural edges, semantic decorators, dependency relationships, and cell classifications.
+  </Step>
+  
+  <Step>
+    ### Project
+    A specialized projection interprets the graph for the target domain.
+  </Step>
+  
+  <Step>
+    ### Emit
+    Concrete artifacts are produced: SQL files, HTML pages, JSON data, or execution steps.
+  </Step>
+</Steps>
+
+## Available Playbooks
+
+### SQLPage Playbook
+
+Build complete web applications using SQL and Markdown.
+
+**Use case:** Data dashboards, admin panels, internal tools
+
+**Artifacts:**
+- `.sql` files for SQLPage
+- `sqlpage_files` table entries
+- Route forests and breadcrumbs
+- Configuration files
+
+**Example:**
+
+```markdown
+---
+sqlpage-conf:
+  database_url: sqlite://app.db
+  port: 9227
+---
+
+# My Application
+
+​```sql index.sql { route: { caption: "Home" } }
+SELECT 'card' AS component, 'Welcome' AS title;
+​```
+```
+
+**Commands:**
+
+<Tabs items={['Development', 'Production']}>
+  <Tab value="Development">
+    ```bash
+    spry sp spc --fs dev-src.auto --conf sqlpage/sqlpage.json
+    ```
+  </Tab>
+  
+  <Tab value="Production">
+    ```bash
+    spry sp spc --package | sqlite3 app.db
+    ```
+  </Tab>
+</Tabs>
+
+### Runbook Playbook
+
+Automate operational procedures with executable documentation.
+
+**Use case:** DevOps, deployments, maintenance tasks
+
+**Artifacts:**
+- Executable shell tasks
+- Task DAG execution
+- Execution reports
+- JSON summaries
+
+**Example:**
+
+```markdown
+---
+runbook:
+  name: Deployment
+---
+
+# Deployment Runbook
+
+​```bash check --descr "Pre-flight checks"
+./preflight.sh
+​```
+
+​```bash deploy --depends check --descr "Deploy application"
+./deploy.sh
+​```
+```
+
+**Commands:**
+
+```bash
+# List all tasks
+spry rb ls
+
+# Run with verbose output
+spry rb run --verbose rich
+
+# Run specific task
+spry rb task deploy
+```
+
+### Data Quality Playbook
+
+Define and execute data validation rules.
+
+**Use case:** Data pipelines, ETL validation, quality assurance
+
+**Artifacts:**
+- DQ tests and suites
+- SQL validation checks
+- JSON assertions
+- Provenance documents
+
+**Example:**
+
+```markdown
+# Data Quality Checks
+
+@dataset users
+## Users Table
+
+@expect row_count > 0
+​```sql check-users-exist
+SELECT COUNT(*) as count FROM users;
+​```
+
+@expect no_nulls email
+​```sql check-emails
+SELECT COUNT(*) FROM users WHERE email IS NULL;
+​```
+```
+
+<Callout type="info">
+Data Quality Playbooks help ensure data integrity throughout your pipelines with automated validation checks.
+</Callout>
+
+### Compliance Playbook
+
+Document policies and generate compliance evidence.
+
+**Use case:** Audit preparation, policy documentation, evidence collection
+
+**Artifacts:**
+- Control mappings
+- Evidence documents
+- Audit trails
+- Status reports
+
+**Example:**
+
+```markdown
+---
+doc-classify:
+  role: evidence
+  framework: SOC2
+  control: CC6.1
+---
+
+# Access Control Verification
+
+​```bash verify-access -C ./evidence/access-check.json
+./audit-access.sh
+​```
+```
+
+## Playbook Components
+
+### Frontmatter
+
+Configure the playbook behavior using YAML frontmatter:
+
+```yaml
+---
+sqlpage-conf:
+  database_url: ${env.SPRY_DB}
+  web_root: ./dev-src.auto
+
+playbook:
+  name: My Playbook
+  version: 1.0
+---
+```
+
+<Callout type="warn">
+Environment variables can be referenced using `${env.VARIABLE_NAME}` syntax in frontmatter.
+</Callout>
+
+### Executable Cells
+
+Code that runs during execution:
+
+```markdown
+​```bash task-name --descr "Description"
+./script.sh
+​```
+```
+
+### Materializable Cells
+
+Content that becomes output files:
+
+```markdown
+​```sql page.sql
+SELECT 'text' AS component;
+​```
+```
+
+### Directives
+
+Control how content is processed:
+
+```markdown
+​```sql PARTIAL layout.sql --inject **/*
+SELECT 'shell' AS component;
+​```
+```
+
+### Decorators
+
+Attach metadata to sections:
+
+```markdown
+@id my-section
+## My Section
+```
+
+## Creating Custom Playbooks
+
+For advanced users, custom playbooks can be created by:
+
+<Steps>
+  <Step>
+    ### Define a projection
+    Create a projection that interprets the graph for your specific domain
+  </Step>
+  
+  <Step>
+    ### Create emitters
+    Build emitters that produce your target artifacts
+  </Step>
+  
+  <Step>
+    ### Build CLI commands
+    Implement CLI commands to interact with your playbook
+  </Step>
+</Steps>
+
+See [Plugin Development Guide](/docs/advanced/plugin-development) for detailed instructions.
+
+## Playbook Selection
+
+Spry determines the playbook based on:
+
+<Cards>
+  <Card title="Command used">
+    `rb` for runbook, `sp` for SQLPage
+  </Card>
+  <Card title="Frontmatter">
+    Configuration keys indicate type
+  </Card>
+  <Card title="File content">
+    Cell types and directives
+  </Card>
+</Cards>
+
+## Best Practices
+
+### Single Responsibility
+
+Each Spryfile should focus on one playbook type:
+
+<Tabs items={['Good', 'Bad']}>
+  <Tab value="Good">
+    ```markdown
+    # App Dashboard
+    ---
+    sqlpage-conf:
+      database_url: sqlite://app.db
+    ---
+
+    ​```sql index.sql
+    SELECT 'card' AS component;
+    ​```
+    ```
+    
+    Focused on SQLPage with clear configuration
+  </Tab>
+  
+  <Tab value="Bad">
+    ```markdown
+    # Mixed Playbook
+    ---
+    sqlpage-conf:
+      database_url: sqlite://app.db
+    runbook:
+      name: Deployment
+    ---
+    ```
+    
+    Mixing multiple playbook types causes confusion
+  </Tab>
+</Tabs>
+
+### Clear Documentation
+
+Document the playbook's purpose at the top:
+
+```markdown
+# Server Maintenance Runbook
+
+This runbook performs routine server maintenance:
+1. Check server health
+2. Backup databases
+3. Apply updates
+4. Verify services
+
+## Prerequisites
+- SSH access to servers
+- Database credentials in environment
+```
+
+<Callout>
+Good documentation helps team members understand what a playbook does and how to use it safely.
+</Callout>
+
+### Reusable Components
+
+Use PARTIAL and imports for shared content:
+
+```markdown
+​```sql PARTIAL nav.sql --inject **/*.sql
+SELECT 'shell' AS component, 'App' AS title;
+​```
+
+​```import --base ./shared
+sql helpers.sql TAIL
+​```
+```
+
+### Version Control
+
+Include version information in frontmatter:
+
+```yaml
+---
+playbook:
+  name: Deployment Pipeline
+  version: 2.1.0
+  updated: 2025-01-15
+---
+```
+
+## Related Topics
+
+<Cards>
+  <Card 
+    title="Spryfiles" 
+    description="Learn about document structure and syntax"
+    href="/docs/core/spryfiles"
+  />
+  <Card 
+    title="Code Cells" 
+    description="Understand cell syntax and attributes"
+    href="/docs/core/code-cells"
+  />
+  <Card 
+    title="Architecture" 
+    description="Explore Spry's internal design"
+    href="/docs/advanced/architecture"
+  />
+  <Card 
+    title="Plugin Development" 
+    description="Build custom extensions"
+    href="/docs/advanced/plugin-development"
+  />
+</Cards>
+
+## Next Steps
+
+<Steps>
+  <Step>
+    ### Choose a playbook type
+    Decide which playbook best fits your use case
+  </Step>
+  
+  <Step>
+    ### Create your first Spryfile
+    Follow the examples above to create a basic playbook
+  </Step>
+  
+  <Step>
+    ### Test execution
+    Run your playbook and verify the output
+  </Step>
+  
+  <Step>
+    ### Iterate and refine
+    Add more cells, dependencies, and documentation
+  </Step>
+</Steps>
