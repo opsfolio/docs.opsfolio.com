@@ -4,532 +4,387 @@ description: How to contribute to Spry and help improve the project
 icon: Code
 ---
 
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
 import { Callout } from 'fumadocs-ui/components/callout';
-import { Card, Cards } from 'fumadocs-ui/components/card';
-import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
-import { Steps, Step } from 'fumadocs-ui/components/steps';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
 
-# Contributing Guide
+## TypeScript Style
 
-Welcome to Spry! We're excited that you want to contribute. This guide will help you get started with contributing code, documentation, or feedback.
+### General Principles
 
-## Before You Start
+- Use TypeScript's type system fully
+- Prefer immutability
+- Write self-documenting code
+- Keep functions small and focused
 
-<Steps>
-  <Step>
-    ### Read the Development Setup
-    
-    Familiarize yourself with the [Development Setup](/docs) guide to understand the project structure and tooling.
-  </Step>
-  
-  <Step>
-    ### Check Existing Issues
-    
-    Browse [existing issues](https://github.com/programmablemd/spry/issues) to see if your bug or feature has already been reported.
-  </Step>
-  
-  <Step>
-    ### Review Recent Pull Requests
-    
-    Look at recent [pull requests](https://github.com/programmablemd/spry/pulls) to understand ongoing work and avoid duplication.
-  </Step>
-</Steps>
+### Naming Conventions
 
-<Callout type="info">
-**First Time Contributing?**
-
-Don't worry! We welcome contributions from developers of all experience levels. Start with issues labeled `good first issue` to get familiar with the codebase.
-</Callout>
-
-## Types of Contributions
-
-<Cards>
-  <Card title="Bug Reports" href="#bug-reports">
-    Help us identify and fix issues by reporting bugs with clear reproduction steps.
-  </Card>
-  
-  <Card title="Feature Requests" href="#feature-requests">
-    Propose new features or enhancements that would benefit the community.
-  </Card>
-  
-  <Card title="Code Contributions" href="#code-contributions">
-    Submit bug fixes, new features, performance improvements, or tests.
-  </Card>
-  
-  <Card title="Documentation" href="#documentation">
-    Improve guides, API docs, examples, or fix typos and clarity issues.
-  </Card>
-</Cards>
-
-### Bug Reports
-
-Create a GitHub issue with the following information:
-
-- **Clear title** describing the problem
-- **Steps to reproduce** the issue
-- **Expected behavior** - what should happen
-- **Actual behavior** - what actually happens
-- **Environment details** (OS, Deno version)
-- **Relevant error messages** or logs
-- **Code samples** if applicable
-
-<Callout type="warn">
-**Security Issues**
-
-If you discover a security vulnerability, please email the maintainers directly instead of creating a public issue.
-</Callout>
-
-### Feature Requests
-
-Open an issue or discussion with:
-
-- **Clear description** of the feature
-- **Use case and motivation** - why is this needed?
-- **Proposed implementation** (optional but helpful)
-- **Examples** of desired behavior
-- **Alternatives considered** (if any)
-
-### Code Contributions
-
-We welcome contributions in these areas:
-
-- Bug fixes
-- New features
-- Performance improvements
-- Test coverage
-- Documentation improvements
-- Refactoring for code quality
-
-### Documentation
-
-Help improve Spry's documentation by:
-
-- Fixing typos or grammar
-- Adding examples
-- Clarifying confusing sections
-- Writing new guides
-- Improving API documentation
-
-## Development Workflow
-
-### 1. Fork and Clone
-
-First, fork the repository on GitHub, then clone your fork:
-
-```bash
-# Clone your fork
-git clone https://github.com/YOUR_USERNAME/spry.git
-cd spry
-
-# Add upstream remote
-git remote add upstream https://github.com/programmablemd/spry.git
-```
-
-### 2. Create a Branch
-
-Create a branch for your work using a descriptive name:
-
-<Tabs items={['Feature', 'Bug Fix', 'Documentation']}>
-  <Tab value="Feature">
-    ```bash
-    git checkout -b feature/my-feature
+<Tabs items={['Files', 'Types', 'Functions', 'Constants']}>
+  <Tab value="Files">
+    ```typescript
+    // Files: kebab-case
+    // contained-in-section.ts
+    // code-frontmatter.ts
     ```
   </Tab>
-  
-  <Tab value="Bug Fix">
-    ```bash
-    git checkout -b fix/issue-123
+  <Tab value="Types">
+    ```typescript
+    // Types/Interfaces: PascalCase
+    interface GraphEdge { ... }
+    type ExecutableTask = ...
     ```
   </Tab>
-  
-  <Tab value="Documentation">
-    ```bash
-    git checkout -b docs/improve-readme
+  <Tab value="Functions">
+    ```typescript
+    // Functions/Variables: camelCase
+    function buildGraph() { ... }
+    const taskRunner = ...
+    ```
+  </Tab>
+  <Tab value="Constants">
+    ```typescript
+    // Constants: UPPER_SNAKE_CASE or camelCase
+    const DEFAULT_TIMEOUT = 120;
+    const typicalRules = [...];
     ```
   </Tab>
 </Tabs>
 
-### 3. Make Changes
+### Type Annotations
 
-When making changes:
+```typescript
+// Prefer explicit return types for public functions
+function parseCell(code: Code): ParsedCell {
+  // ...
+}
 
-- **Write tests** for new functionality
-- **Follow existing code style** for consistency
-- **Keep changes focused** on a single issue or feature
-- **Update documentation** if needed
+// Use type inference for local variables
+const result = parseCell(node);  // Type is inferred
 
-### 4. Test Your Changes
+// Avoid `any` - use `unknown` if type is truly unknown
+function processUnknown(value: unknown): void {
+  if (typeof value === "string") {
+    // Now TypeScript knows it's a string
+  }
+}
+```
 
-Run the full test suite to ensure your changes don't break existing functionality:
+<Callout type="warn">
+Avoid using `any` type. Use `unknown` when the type is truly unknown and perform type guards.
+</Callout>
 
-```bash
-# Run all tests
-deno test --parallel --allow-all
+### Import Organization
 
-# Format check
-deno fmt --check
+<Steps>
+<Step>
+**Standard library imports**
 
-# Lint
-deno lint
+```typescript
+import { join } from "std/path/mod.ts";
+```
+</Step>
+
+<Step>
+**External dependencies**
+
+```typescript
+import { unified } from "unified";
+import { visit } from "unist-util-visit";
+```
+</Step>
+
+<Step>
+**Internal absolute imports**
+
+```typescript
+import { graph } from "@spry/axiom/graph.ts";
+```
+</Step>
+
+<Step>
+**Relative imports**
+
+```typescript
+import { helper } from "./helper.ts";
+import type { MyType } from "./types.ts";
+```
+</Step>
+</Steps>
+
+## Code Organization
+
+### Module Structure
+
+```typescript
+// 1. Imports
+import { ... } from "...";
+
+// 2. Types/Interfaces
+export interface MyInterface { ... }
+export type MyType = ...;
+
+// 3. Constants
+const DEFAULT_VALUE = 42;
+
+// 4. Helper functions (private)
+function helperFunction() { ... }
+
+// 5. Main exports (public)
+export function mainFunction() { ... }
+export class MainClass { ... }
+```
+
+### File Size
+
+- Keep files under 300 lines when possible
+- Split large files into focused modules
+- One primary export per file
+
+### Function Design
+
+<Tabs items={['Good', 'Avoid']}>
+  <Tab value="Good">
+    ```typescript
+    // Good: Small, focused functions
+    function validateTask(task: Task): ValidationResult {
+      const errors = [];
+      if (!task.taskId()) errors.push("Missing task ID");
+      if (task.taskDeps()?.some(d => !isValidId(d))) {
+        errors.push("Invalid dependency");
+      }
+      return { valid: errors.length === 0, errors };
+    }
+    ```
+  </Tab>
+  <Tab value="Avoid">
+    ```typescript
+    // Avoid: Large functions doing multiple things
+    // Split into smaller, testable functions
+    ```
+  </Tab>
+</Tabs>
+
+## Error Handling
+
+### Use Result Types
+
+```typescript
+// Prefer Result types over exceptions for expected failures
+type Result<T, E> = { ok: true; value: T } | { ok: false; error: E };
+
+function parseConfig(content: string): Result<Config, ParseError> {
+  try {
+    const parsed = JSON.parse(content);
+    return { ok: true, value: parsed as Config };
+  } catch (e) {
+    return { ok: false, error: new ParseError(e.message) };
+  }
+}
 ```
 
 <Callout>
-**Test Coverage**
-
-Aim for comprehensive test coverage including happy paths, edge cases, and error conditions. Tests should be clear and maintainable.
+Prefer Result types over exceptions for expected failures to make error handling explicit.
 </Callout>
 
-### 5. Commit Your Changes
+### Exceptions for Unexpected Errors
 
-Use semantic commit messages that follow our convention:
+```typescript
+// Use exceptions for programming errors
+function assertNever(value: never): never {
+  throw new Error(`Unexpected value: ${value}`);
+}
 
-```bash
-git commit -m "feat(axiom): add custom edge rule support #<ticket-number>"
-git commit -m "fix(runbook): resolve dependency cycle detection #<ticket-number>"
-git commit -m "docs: update contributing guide #<ticket-number>"
-git commit -m "test(task): add execution plan tests #<ticket-number>"
-git commit -m "refactor(shell): simplify command parsing #<ticket-number>"
+// Validate inputs at boundaries
+function processFile(path: string): void {
+  if (!path) throw new Error("Path is required");
+  // ...
+}
 ```
 
-### 6. Push and Create Pull Request
+## Testing Patterns
 
-Push your changes and create a pull request:
-
-```bash
-git push origin feature/my-feature
-```
-
-Then navigate to GitHub and create a pull request from your branch.
-
-## Commit Message Format
-
-We follow a structured commit message format for clarity and consistency:
+### Test File Naming
 
 ```
-<type>(<scope>): <description>
-
-[optional body]
-
-[optional footer]
+module.ts       → module_test.ts
+graph.ts        → graph_test.ts
 ```
 
-### Commit Types
+### Test Structure
 
-| Type | Description |
-|------|-------------|
-| `feat` | New feature |
-| `fix` | Bug fix |
-| `docs` | Documentation only changes |
-| `test` | Adding or updating tests |
-| `refactor` | Code refactoring without behavior changes |
-| `perf` | Performance improvements |
-| `chore` | Maintenance tasks |
-| `ci` | CI/CD configuration changes |
+```typescript
+import { assertEquals, assertThrows } from "std/assert/mod.ts";
+import { describe, it } from "std/testing/bdd.ts";
 
-### Commit Scopes
+describe("MyModule", () => {
+  describe("myFunction", () => {
+    it("should handle normal input", () => {
+      const result = myFunction("input");
+      assertEquals(result, "expected");
+    });
 
-| Scope | Description |
-|-------|-------------|
-| `axiom` | Graph engine and core abstractions |
-| `runbook` | Runbook execution and orchestration |
-| `sqlpage` | SQLPage playbook integration |
-| `task` | Task execution and planning |
-| `shell` | Shell command execution |
-| `courier` | Data movement and transformation |
+    it("should throw on invalid input", () => {
+      assertThrows(
+        () => myFunction(""),
+        Error,
+        "Input required"
+      );
+    });
+  });
+});
+```
 
-### Commit Examples
+## Documentation
 
-<Tabs items={['Feature', 'Bug Fix', 'Breaking Change']}>
-  <Tab value="Feature">
-    ```
-    feat(axiom): add support for custom edge rules
+### JSDoc Comments
 
-    Add ability to register custom edge rules for graph building.
-    This enables extensibility for domain-specific relationships.
+```typescript
+/**
+ * Builds a semantic graph from an MDAST root.
+ *
+ * @param root - The MDAST root node
+ * @param rules - Edge rules to apply
+ * @returns A graph with discovered relationships
+ *
+ * @example
+ * ```ts
+ * const g = graph(root, typicalRules());
+ * console.log(g.edges.length);
+ * ```
+ */
+export function graph(
+  root: Root,
+  rules: EdgeRule[]
+): Graph {
+  // ...
+}
+```
 
-    Closes #123
+### When to Document
+
+- All public exports
+- Complex algorithms
+- Non-obvious behavior
+- API boundaries
+
+### When NOT to Document
+
+- Self-explanatory code
+- Internal implementation details
+- Obvious getters/setters
+
+## Performance
+
+### Prefer Generators for Large Collections
+
+<Tabs items={['Good', 'Usage']}>
+  <Tab value="Good">
+    ```typescript
+    // Good: Lazy evaluation
+    function* findMatches(nodes: Node[]): Generator<Node> {
+      for (const node of nodes) {
+        if (matches(node)) yield node;
+      }
+    }
     ```
   </Tab>
-  
-  <Tab value="Bug Fix">
-    ```
-    fix(runbook): handle missing task dependencies gracefully
-
-    Previously, missing dependencies caused a crash. Now they are
-    reported as warnings and skipped.
-
-    Fixes #456
-    ```
-  </Tab>
-  
-  <Tab value="Breaking Change">
-    ```
-    feat(task)!: change task execution API signature
-
-    BREAKING CHANGE: The executeTask function now requires
-    an options object instead of individual parameters.
-
-    Migration guide available in docs/migration.md
+  <Tab value="Usage">
+    ```typescript
+    // Use when needed
+    for (const match of findMatches(largeArray)) {
+      // Process one at a time
+    }
     ```
   </Tab>
 </Tabs>
 
-## Code Style Guidelines
+### Avoid Unnecessary Allocations
 
-### TypeScript Best Practices
+<Tabs items={['Avoid', 'Better']}>
+  <Tab value="Avoid">
+    ```typescript
+    // Avoid: Creates new array each call
+    function getIds(tasks: Task[]): string[] {
+      return tasks.map(t => t.taskId());
+    }
+    ```
+  </Tab>
+  <Tab value="Better">
+    ```typescript
+    // Better: Reuse or lazy evaluate if appropriate
+    function* getIds(tasks: Task[]): Generator<string> {
+      for (const task of tasks) {
+        yield task.taskId();
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
 
-Follow these guidelines for consistent, maintainable code:
+## Formatting
 
-```typescript
-// Good: Explicit types, descriptive names
-function processTask(task: ExecutableTask): TaskResult {
-  const taskId = task.taskId();
-  const dependencies = task.dependencies();
-  
-  return {
-    id: taskId,
-    status: 'completed',
-    dependencies,
-  };
-}
-
-// Avoid: Implicit types, unclear names
-function proc(t: any) {
-  const id = t.taskId();
-  return { id, status: 'completed' };
-}
-```
-
-**Key principles:**
-
-- Use TypeScript strict mode
-- Prefer `const` over `let`
-- Use explicit types for function parameters and return values
-- Use descriptive variable names
-- Avoid `any` type except when absolutely necessary
-
-### Code Formatting
-
-Spry uses Deno's default formatting. Always run before committing:
+Use Deno's built-in formatter:
 
 ```bash
 deno fmt
 ```
 
-### Documentation Comments
+Key settings (in `deno.jsonc`):
 
-Use JSDoc comments for public APIs:
+- Line width: 80
+- Indent: 2 spaces
+- Single quotes for strings
+- Trailing commas
 
-```typescript
-/**
- * Build an execution plan from tasks.
- *
- * Uses Kahn's algorithm to determine topological order.
- *
- * @param tasks - Tasks in definition order
- * @returns Execution plan with layers and DAG order
- * @throws {Error} If circular dependencies are detected
- *
- * @example
- * ```typescript
- * const plan = executionPlan(tasks);
- * console.log(plan.layers);
- * ```
- */
-export function executionPlan<T extends Task>(
-  tasks: readonly T[]
-): TaskExecutionPlan<T> {
-  // Implementation
-}
+## Linting
+
+Use Deno's linter:
+
+```bash
+deno lint
 ```
 
-**Comment guidelines:**
-
-- Use JSDoc for public APIs
-- Comment complex logic and algorithms
-- Don't state the obvious
-- Explain *why*, not *what*
-
-### File Organization
-
-Organize files consistently:
-
-```
-lib/axiom/projection/
-├── flexible.ts          # Main implementation
-├── flexible_test.ts     # Tests
-├── playbook.ts
-├── playbook_test.ts
-└── fixture/             # Test fixtures
-    ├── sample.md
-    └── complex.md
-```
-
-**Rules:**
-
-- One main export per file when possible
-- Tests adjacent to source files (`*_test.ts`)
-- Fixtures in `fixture/` subdirectories
-- Index files (`mod.ts`) for module exports
-
-## Testing Guidelines
-
-### Writing Tests
-
-Write clear, focused tests using Deno's built-in test framework:
-
-```typescript
-import { assertEquals, assertThrows } from "@std/assert";
-
-Deno.test("executionPlan creates valid topological order", () => {
-  // Arrange
-  const tasks = createTestTasks();
-
-  // Act
-  const plan = executionPlan(tasks);
-
-  // Assert
-  assertEquals(plan.layers.length, 3);
-  assertEquals(plan.dag.length, tasks.length);
-});
-
-Deno.test("executionPlan handles async operations", async () => {
-  const plan = await createAsyncPlan();
-  assertEquals(plan.status, "success");
-});
-
-Deno.test("executionPlan throws on circular dependencies", () => {
-  const circularTasks = createCircularTasks();
-  
-  assertThrows(
-    () => executionPlan(circularTasks),
-    Error,
-    "Circular dependency detected"
-  );
-});
-```
-
-### Test Coverage
-
-Aim for comprehensive coverage of:
-
-<Cards>
-  <Card title="Happy Path">
-    Test the main use case with valid inputs and expected outputs.
-  </Card>
-  
-  <Card title="Edge Cases">
-    Test boundary conditions, empty inputs, and unusual but valid scenarios.
-  </Card>
-  
-  <Card title="Error Conditions">
-    Test error handling, invalid inputs, and failure modes.
-  </Card>
-  
-  <Card title="Integration">
-    Test how components work together in realistic scenarios.
-  </Card>
-</Cards>
-
-### Test Organization
-
-```typescript
-// Group related tests
-Deno.test("TaskExecutor", async (t) => {
-  await t.step("executes single task", () => {
-    // Test implementation
-  });
-
-  await t.step("handles dependencies", () => {
-    // Test implementation
-  });
-
-  await t.step("reports failures", () => {
-    // Test implementation
-  });
-});
-```
-
-## Pull Request Guidelines
-
-### PR Title Format
-
-Use the same format as commit messages:
-
-```
-feat(axiom): add custom edge rule support
-fix(runbook): resolve dependency cycle detection
-docs: improve contributing guide clarity
-```
-
-### PR Description Template
-
-Include the following in your PR description:
-
-```markdown
-## What does this change?
-Brief description of the changes
-
-## Why is this needed?
-Explain the motivation and use case
-
-## How was it tested?
-- [ ] Unit tests added/updated
-- [ ] Manual testing performed
-- [ ] Documentation updated
-
-## Breaking changes?
-None / List any breaking changes
-
-## Related issues
-Closes #123
-```
-
-<Callout type="info">
-**Clear Communication**
-
-A well-written PR description helps reviewers understand your changes quickly and provides context for future reference.
+<Callout type="warn">
+Address all warnings before committing.
 </Callout>
 
-### Review Process
+## Commit Messages
 
-<Steps>
-  <Step>
-    ### Automated Checks
-    
-    All automated checks (tests, linting, formatting) must pass.
-  </Step>
-  
-  <Step>
-    ### Code Review
-    
-    At least one maintainer will review your code and provide feedback.
-  </Step>
-  
-  <Step>
-    ### Address Feedback
-    
-    Make requested changes and push updates to your branch.
-  </Step>
-  
-  <Step>
-    ### Merge
-    
-    Once approved, your PR will be squashed and merged.
-  </Step>
-</Steps>
+Follow conventional commits:
 
-### After Your PR is Merged
+```
+type(scope): subject
 
-Your contribution will be included in the next release. Thank you for making Spry better! 🎉
+body (optional)
+
+footer (optional)
+```
+
+### Types
+
+| Type | Description |
+|------|-------------|
+| `feat` | New feature |
+| `fix` | Bug fix |
+| `docs` | Documentation |
+| `refactor` | Code change (no new feature or fix) |
+| `test` | Adding tests |
+| `chore` | Maintenance |
+
+### Examples
+
+```
+feat(axiom): add support for nested dependencies
+fix(cli): handle missing file gracefully
+docs: update installation instructions
+refactor(edge): simplify rule pipeline
+```
 
 ## Getting Help
 
-Need assistance? We're here to help:
-
 <Cards>
   <Card title="GitHub Issues">
-    Check [existing issues](https://github.com/programmablemd/spry/issues) or create a new one.
+    Check [existing issues](https://github.com/programmablemd/spry/issues) or create new ones.
   </Card>
   
   <Card title="Discussions">
@@ -543,20 +398,20 @@ Need assistance? We're here to help:
 
 ## Code of Conduct
 
-We are committed to providing a welcoming and inclusive environment. All contributors are expected to:
+All contributors are expected to:
 
 - Be respectful and considerate
-- Welcome newcomers and help them get started
+- Welcome newcomers
 - Give and receive constructive feedback gracefully
 - Focus on what's best for the community
-- Show empathy towards other community members
+- Show empathy towards others
 
 ## License
 
 By contributing to Spry, you agree that your contributions will be licensed under the project's MIT License.
 
 <Callout>
-** Thank You**
+**Thank You**
 
 Every contribution, no matter how small, helps make Spry better for everyone. We appreciate your time and effort!
 </Callout>

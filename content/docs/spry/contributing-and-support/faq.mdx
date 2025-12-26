@@ -1,0 +1,406 @@
+---
+title: Frequently Asked Questions
+description: Common questions and answers for setting up, using, and troubleshooting Spry
+icon: Info
+---
+
+This FAQ covers common questions and pitfalls when **setting up and using Spry**, a lightweight TypeScript ecosystem that treats Markdown as executable, composable workflows.
+
+---
+
+## What is Spry?
+
+Spry is an ecosystem of TypeScript libraries that treat **Markdown as a programmable medium** — instead of just documentation, `.md` files become executable workflows. Spry interprets fenced code blocks and directives as executable units with dependencies, metadata, and outputs.
+
+### What can I use Spry for?
+
+- **DevOps Runbooks** - Executable operations documentation
+- **Data Pipelines** - ETL workflows in Markdown
+- **Compliance Automation** - Policy-as-code with evidence generation
+- **SQLPage Apps** - SQL-based web dashboards
+- **Build Automation** - Task orchestration
+
+### How is Spry different from Make/Task/Just?
+
+Spry documents are also valid Markdown. You can read them on GitHub, in VS Code, or any Markdown viewer. The documentation *is* the automation, not separate files.
+
+---
+
+## Installation & Setup
+
+### What are the prerequisites?
+
+Spry runs using **Deno** (type-safe TypeScript runtime), so ensure you have:
+
+```bash
+deno --version
+```
+
+### What are the system requirements?
+
+- **Deno 2.5+** (required)
+- Any OS: Linux, macOS, Windows
+- No other dependencies
+
+### How do I bootstrap a new Spry project?
+
+Use the built-in CLI initializer:
+
+```bash
+# Create or navigate to an empty project directory
+cd <your-project>
+
+# Bootstrap a Spry + SQLPage project using 
+./spry.ts sp init
+
+
+# Verify
+./spry.ts help
+```
+
+This generates:
+
+* `spry.ts` — Spry CLI runner
+* `Spryfile.md` — executable Markdown workflow
+* SQLPage config files (if applicable)
+
+### Why am I seeing permission errors when running Spry?
+
+Spry may need access to file systems, network, and subprocesses. Use Deno's permission flags `-A` (allow all), or more targeted flags:
+
+```bash
+deno run -A spry.ts <command>
+```
+
+For production, tighten permissions as needed.
+
+### Do I need to know TypeScript?
+
+No. Basic Spry usage only requires Markdown and shell scripting. TypeScript is only needed for extending Spry or using the programmatic API.
+
+### Can I use Spry with Node.js?
+
+Spry is built on Deno, not Node.js. However, your Spryfiles can execute any commands, including Node.js scripts.
+
+### Is there a Docker image?
+
+Not officially, but you can create one:
+
+```dockerfile
+FROM denoland/deno:2.5.0
+RUN deno install -A -n spry https://raw.githubusercontent.com/programmablemd/spry/main/bin/spry.ts
+```
+
+---
+
+## Writing Spry Workflows
+
+### What file extension should I use?
+
+Use `.md` for Spryfiles. Common naming conventions:
+- `Spryfile.md` - Main project file
+- `runbook.md` - Operational runbook
+- `deploy.md` - Deployment workflow
+
+### What goes into `Spryfile.md`?
+
+Spry treats every fenced code block as an *executable cell*. Code blocks should have a language tag + valid Spry directives:
+
+````md
+```sql {.store-result}
+SELECT * FROM users;
+```
+````
+
+If code blocks lack proper language or directive attributes, execution may skip them.
+
+### Can I have multiple Spryfiles?
+
+Yes. You can organize complex projects across multiple files and run them independently.
+
+### Are there limits on file size?
+
+No hard limits, but large files may impact performance. Consider splitting files over 1000 lines.
+
+### How do I debug why a block didn't run?
+
+- Check that the fence has a **supported language tag** and any required attributes (`.store-result`, `.task`, etc.).  
+- Run Spry with verbose or watch mode to see logs.  
+- Validate there are no invalid dependencies between tasks.
+
+---
+
+## Tasks
+
+### What languages can I execute?
+
+Any language that can run as a command:
+- Shell (bash, sh, zsh)
+- Python
+- Ruby
+- Node.js
+- Go
+- Rust
+- Any CLI tool
+
+### How do I pass arguments to tasks?
+
+Currently, arguments are set via environment variables:
+
+```bash
+MY_ARG="value" spry rb run file.md
+```
+
+In the task:
+```bash
+echo "Argument: $MY_ARG"
+```
+
+### Can tasks run in parallel?
+
+Currently, tasks run sequentially in topological order. Tasks without dependencies between them could run in parallel in future versions.
+
+### How do I skip a task?
+
+Use conditional logic in the task itself:
+
+````markdown
+```bash conditional-task
+if [ "$SKIP_TASK" = "true" ]; then
+    echo "Skipping"
+    exit 0
+fi
+# Rest of task...
+```
+````
+
+### What happens if a task fails?
+
+By default, execution stops on the first failure. Use `--continue-on-error` to continue, or add `--continue-on-error` to specific tasks.
+
+---
+
+## Dependencies
+
+### How are dependencies resolved?
+
+Spry builds a DAG (Directed Acyclic Graph) from `--dep` declarations and executes tasks in topological order.
+
+### Can I have optional dependencies?
+
+Not directly. Use conditional logic in tasks to handle optional behavior.
+
+### What if I have circular dependencies?
+
+Spry detects and reports circular dependencies. You must remove one dependency to break the cycle.
+
+---
+
+## Development & Workflow
+
+### How can I watch for changes and rebuild automatically?
+
+Use Spry's watch mode:
+
+```bash
+./spry.ts spc \
+  --fs dev-src.auto \
+  --destroy-first \
+  --conf sqlpage/sqlpage.json \
+  --watch \
+  --with-sqlpage
+```
+
+This monitors changes and rebuilds on update.
+
+### How do I package my Spry workflows for production?
+
+You can **bundle into a single SQLite or PostgreSQL database**:
+
+```bash
+./spry.ts spc --package --conf sqlpage/sqlpage.json | sqlite3 spry-sqlpage.sqlite.db
+```
+
+Or pipe to a Postgres instance:
+
+```bash
+./spry.ts spc --package --conf sqlpage/sqlpage.json | psql
+```
+
+Production outputs include compiled SQLPage assets and workflow metadata.
+
+---
+
+## SQLPage
+
+### What databases are supported?
+
+- SQLite
+- PostgreSQL
+- MySQL
+- Microsoft SQL Server
+
+### Can I use SQLPage without a database?
+
+SQLite in-memory mode works: `sqlite://:memory:`
+
+### How do I deploy SQLPage apps?
+
+1. Build: `./spry.ts sp spc Spryfile.md --fs`
+2. Deploy the generated SQL files with SQLPage
+3. See [SQLPage Dashboards](../use-cases/sqlpage-data-app)
+
+### SQLPage Integration Issues
+
+* Ensure `sqlpage/sqlpage.json` exists and is configured correctly.
+* Check that `dev-src.auto/` is generated during development.
+* Verify database connection strings are correct.
+
+---
+
+## Configuration
+
+### Where does configuration go?
+
+1. **Document frontmatter** - In the Spryfile
+2. **Environment variables** - `SPRY_*`
+3. **Command-line flags** - Override at runtime
+
+### How do I use secrets?
+
+Never put secrets in Spryfiles. Use environment variables:
+
+```yaml
+---
+api_key: ${env.API_KEY}
+---
+```
+
+### Can I share configuration between files?
+
+Use environment variables or include common configuration via the `include` directive.
+
+---
+
+## Common Issues
+
+### Installation Problems
+
+* Ensure **Deno is installed and up-to-date**.
+* Check you are in the correct directory when initializing.
+* If Spry CLI doesn't run, verify your shebang (`./spry.ts`) and executable permission.
+
+### Spryfile.md Won't Execute
+
+* Confirm language tags and Spry attributes are valid.
+* Some tools strip attributes — ensure your editor preserves them.
+* Validate there are no syntax errors in Markdown.
+
+### Performance Issues
+
+Large workflows can slow execution:
+
+* Split into **smaller, independent Spry files**.
+* Use task dependencies efficiently.
+* Monitor with `--watch` during active development.
+
+---
+
+## Comparison
+
+### Spry vs Jupyter Notebooks
+
+| Feature | Spry | Jupyter |
+|---------|------|---------|
+| Format | Plain Markdown | JSON |
+| Execution | CLI/CI | Interactive |
+| Version control | Excellent | Challenging |
+| Languages | Any | Kernel-based |
+
+### Spry vs Ansible/Terraform
+
+| Feature | Spry | Ansible/Terraform |
+|---------|------|-------------------|
+| Purpose | Documentation + Automation | Infrastructure automation |
+| Format | Markdown | YAML/HCL |
+| Learning curve | Low | Medium-High |
+| State management | None | Built-in |
+
+Spry complements rather than replaces infrastructure tools.
+
+### Spry vs GitHub Actions
+
+| Feature | Spry | Actions |
+|---------|------|---------|
+| Execution | Local or CI | GitHub only |
+| Format | Markdown | YAML |
+| Portability | Any environment | GitHub |
+| Documentation | Native | Separate |
+
+You can use Spry *within* GitHub Actions.
+
+---
+
+## Extending
+
+### Can I create plugins?
+
+Yes! See [Creating Extensions](./custom-extensions) for:
+- Custom remark plugins
+- Custom edge rules
+- Custom projections
+- Custom executors
+
+### Is there a plugin registry?
+
+Not yet. Share plugins via npm/deno.land/x or GitHub.
+
+### Can I use Spry as a library?
+
+Yes. See [Programmatic API](./api-doc).
+
+---
+
+## Community
+
+### Where can I get help?
+
+* **Search existing [GitHub issues](https://github.com/programmablemd/spry/issues)** before posting.
+* **[GitHub Discussions](https://github.com/programmablemd/spry/discussions)** — ask questions and share ideas.
+* **[Discord Community](https://discord.gg/spry)** — chat realtime with Spry users and contributors.
+* **[Documentation](../getting-started/introduction)** — check Getting Started and API References.
+
+### How can I contribute?
+
+See [Contributing](./contributing-to-spry) for:
+- Bug reports
+- Feature requests
+- Code contributions
+- Documentation improvements
+
+### Is Spry production-ready?
+
+Spry is actively developed and used in production. Check the GitHub issues for known limitations.
+
+---
+
+## Tips & Best Practices
+
+* Prefer **explicit directives and metadata** in code blocks for clarity.
+* Use task naming and dependencies to structure workflows cleanly.
+* When possible, keep workflows small and composable.
+* Test blocks independently before integrating into larger Spry projects.
+
+---
+
+## Quick Reference
+
+| Task                   | Developer Command          | Executable Package Command |
+| ---------------------- | -------------------------- | -------------------------- |
+| Initialize project     | `./spry.ts sp init`        | `spry sp init`             |
+| Show help              | `./spry.ts help`           | `spry help`                |
+| Watch mode             | `./spry.ts sp spc --watch` | `spry sp spc --watch`      |
+| Package for production | `./spry.ts spc --package`  | `spry sp spc --package`    |
+
+
+Still have questions? [Open a discussion](https://github.com/programmablemd/spry/discussions).
