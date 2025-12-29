@@ -1,25 +1,38 @@
 ---
 title: rb
-description: Complete reference for spry rb command-line tools
+description: Complete reference for spry runbook command-line tools
 icon: BookOpen
 ---
 
 import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
 import { Callout } from 'fumadocs-ui/components/callout';
 
-## ls
+## Runbook Commands
+Spry Runbook (`rb`) Commands provide the interface for executing tasks and running workflows in Spry.
 
-List all tasks in markdown files.
+### Root Command
 
 ```bash
-spry rb ls [paths...]
+spry rb [OPTIONS]
+spry rb [COMMAND] [OPTIONS]
 ```
+**Options:**
 
-### Options
+  `-h`, `--help`  - Show this help. 
 
-- `--no-color` - Output without ANSI colors
+### Commands
+#### `ls` - List code cells (tasks) in markdown documents.
 
-### Examples
+```bash
+spry rb ls [OPTIONS] [PATHS...]
+```
+**Arguments:**
+- `PATHS` - Path(s) to Markdown file(s) (defaults to `Spryfile.md`)
+
+**Options:**
+- `--no-color` - Show output without using ANSI colors
+
+**Examples:**
 
 <Tabs items={['Basic', 'Specific File', 'Multiple Files', 'No Color']}>
   <Tab value="Basic">
@@ -50,20 +63,33 @@ spry rb ls [paths...]
 
 ---
 
-## task
+**Engine Types:**
+| Engine | Description |
+|--------|-------------|
+| `shebang` | Executable via shebang (shell scripts, python, etc.) |
+| `deno-task` | Deno task runner |
+| `using:<name>` | External reference to a catalog-defined resource |
 
-Execute specific task and its dependencies.
+#### `task` - Execute a specific cell and its dependencies.
 
 ```bash
-spry rb task <taskId> [paths...]
+spry rb task [OPTIONS] <TASK_ID> [PATHS...]
 ```
+**Arguments:**
+- `TASK_ID` - The task identity to execute
+- `PATHS` - Path(s) to Markdown file(s)
 
-### Options
+**Arguments:**
+- `TASK_ID` - The task identity to execute
+- `PATHS` - Path(s) to Markdown file(s)
 
-- `--verbose <style>` - Output format: `plain` (simple text), `rich` (colored/formatted), `markdown` (markdown formatted)
-- `--summarize` - Generate JSON summary of execution results
+**Options:**
+| Option | Description |
+|--------|-------------|
+| `--verbose <style>` | Emit information messages verbosely (plain, rich, markdown) |
+| `--summarize` | Emit summary after execution in JSON |
 
-### Examples
+**Examples:**
 
 <Tabs items={['Basic', 'Verbose', 'Summary', 'Combined']}>
   <Tab value="Basic">
@@ -94,15 +120,15 @@ spry rb task <taskId> [paths...]
 
 ---
 
-## run
-
-Execute all code cells in markdown documents as a DAG (Directed Acyclic Graph).
+#### `run` - Execute all code cells in markdown documents as a DAG (Directed Acyclic Graph).
 
 ```bash
-spry rb run [paths...]
+spry rb run [OPTIONS] [PATHS...]
 ```
+**Arguments:**
+- `PATHS` - Path(s) to Markdown file(s)
 
-### Options
+**Options:**
 
 - `-h, --help` - Show help information
 - `--verbose <style>` - Emit information messages verbosely
@@ -117,7 +143,7 @@ spry rb run [paths...]
   - `ascii-flowchart` - Detailed flowchart format
   - `mermaid-js` - Mermaid graph syntax
 
-### Examples
+**Examples:**
 
 <Tabs items={['Basic', 'Verbose', 'Graphs', 'Visualization', 'Advanced']}>
   <Tab value="Basic">
@@ -181,15 +207,17 @@ spry rb run [paths...]
 
 ---
 
-## issues
-
-Display errors, warnings, and validation issues in markdown documents.
+#### `issues` - Display any issues (errors, warnings, etc.) in the mdast nodes.
 
 ```bash
-spry rb issues [paths...]
+spry rb issues [PATHS...]
 ```
 
-### What It Detects
+**Arguments:**
+- `PATHS` - Path(s) to Markdown file(s)
+
+
+**What It Detects:**
 
 - Malformed code block syntax
 - Invalid task IDs
@@ -198,7 +226,7 @@ spry rb issues [paths...]
 - Duplicate task names
 - Syntax errors
 
-### Examples
+**Examples:**
 
 ```bash
 # Check current file
@@ -211,7 +239,7 @@ spry rb issues Spryfile.md
 spry rb issues *.md
 ```
 
-### Output
+**Output:**
 
 **No Issues:**
 ```
@@ -226,15 +254,15 @@ Spryfile.md:
   Line 75: ERROR - Missing language specifier in code block
 ```
 
-### Usage Patterns
+**Usage Patterns:**
 
-#### Validate Before Running
+1. Validate Before Running
 
 ```bash
 spry rb issues && spry rb run
 ```
 
-#### In Scripts
+2. In Scripts
 
 ```bash
 if spry rb issues > /dev/null; then
@@ -251,19 +279,20 @@ fi
 
 ---
 
-## report
-
-Execute all code cells and return results as new markdown.
+#### `report` - Execute all code cells and return as new markdown with outputs embedded.
 
 ```bash
-spry rb report [paths...]
+spry rb report [OPTIONS] [PATHS...]
 ```
+**Arguments:**
+- `PATHS` - Path(s) to Markdown file(s)
 
-### Description
+**Options:**
+| Option | Description |
+|--------|-------------|
+| `--graph <name>` | Run only the nodes in provided graph(s). May be repeated. |
 
-Executes all code cells in markdown documents and generates new markdown with embedded outputs. Useful for creating executable documentation and reports with live data.
-
-### Examples
+**Examples:**
 
 ```bash
 # Generate report from current directory
@@ -274,9 +303,12 @@ spry rb report Spryfile.md
 
 # Generate reports from multiple files
 spry rb report *.md
+
+# Generate reports and save the response to a file
+spry rb report file.md > executed-runbook.md
 ```
 
-### Output Example
+##### Output Example
 
 **Before:**
 ````markdown
@@ -298,3 +330,11 @@ Hello
 <Callout type="warn">
   The `report` command will execute all code cells. Ensure your code is safe to run before generating reports.
 </Callout>
+
+### File Sources
+
+All commands that accept file paths support:
+
+1. **Local file system paths**: `./Spryfile.md`, `/path/to/file.md`
+2. **Default behavior**: If no path is provided, uses `Spryfile.md` in the current directory
+3. **Multiple sources**: Some commands support multiple file paths
