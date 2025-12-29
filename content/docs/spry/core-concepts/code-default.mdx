@@ -1,0 +1,554 @@
+---
+title: code DEFAULTS
+description: Default SQL Execution Behavior with `code DEFAULTS`
+icon: ShieldCheck
+index : 12
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+## Default SQL Execution Behavior
+
+`code DEFAULTS` is a special directive provided by Spry's Axiom library that defines default execution behavior for fenced code blocks such as sql, text, and others. Instead of repeating flags like `--interpolate` or `--injectable` or `--executable` or `--capture` on every code block, code DEFAULTS allows you to declare them once and apply them globally. This directive is required in Spry SQLPage playbooks so that Axiom knows how to interpret and process sql fenced blocks correctly.
+
+````text
+```code DEFAULTS
+sql * --interpolate --injectable --executable --capture
+```
+````
+
+This block defines **global defaults** for all `sql` blocks in the document.
+
+### What this means
+
+| Flag            | Purpose                                    |
+| --------------- | ------------------------------------------ |
+| `sql *`         | Apply defaults to all SQL blocks           |
+| `--interpolate` | Enable variable and template interpolation |
+| `--injectable`  | Allow safe parameter injection             |
+| `--executable`  | Allow SQL blocks to execute                |
+| `--capture`     | Capture query results for validation       |
+
+<Callout type="info" title="Important">
+  If a SQL block is not marked as `--executable`, it is parsed but **skipped during execution**.
+</Callout>
+
+---
+
+### Understanding the Flags
+
+#### `sql *`
+
+Applies the listed flags to all `sql` code fences in the document unless explicitly overridden.
+
+#### `--interpolate`
+
+Enables string interpolation using `${...}` syntax.
+
+This allows SQL blocks to reference:
+
+- Environment variables
+- Configuration values
+- Derived values from earlier steps
+
+Example:
+
+```sql
+SELECT * FROM ${table_name};
+```
+
+#### `--injectable`
+
+Enables safe SQL injection using Axiom `PARTIALs`. This allows SQL fragments or parameters to be injected in a structured and reusable way, rather than using unsafe string concatenation.
+
+Typical use cases:
+
+- Reusable WHERE clauses
+- Conditional filters
+- Shared SQL snippets
+
+#### `--executable`
+
+Marks SQL blocks as **runnable**, not just parsable.
+
+Without this flag:
+
+- SQL blocks are treated as documentation or static analysis
+- They are **skipped during execution**
+
+With this flag:
+
+- SQL is executed against a real database
+- Requires a valid connection via `--conf`
+
+<Callout type="tip">
+  This flag is essential for migrations, seeds, validations, and E2E assurance workflows.
+</Callout>
+
+#### `--capture`
+
+Captures the **results of executed SQL statements**.
+
+Captured results can be:
+
+- Used for validation
+- Inspected in reports
+- Asserted in E2E checks
+
+Example:
+
+```sql
+SELECT COUNT(*) AS result FROM sales_customers;
+```
+
+The value of `result` is retained by the runbook engine.
+
+---
+
+## Why `code DEFAULTS` matters for SQLPage playbooks
+
+In Spry SQLPage workflows:
+
+- SQL blocks are not just documentation
+- They define:
+  - Schema
+  - Data
+  - Validations
+  - Business rules
+
+`code DEFAULTS` tells Axiom:
+
+> "Treat `sql` fenced blocks as interpolatable, injectable, executable units by default."
+
+This keeps runbooks:
+
+- Cleaner
+- Less repetitive
+- Easier to reason about
+- Safer to execute repeatedly
+
+---
+
+## Minimal vs Full defaults
+
+<Tabs items={['Minimal (SQLPage)', 'Full (E2E Assurance)']}>
+  <Tab value="Minimal (SQLPage)">
+    ````text
+    ```code DEFAULTS
+    sql * --interpolate --injectable
+    ```
+    ````
+    
+    Required for SQLPage playbooks.
+  </Tab>
+  <Tab value="Full (E2E Assurance)">
+    ````text
+    ```code DEFAULTS
+    sql * --interpolate --injectable --executable --capture
+    ```
+    ````
+    
+    Required for executable assurance runbooks and SQLfolio.
+  </Tab>
+</Tabs>
+
+Choose the level based on whether the document is:
+
+- A **definition/playbook**
+- Or an **executable assurance runbook**
+
+<Callout>
+  **`code DEFAULTS` configures how Axiom interprets SQL code blocks, enabling interpolation, injection, execution, and result capture without repeating flags on every block.**
+</Callout>
+
+---
+
+## Sample Spryfile.md
+
+Here's a complete example of an SQLfolio end-to-end assurance runbook:
+
+````markdown
+SQLfolio end-to-end (`e2e`) assurance example.
+
+- `sql` blocks are obvious
+- `--migratable` wraps the SQL into "guarded" CTEs
+
+```code DEFAULTS
+sql * --interpolate --injectable --executable --capture
+```
+
+```yaml CONNECTIONS
+catalog:
+  prime:
+    engine: sqlite
+    file: "prime.sqlite.db"
+```
+
+```bash clean --graph housekeeping
+rm -f prime.sqlite.db
+```
+
+```sql migrations --conf prime --migratable
+DROP TABLE IF EXISTS billing_payments;
+DROP TABLE IF EXISTS billing_invoices;
+DROP TABLE IF EXISTS sales_orders;
+DROP TABLE IF EXISTS sales_customers;
+
+CREATE TABLE IF NOT EXISTS sales_customers (
+    customer_id INT PRIMARY KEY,
+    customer_name TEXT NOT NULL,
+    Phone TEXT NULL,
+    email TEXT NOT NULL,
+    country TEXT
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS ux_customers_email ON sales_customers(email);
+
+-- @annotation
+CREATE TABLE IF NOT EXISTS sales_orders (
+    order_id       INT PRIMARY KEY,
+    customer_id    INT NOT NULL,
+    total_amount   NUMERIC(10,2) NOT NULL,
+    status         TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS billing_invoices (
+    invoice_id      INT PRIMARY KEY,
+    order_id        INT NOT NULL,
+    invoice_amount  NUMERIC(10,2) NOT NULL,
+    invoice_date    DATE NOT NULL,
+    CONSTRAINT fk_invoice_order
+        FOREIGN KEY (order_id)
+        REFERENCES sales_orders(order_id)
+);
+
+CREATE TABLE IF NOT EXISTS billing_payments (
+    payment_id   INT PRIMARY KEY,
+    invoice_id   INT NOT NULL,
+    amount       NUMERIC(10,2) NOT NULL,
+    payment_date DATE NOT NULL,
+    CONSTRAINT fk_payment_invoice
+        FOREIGN KEY (invoice_id)
+        REFERENCES billing_invoices(invoice_id)
+);
+```
+
+Seed the database.
+
+```sql seed --conf prime
+DELETE FROM billing_payments;
+DELETE FROM billing_invoices;
+DELETE FROM sales_orders;
+DELETE FROM sales_customers;
+
+INSERT INTO sales_customers (customer_id, customer_name, phone, email, country)
+VALUES
+  (1, 'John',  '111-222-333', 'a1@test.com', 'IN'),
+  (2, 'Bob',   '333-44-555',  'b1@test.com', 'US'),
+  (3, 'Alice', '555-444-444', 'c1@test.com', 'IN'),
+  (4, 'Sarah', '111-777-333', 'd1@test.com', 'IN');
+
+INSERT INTO sales_orders (order_id, customer_id, total_amount, status)
+VALUES
+  (1, 1, 500.00, 'COMPLETED'),
+  (2, 2, 300.00, 'COMPLETED'),
+  (3, 3, 700.00, 'COMPLETED'),
+  (4, 4, 400.00, 'PENDING');
+
+INSERT INTO billing_invoices (invoice_id, order_id, invoice_amount, invoice_date)
+VALUES
+  (1, 1, 500.00, CURRENT_DATE),  -- matches order total
+  (2, 2, 250.00, CURRENT_DATE),  -- mismatch with order
+  (3, 3, 700.00, CURRENT_DATE),  -- matches order
+  (4, 4, 150.00, CURRENT_DATE);  -- mismatch with order
+
+INSERT INTO billing_payments (payment_id, invoice_id, amount, payment_date)
+VALUES
+  (1, 1, 300.00, CURRENT_DATE),
+  (2, 1, 200.00, CURRENT_DATE), -- full payment
+
+  (3, 2, 100.00, CURRENT_DATE),
+  (4, 2, 100.00, CURRENT_DATE), -- partial payment (invoice = 250)
+
+  (5, 3, 700.00, CURRENT_DATE), -- full payment
+
+  (6, 4, 100.00, CURRENT_DATE); -- partial payment (invoice = 150)
+```
+
+```sql validate-idempotency --conf prime
+INSERT OR IGNORE INTO sales_customers (
+    customer_id,
+    customer_name,
+    phone,
+    email,
+    country
+)
+VALUES
+(5, 'Pradeep', '111-222-333', 'pradeep@test.com', 'IN');
+
+INSERT OR IGNORE INTO sales_customers (
+    customer_id,
+    customer_name,
+    phone,
+    email,
+    country
+)
+VALUES
+(6, 'Pradeep', '111-222-333', 'pr1@test.com', 'IN');
+
+-- Prevents duplicate billing, double processing
+-- Validates safe retry behavior
+
+SELECT COUNT(*) AS result
+FROM sales_customers
+WHERE email = 'pradeep@test.com';
+```
+
+```sql validate-invoice-payment --conf prime
+SELECT
+    c.customer_name,
+    o.order_id,
+    o.total_amount AS total_order_amount,
+    i.invoice_amount AS total_invoice_amount,
+    COALESCE(SUM(p.amount), 0) AS total_paid_amount,
+
+    -- Order vs Invoice amount match
+    CASE
+        WHEN o.total_amount = i.invoice_amount THEN 'true'
+        ELSE 'false'
+    END AS order_invoice_match,
+
+    -- Invoice vs Payment amount match
+    CASE
+        WHEN i.invoice_amount = COALESCE(SUM(p.amount), 0) THEN 'true'
+        ELSE 'false'
+    END AS invoice_payment_match
+
+FROM sales_orders o
+JOIN billing_invoices i
+  ON i.order_id = o.order_id
+
+LEFT JOIN billing_payments p
+  ON p.invoice_id = i.invoice_id
+
+LEFT JOIN sales_customers c
+  ON c.customer_id = o.customer_id
+
+WHERE o.status = 'COMPLETED'
+
+GROUP BY
+    c.customer_name,
+    o.order_id,
+    o.total_amount,
+    i.invoice_amount
+
+ORDER BY o.order_id;
+```
+````
+
+---
+
+## Defining Database Connections
+
+```yaml
+catalog:
+  prime:
+    engine: sqlite
+    file: "prime.sqlite.db"
+```
+
+The `yaml CONNECTIONS` block defines **named SQL connections** that executable SQL blocks can use.
+
+### Key concepts
+
+- `catalog` is a registry of available connections
+- `prime` is the **connection ID**
+- `engine` specifies the database type
+- Connection-specific fields follow (for SQLite, a file path)
+
+Supported engines include:
+
+- SQLite
+- PostgreSQL
+- DuckDB
+
+<Callout type="note">
+  The connection ID (`prime`) is referenced later using `--conf prime`.
+</Callout>
+
+---
+
+## Using a Connection in SQL Blocks
+
+Every executable SQL block explicitly declares which connection it uses:
+
+````sql
+```sql migrations --conf prime --migratable
+<Your SQL here>
+```
+````
+
+### `--conf prime`
+
+This tells SQLfolio:
+
+> "Execute this SQL using the connection named **prime**."
+
+---
+
+## Cleaning the Environment
+
+```bash
+rm -f prime.sqlite.db
+```
+
+This step ensures:
+
+- A clean database state
+- Deterministic execution
+- No residue from previous runs
+
+---
+
+## Schema Migrations
+
+````sql
+```sql migrations --conf prime --migratable
+````
+
+### What `--migratable` does
+
+- Wraps DDL statements in **guarded CTEs**
+- Makes migrations:
+  - Idempotent
+  - Safe to re-run
+  - Order-aware
+
+This allows the runbook to be executed multiple times without failure.
+
+---
+
+## Seeding Test Data
+
+````sql
+```sql seed --conf prime
+````
+
+This block:
+
+- Clears existing data
+- Inserts known test fixtures
+- Creates a deterministic dataset for validations
+
+Seed data includes:
+
+- Customers
+- Orders
+- Invoices
+- Payments
+
+---
+
+## Validating Idempotency
+
+````sql
+```sql validate-idempotency --conf prime
+````
+
+This validation ensures:
+
+- Safe retries
+- No duplicate records
+- Idempotent writes
+
+### Example check
+
+```sql
+SELECT COUNT(*) AS result
+FROM sales_customers
+WHERE email = 'pradeep@test.com';
+```
+
+The result is captured and can be used to assert correctness.
+
+---
+
+## Business Rule Validation: Invoice vs Payment
+
+````sql
+```sql validate-invoice-payment --conf prime
+````
+
+This validation checks:
+
+- Order amount vs invoice amount
+- Invoice amount vs total payments
+- Only completed orders
+
+### Output fields include
+
+- `order_invoice_match`
+- `invoice_payment_match`
+
+These fields explicitly indicate data consistency issues.
+
+---
+
+## Running the Runbook
+
+<Steps>
+  <Step>
+    ### Navigate to the runbook directory
+    
+    ```bash
+    cd support/assurance/sqlfolio/Spryfile.md
+    ```
+  </Step>
+  
+  <Step>
+    ### Generate an execution plan
+    
+    ```bash
+    ./spry.ts rb report
+    ```
+    
+    This shows what will be executed without running it.
+  </Step>
+  
+  <Step>
+    ### Execute the runbook
+    
+    ```bash
+    ./spry.ts rb run
+    ```
+    
+    This runs all executable blocks against the configured database.
+  </Step>
+</Steps>
+
+### Commands explained
+
+| Command     | Purpose                     |
+| ----------- | --------------------------- |
+| `rb report` | Generates an execution plan |
+| `rb run`    | Executes the runbook        |
+
+---
+
+## Summary
+
+- SQLfolio runbooks are **executable SQL documents**
+- `yaml CONNECTIONS` defines named database connections
+- `--conf <id>` selects the connection
+- `--executable` controls whether SQL runs
+- The same document supports:
+  - Migrations
+  - Seeds
+  - Validations
+  - E2E assurance
+
+<Callout type="success">
+  This approach turns SQL into a reproducible, testable, and CI-ready assurance workflow.
+</Callout>

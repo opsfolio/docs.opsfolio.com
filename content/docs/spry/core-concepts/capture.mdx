@@ -1,0 +1,242 @@
+---
+title: Output Capturing
+description: Capture task outputs for logging, reuse, or downstream processing
+index : 13
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+## Overview
+
+The `--capture` flag saves a task's stdout to a file or memory location. This enables:
+
+- Creating log files
+- Passing data between tasks
+- Generating reports
+- Storing build artifacts
+
+## Basic Syntax
+
+````markdown
+```bash my-task --capture ./output.txt
+echo "This goes to output.txt"
+```
+````
+
+## Capture Types
+
+### File Capture
+
+Save output to a filesystem path:
+
+````markdown
+```bash get-logs --capture ./logs/app.log
+kubectl logs deployment/myapp
+```
+````
+
+The path can be:
+
+- **Relative**: `./output.txt`
+- **Absolute**: `/tmp/output.txt`
+- **Nested**: `./reports/daily/report.txt` (directories created automatically)
+
+### Memory Capture
+
+Store output in memory for use by other tasks:
+
+````markdown
+```bash get-version --capture memory:app_version
+git describe --tags
+```
+
+```bash deploy -I --dep get-version
+echo "Deploying version: ${app_version}"
+```
+````
+
+<Callout type="info">
+Memory captures are accessed via interpolation in downstream tasks.
+</Callout>
+
+## Capture with Gitignore
+
+Automatically add captured files to `.gitignore`:
+
+````markdown
+```bash generate-secrets --capture ./secrets.env --gitignore
+openssl rand -hex 32
+```
+````
+
+This prevents accidentally committing generated files.
+
+## Multiple Outputs
+
+A task can capture to multiple destinations:
+
+````markdown
+```bash build --capture ./build.log --capture memory:build_output
+npm run build
+```
+````
+
+## Using Captured Output
+
+### In Subsequent Tasks
+
+Use memory captures with interpolation:
+
+````markdown
+```bash step-1 --capture memory:result
+echo "computed-value"
+```
+
+```bash step-2 --dep step-1 -I
+echo "Result from step-1: ${result}"
+```
+````
+
+### From Files
+
+Read captured files in later tasks:
+
+````markdown
+```bash step-1 --capture ./data.json
+echo '{"key": "value"}'
+```
+
+```bash step-2 --dep step-1
+cat ./data.json | jq '.key'
+```
+````
+
+## Capture Modes
+
+### Overwrite (Default)
+
+Each run overwrites the previous capture:
+
+````markdown
+```bash log-date --capture ./date.txt
+date
+```
+````
+
+### Append
+
+Append to existing file (use shell redirection in the task):
+
+````markdown
+```bash log-event --capture ./events.log
+echo "$(date): Event occurred"
+# Note: --capture always overwrites
+# For appending, handle in the script itself
+```
+````
+
+## Capture Specifications
+
+The capture flag accepts a specification:
+
+```bash
+--capture PATH              # File path (relative or absolute)
+--capture memory:KEY        # Memory storage with key
+--capture PATH --gitignore  # Add to .gitignore
+```
+
+## Common Patterns
+
+### Build Artifacts
+
+````markdown
+```bash build --capture ./dist/build.log --descr "Build the application"
+npm run build 2>&1
+```
+````
+
+### Version Information
+
+````markdown
+```bash get-versions --capture memory:versions
+echo "node: $(node --version)"
+echo "npm: $(npm --version)"
+echo "git: $(git --version)"
+```
+````
+
+### Test Results
+
+````markdown
+```bash run-tests --capture ./test-results.txt --descr "Execute test suite"
+npm test 2>&1
+```
+
+```bash check-coverage --dep run-tests
+grep "coverage:" ./test-results.txt
+```
+````
+
+### Configuration Generation
+
+````markdown
+```bash generate-config --capture ./config/app.json
+cat << EOF
+{
+  "environment": "production",
+  "timestamp": "$(date -Iseconds)",
+  "commit": "$(git rev-parse HEAD)"
+}
+EOF
+```
+````
+
+## Error Handling
+
+### Capture on Failure
+
+Output is still captured even if the task fails:
+
+````markdown
+```bash might-fail --capture ./error.log
+some-command-that-might-fail 2>&1
+```
+````
+
+### Separate stdout and stderr
+
+Capture both streams:
+
+````markdown
+```bash full-capture --capture ./output.log
+./script.sh 2>&1
+```
+````
+
+## Best Practices
+
+<Callout type="warn" title="Best Practices">
+1. **Use descriptive paths** - `./logs/build-2024.log` not `./out.txt`
+2. **Capture important output** - Build logs, test results, generated artifacts
+3. **Use memory for task chaining** - Pass data between related tasks
+4. **Add gitignore for secrets** - Protect sensitive generated files
+5. **Include timestamps** - Make logs identifiable
+</Callout>
+
+## Debugging Captures
+
+View what was captured:
+
+```bash
+# After running
+cat ./captured-output.txt
+
+# Or check memory (via interpolation in a debug task)
+```
+
+````markdown
+```bash debug -I
+echo "Captured: ${my_memory_key}"
+```
+````

@@ -1,767 +1,399 @@
 ---
-title: Axiom API
-description: Semantic graph engine for transforming Markdown ASTs into queryable graphs
+title: The Axiom Graph Engine
+description: Understanding Spry's semantic graph system
 icon: Network
-index: 6
+index: 4
 ---
-
-import { Callout } from 'fumadocs-ui/components/callout';
-import { Card, Cards } from 'fumadocs-ui/components/card';
-import { Steps, Step } from 'fumadocs-ui/components/steps';
-import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
 
 ## Overview
 
-Axiom is Spry's semantic graph engine that transforms Markdown Abstract Syntax Trees (ASTs) into queryable graphs through composable edge rules. It provides the foundation for understanding document structure and relationships.
-
-<Callout type="info">
-**Why Axiom?**
-
-Traditional Markdown processors give you a tree structure. Axiom adds semantic relationships - dependencies, containment, references - enabling powerful workflows like task orchestration, content generation, and document analysis.
-</Callout>
+Axiom is a rule-driven graph engine that transforms Markdown AST into a semantic graph. It discovers and represents relationships between document elements, enabling rich querying and domain-specific projections.
 
 ## Core Concepts
 
-### Graph Edges
+### The Graph
 
-Edges represent relationships between AST nodes:
-
-```typescript
-interface GraphEdge<Relationship extends string> {
-  readonly rel: Relationship;   // Relationship type
-  readonly from: Node;          // Source node
-  readonly to: Node;            // Target node
-}
-```
-
-### Common Relationships
-
-Understanding these built-in relationships helps you navigate and query documents:
-
-| Relationship | Description | Example |
-|--------------|-------------|---------|
-| `containedInSection` | Node is within a section | Code block inside a section |
-| `parentHeading` | Node's parent heading | Paragraph under "Setup" heading |
-| `isDecoratorFor` | Decorator points to target | `@setup` decorator on section |
-| `isImportPlaceholder` | Import generates cell | Imported code block |
-| `hasFrontmatter` | Document has frontmatter | YAML at document start |
-| `sectionHasSemanticId` | Section has @id decorator | Section marked with `@id` |
-
-<Callout>
-**Relationship Direction**
-
-Edges flow from **dependent** to **dependency** or from **child** to **parent**. For example, a code block `from` points to the section `to` that contains it.
-</Callout>
-
-### Rule Context
-
-Rules receive context for processing the AST:
-
-```typescript
-interface RuleContext {
-  root: Root;  // mdast root node
-}
-
-interface TypicalRuleCtx extends RuleContext {
-  root: Root;
-  // Additional context as needed
-}
-```
-
-## Building Graphs
-
-### Basic Usage
-
-Here's how to create a graph from a Markdown file:
-
-```typescript
-import { graph } from "./lib/axiom/graph.ts";
-import { markdownASTs } from "./lib/axiom/io/mod.ts";
-
-for await (const md of markdownASTs(["./doc.md"])) {
-  const g = graph(md.mdastRoot);
-
-  console.log("Relationships:", [...g.rels]);
-  console.log("Edge counts:", g.relCounts);
-
-  for (const edge of g.edges) {
-    console.log(`${edge.rel}: ${edge.from.type} -> ${edge.to.type}`);
-  }
-}
-```
-
-<Callout type="success">
-**Quick Start**
-
-This basic example reads a Markdown file, builds its semantic graph, and displays all relationships. It's a great starting point for exploring Axiom's capabilities.
-</Callout>
-
-### Graph Properties
-
-The graph object provides comprehensive access to relationships:
+A graph consists of nodes and edges representing relationships between document elements:
 
 ```typescript
 interface Graph<Relationship, Edge> {
-  root: Root;                    // Original AST
-  edges: readonly Edge[];        // All edges
-  rels: Set<string>;            // Unique relationship types
-  relCounts: Record<string, number>;  // Count per type
+  root: Root;           // The MDAST root
+  edges: Edge[];        // All discovered relationships
+}
+
+interface GraphEdge<Rel> {
+  rel: Rel;            // Relationship type
+  from: Node;          // Source node
+  to: Node;            // Target node
 }
 ```
 
-**Key Properties:**
-- **`root`** - The original mdast Root node for direct AST access
-- **`edges`** - Immutable array of all relationship edges
-- **`rels`** - Set of unique relationship types found in the graph
-- **`relCounts`** - Statistics showing how many edges exist for each relationship type
+### Edge Rules
 
-### Graphviz Export
-
-Visualize your document's semantic structure:
+Rules discover relationships in the AST:
 
 ```typescript
-import { graphToDot } from "./lib/axiom/graph.ts";
-
-const dot = graphToDot(g, { graphName: "MyDocument" });
-await Deno.writeTextFile("graph.dot", dot);
-
-// Generate image with: dot -Tpng graph.dot -o graph.png
-```
-
-<Callout>
-**Visualization Tips**
-
-Graphviz exports help you understand document structure visually. Use different layout engines like `dot` (hierarchical), `neato` (force-directed), or `fdp` (spring model) depending on your needs.
-</Callout>
-
-## Edge Rules
-
-Rules are the heart of Axiom - they're generator functions that produce edges by analyzing the AST.
-
-### Rule Signature
-
-```typescript
-type GraphEdgesRule<Rel, Ctx, Edge> = (
-  ctx: Ctx,
-  prevEdges: Iterable<Edge>
-) => Iterable<Edge> | false;
-```
-
-**Parameters:**
-- **`ctx`** - Context containing the AST root and additional data
-- **`prevEdges`** - Edges from previous rules in the pipeline
-
-**Returns:**
-- An iterable of edges to add to the graph
-- `false` to clear previous edges (rare, used for filtering)
-
-### Rule Pipeline
-
-Rules execute as a pipeline, with each receiving edges from the previous:
-
-```typescript
-function* astGraphEdges(root, { prepareContext, rules }) {
-  const ctx = prepareContext(root);
-
-  let current = [];
-  for (const rule of rules(ctx)) {
-    const produced = rule(ctx, current);
-    if (produced === false) {
-      current = [];
-      continue;
-    }
-    current = produced;
-  }
-
-  for (const edge of current) {
-    yield edge;
-  }
+interface EdgeRule<Rel extends string> {
+  rel: Rel;
+  apply: (root: Root) => Generator<GraphEdge<Rel>>;
 }
 ```
 
-<Callout type="info">
-**Pipeline Composition**
+Each rule:
+1. Traverses the AST
+2. Identifies related nodes
+3. Yields edges representing relationships
 
-The pipeline pattern enables composability - rules can extend, filter, or transform edges from previous rules without modifying existing code.
-</Callout>
+## Built-in Rules
 
-### Built-in Rules
+Spry provides several built-in edge rules for common document relationships.
 
-<Tabs items={['containedInSection', 'parentHeading', 'sectionSemanticId']}>
-  <Tab value="containedInSection">
-    #### containedInSection
+### containedInSection
 
-    Establishes section hierarchy by linking nodes to their containing sections:
+Discovers hierarchy between headings and content:
 
-    ```typescript
-    // Produces edges like:
-    { rel: "containedInSection", from: codeNode, to: sectionNode }
-    ```
+````markdown
+# Project
 
-    **Use Cases:**
-    - Finding all code blocks in a section
-    - Building section hierarchies
-    - Scoping task dependencies
-  </Tab>
+## Setup
 
-  <Tab value="parentHeading">
-    #### parentHeading
+This paragraph is contained in "Setup"
 
-    Links nodes to their immediate parent heading:
+```bash task
+echo "This task is also in Setup"
+```
+````
 
-    ```typescript
-    // Produces edges like:
-    { rel: "parentHeading", from: paragraphNode, to: headingNode }
-    ```
+**Resulting Edges:**
+- `(heading "Project") --containedInSection--> (root)`
+- `(heading "Setup") --containedInSection--> (heading "Project")`
+- `(paragraph) --containedInSection--> (heading "Setup")`
+- `(code "task") --containedInSection--> (heading "Setup")`
 
-    **Use Cases:**
-    - Extracting content by heading
-    - Building table of contents
-    - Organizing document structure
-  </Tab>
+### codeDependsOn
 
-  <Tab value="sectionSemanticId">
-    #### sectionSemanticId
+Discovers task dependencies from `--dep` flags:
 
-    Links @id decorators to sections for semantic identification:
+````markdown
+```bash a
+echo "A"
+```
 
-    ```typescript
-    // Produces edges like:
-    { rel: "sectionHasSemanticId", from: sectionNode, to: decoratorNode }
-    ```
+```bash b --dep a
+echo "B"
+```
+````
 
-    **Use Cases:**
-    - Named task references
-    - Cross-document linking
-    - Semantic annotations
-  </Tab>
-</Tabs>
+**Resulting Edge:**
+- `(code "b") --codeDependsOn--> (code "a")`
+
+### frontmatterClassification
+
+Applies classifications from document frontmatter:
+
+```yaml
+---
+doc-classify:
+  - select: heading[depth="1"]
+    role: project
+---
+```
+
+**Resulting Edge:**
+- `(heading "Project") --classifiedAs--> ("project")`
+
+### sectionSemanticId
+
+Assigns semantic identities to sections based on heading text.
+
+```markdown
+# My Project
+
+## Setup Phase
+```
+
+Edges with computed semantic IDs based on heading text.
+
+### nodesClassification
+
+Generic node classification based on type and attributes.
+
+## Using the Graph
+
+### Building a Graph
+
+```typescript
+import { graph, typicalRules } from "@spry/axiom";
+
+// Parse Markdown to MDAST
+const root = await parseMarkdown("runbook.md");
+
+// Build graph with typical rules
+const g = graph(root, typicalRules());
+
+// Access edges
+for (const edge of g.edges) {
+  console.log(`${edge.from.type} --${edge.rel}--> ${edge.to.type}`);
+}
+```
+
+### Custom Rule Pipeline
+
+```typescript
+import { astGraphEdges, graphEdgesPipeline } from "@spry/axiom";
+
+// Select specific rules
+const myRules = [
+  containedInSection,
+  codeDependsOn,
+  // Add custom rules here
+];
+
+// Build edges
+const edges = Array.from(astGraphEdges(root, graphEdgesPipeline(myRules)));
+```
 
 ## Creating Custom Rules
 
-Custom rules let you add domain-specific relationships to your documents.
-
-### Basic Rule
-
-Here's a simple rule that creates relationships for custom language blocks:
+### Basic Rule Structure
 
 ```typescript
-import { Root } from "types/mdast";
+import type { EdgeRule, GraphEdge } from "@spry/axiom";
 import { visit } from "unist-util-visit";
-import { GraphEdgesRule, RuleContext } from "./lib/axiom/edge/rule/mod.ts";
 
-export function myCustomRule<
-  Rel extends string,
-  Edge extends { rel: Rel; from: Node; to: Node }
->(): GraphEdgesRule<Rel, RuleContext, Edge> {
-  return function* (ctx, prevEdges) {
-    // Pass through previous edges
-    for (const edge of prevEdges) {
-      yield edge;
-    }
-
-    // Generate new edges
-    visit(ctx.root, "code", (node, _index, parent) => {
-      if (parent && node.lang === "myLang") {
+const myRule: EdgeRule<"myRelationship"> = {
+  rel: "myRelationship",
+  apply: function* (root) {
+    visit(root, "code", (node, index, parent) => {
+      // Find related nodes and yield edges
+      if (someCondition(node)) {
         yield {
-          rel: "myRelationship" as Rel,
-          from: parent,
-          to: node,
-        } as Edge;
-      }
-    });
-  };
-}
-```
-
-<Callout type="success">
-**Rule Template**
-
-This basic pattern works for most custom rules:
-1. Yield previous edges (preserves pipeline)
-2. Visit specific node types
-3. Yield new edges based on your criteria
-</Callout>
-
-### Rule with Custom Context
-
-For rules that need additional data:
-
-```typescript
-interface MyContext extends RuleContext {
-  root: Root;
-  metadata: Map<string, unknown>;
-}
-
-export function contextualRule(): GraphEdgesRule<string, MyContext, GraphEdge<string>> {
-  return function* (ctx, prevEdges) {
-    // Access custom context
-    const meta = ctx.metadata.get("key");
-
-    for (const edge of prevEdges) {
-      yield edge;
-    }
-
-    // Use context in edge generation
-    visit(ctx.root, (node) => {
-      if (meta && shouldCreateEdge(node, meta)) {
-        yield {
-          rel: "contextual",
+          rel: "myRelationship",
           from: node,
-          to: getRelatedNode(node, meta),
+          to: relatedNode,
         };
       }
     });
-  };
-}
+  },
+};
 ```
 
-### Filtering Rule
+### Example: Link Reference Rule
 
-Remove or filter edges from previous rules:
+Discover references between sections:
 
 ```typescript
-export function filterRule<Rel extends string, Edge extends GraphEdge<Rel>>(
-  keep: (edge: Edge) => boolean
-): GraphEdgesRule<Rel, RuleContext, Edge> {
-  return function* (_ctx, prevEdges) {
-    for (const edge of prevEdges) {
-      if (keep(edge)) {
-        yield edge;
+const linkReferencesRule: EdgeRule<"referencesSection"> = {
+  rel: "referencesSection",
+  apply: function* (root) {
+    const headings = new Map<string, Heading>();
+
+    // Collect all headings
+    visit(root, "heading", (node) => {
+      const text = toString(node);
+      headings.set(text.toLowerCase(), node);
+    });
+
+    // Find links to headings
+    visit(root, "link", (node, index, parent) => {
+      const href = node.url;
+      if (href.startsWith("#")) {
+        const target = headings.get(href.slice(1).toLowerCase());
+        if (target && parent) {
+          yield {
+            rel: "referencesSection",
+            from: parent,
+            to: target,
+          };
+        }
       }
-    }
-  };
-}
+    });
+  },
+};
 ```
 
-**Example Usage:**
-```typescript
-// Keep only code-related edges
-const codeOnlyRule = filterRule(
-  edge => edge.from.type === "code" || edge.to.type === "code"
-);
-```
+### Example: Code Import Rule
 
-### Transforming Rule
-
-Modify edges from previous rules:
+Track which cells import from others:
 
 ```typescript
-export function transformRule<Rel extends string, Edge extends GraphEdge<Rel>>(
-  transform: (edge: Edge) => Edge
-): GraphEdgesRule<Rel, RuleContext, Edge> {
-  return function* (_ctx, prevEdges) {
-    for (const edge of prevEdges) {
-      yield transform(edge);
-    }
-  };
-}
-```
+const codeImportsRule: EdgeRule<"importsFrom"> = {
+  rel: "importsFrom",
+  apply: function* (root) {
+    const cells = new Map<string, Code>();
 
-**Example Usage:**
-```typescript
-// Normalize relationship names
-const normalizeRule = transformRule(edge => ({
-  ...edge,
-  rel: edge.rel.toLowerCase()
-}));
-```
-
-## Registering Custom Rules
-
-Integrate your custom rules into Axiom's pipeline.
-
-<Steps>
-  <Step>
-    ## Create Custom Rule Pipeline
-    
-    Build a rule pipeline that includes both standard and custom rules:
-
-    ```typescript
-    import { typicalRules } from "./lib/axiom/edge/pipeline/typical.ts";
-    import { myCustomRule } from "./my-rules.ts";
-
-    export function* customRules() {
-      // Include standard rules
-      yield* typicalRules();
-
-      // Add custom rules
-      yield myCustomRule();
-    }
-    ```
-  </Step>
-
-  <Step>
-    ## Use Custom Pipeline
-    
-    Apply your custom rule pipeline to generate edges:
-
-    ```typescript
-    import { astGraphEdges } from "./lib/axiom/edge/orchestrate.ts";
-
-    const edges = astGraphEdges(root, {
-      prepareContext: (root) => ({ root, metadata: new Map() }),
-      rules: () => customRules(),
+    // Collect named cells
+    visit(root, "code", (node) => {
+      const fm = node.data?.codeFM;
+      if (fm?.identity) {
+        cells.set(fm.identity, node);
+      }
     });
 
-    for (const edge of edges) {
-      console.log(edge);
-    }
-    ```
-  </Step>
-
-  <Step>
-    ## Build and Query Graph
-    
-    Create a graph using your custom pipeline:
-
-    ```typescript
-    import { graph } from "./lib/axiom/graph.ts";
-
-    const g = graph(root, {
-      prepareContext: (root) => ({ root }),
-      rules: () => customRules(),
+    // Find import references
+    visit(root, "code", (node) => {
+      const value = node.value;
+      for (const [name, target] of cells) {
+        if (value.includes(`\${${name}}`) && target !== node) {
+          yield {
+            rel: "importsFrom",
+            from: node,
+            to: target,
+          };
+        }
+      }
     });
-
-    // Query your custom relationships
-    const customEdges = g.edges.filter(e => e.rel === "myRelationship");
-    ```
-  </Step>
-</Steps>
-
-<Callout type="warning">
-**Rule Order Matters**
-
-Rules execute in the order they appear in your pipeline. Ensure dependencies between rules are respected - for example, rules that filter edges should come after rules that create them.
-</Callout>
-
-## Data Bags
-
-Data bags provide type-safe storage on AST nodes without polluting the global namespace.
-
-### Creating a Data Bag
-
-```typescript
-import { dataBag } from "./lib/axiom/mdast/data-bag.ts";
-
-const myDataBag = dataBag<"myKey", MyDataType, Node>(
-  "myKey",
-  () => defaultValue
-);
+  },
+};
 ```
 
-**Parameters:**
-- **`"myKey"`** - Unique key for this data bag
-- **`MyDataType`** - TypeScript type for stored data
-- **`Node`** - Node types this bag can attach to
-- **`() => defaultValue`** - Factory function for default values
-
-### Using Data Bags
-
-<Tabs items={['Check', 'Get or Set', 'Set']}>
-  <Tab value="Check">
-    ```typescript
-    // Check if node has data
-    if (myDataBag.is(node)) {
-      const data = node.data.myKey;
-      // TypeScript knows data is MyDataType
-    }
-    ```
-  </Tab>
-
-  <Tab value="Get or Set">
-    ```typescript
-    // Get existing data or create with default
-    const data = myDataBag.getOrSet(node);
-    ```
-  </Tab>
-
-  <Tab value="Set">
-    ```typescript
-    // Set data explicitly
-    myDataBag.set(node, newValue);
-    ```
-  </Tab>
-</Tabs>
-
-### Built-in Data Bags
-
-Spry provides several pre-configured data bags:
-
-| Data Bag | Key | Purpose |
-|----------|-----|---------|
-| `headingLikeNodeDataBag` | `headingLike` | Mark heading-like nodes |
-| `docFrontmatterDataBag` | `documentFrontmatter` | Document frontmatter |
-| `graphEdgesVFileDataBag` | `edges` | Extra edges |
-
-<Callout>
-**Type Safety**
-
-Data bags provide compile-time type checking and runtime validation, preventing common errors when attaching metadata to AST nodes.
-</Callout>
-
-## Querying Graphs
-
-Once you have a graph, you can query it in various ways.
+## Querying the Graph
 
 ### Filter by Relationship
 
 Find all edges of a specific type:
 
 ```typescript
-const sectionEdges = g.edges.filter(
-  e => e.rel === "containedInSection"
-);
+const dependencies = g.edges.filter(e => e.rel === "codeDependsOn");
 ```
 
-### Find Nodes
+### Find Related Nodes
 
-Extract nodes based on edge relationships:
-
-```typescript
-const codeNodes = g.edges
-  .filter(e => e.to.type === "code")
-  .map(e => e.to);
-```
-
-### Build Adjacency Map
-
-Create an adjacency list for graph traversal:
+Get all dependencies for a specific node:
 
 ```typescript
-const adjacency = new Map<Node, Node[]>();
-
-for (const edge of g.edges) {
-  if (!adjacency.has(edge.from)) {
-    adjacency.set(edge.from, []);
-  }
-  adjacency.get(edge.from)!.push(edge.to);
+function findDependencies(node: Node, graph: Graph): Node[] {
+  return graph.edges
+    .filter(e => e.from === node && e.rel === "codeDependsOn")
+    .map(e => e.to);
 }
 ```
 
 ### Traverse Hierarchy
 
-Recursively traverse the document hierarchy:
+Walk up the containment hierarchy:
 
 ```typescript
-function* descendants(node: Node, edges: GraphEdge[]): Generator<Node> {
-  const children = edges
-    .filter(e => e.rel === "containedInSection" && e.to === node)
-    .map(e => e.from);
+function getAncestors(node: Node, graph: Graph): Node[] {
+  const ancestors: Node[] = [];
+  let current = node;
 
-  for (const child of children) {
-    yield child;
-    yield* descendants(child, edges);
+  while (true) {
+    const parent = graph.edges.find(
+      e => e.from === current && e.rel === "containedInSection"
+    );
+    if (!parent) break;
+    ancestors.push(parent.to);
+    current = parent.to;
   }
+
+  return ancestors;
 }
 ```
 
-<Callout type="info">
-**Query Performance**
+## Graph Visualization
 
-For repeated queries, consider building indices (like adjacency maps) once and reusing them rather than filtering edges multiple times.
-</Callout>
+### DOT Export
 
-## Projections
-
-Projections transform graphs into domain-specific models optimized for particular use cases.
-
-### FlexibleProjection
-
-Convert graph to relational model for querying and analysis:
+Export the graph to Graphviz DOT format for visualization:
 
 ```typescript
-import { flexibleProjectionFromFiles } from "./lib/axiom/projection/flexible.ts";
+import { graphToDot } from "@spry/axiom";
 
-const model = await flexibleProjectionFromFiles(paths);
-
-// Access documents
-for (const doc of model.documents) {
-  console.log(doc.id, doc.label);
-}
-
-// Access nodes
-for (const [id, node] of Object.entries(model.nodes)) {
-  console.log(id, node.type, node.label);
-}
-
-// Access hierarchies
-const hierarchy = model.hierarchies["containedInSection"];
+const dot = graphToDot(g);
+// Output to Graphviz
+console.log(dot);
 ```
 
-**Use Cases:**
-- Document analysis and exploration
-- Building custom tooling
-- Generating documentation
-- Creating visualizations
+### Example Output
 
-### PlaybookProjection
+```text
+digraph {
+  node_1 [label="heading: Project"];
+  node_2 [label="heading: Setup"];
+  node_3 [label="code: install"];
+  node_4 [label="code: build"];
 
-Convert graph to executable model for runbooks:
+  node_2 -> node_1 [label="containedInSection"];
+  node_3 -> node_2 [label="containedInSection"];
+  node_4 -> node_3 [label="codeDependsOn"];
+}
+```
+
+## The Typical Rules Pipeline
+
+The `typicalRules()` function returns the standard set of edge rules:
 
 ```typescript
-import { playbooksFromFiles } from "./lib/axiom/projection/playbook.ts";
-
-const { tasks, directives, issues } = await playbooksFromFiles(paths);
-
-for (const task of tasks) {
-  console.log(task.taskId(), task.taskDeps());
+export function typicalRules() {
+  return [
+    containedInSection,
+    codeDependsOn,
+    frontmatterClassification,
+    sectionSemanticId,
+    nodesClassification,
+    // ... additional standard rules
+  ];
 }
 ```
 
-**Use Cases:**
-- Executing workflows
-- Task orchestration
-- Dependency resolution
-- Automation pipelines
+This provides a sensible default for most use cases while remaining customizable.
 
-<Cards>
-  <Card title="FlexibleProjection">
-    Best for document analysis, querying, and building custom tools
-  </Card>
-  
-  <Card title="PlaybookProjection">
-    Best for executing tasks, running workflows, and automation
-  </Card>
-</Cards>
+## Performance Considerations
+
+### Lazy Evaluation
+
+Edge rules use generators for lazy evaluation, computing edges on demand:
+
+```typescript
+// Edges are computed on demand
+for (const edge of astGraphEdges(root, rules)) {
+  // Processing happens here
+}
+```
+
+### Caching
+
+For repeated queries, materialize the graph once:
+
+```typescript
+// Materialize all edges once
+const allEdges = [...astGraphEdges(root, rules)];
+
+// Query multiple times without recomputation
+const deps = allEdges.filter(e => e.rel === "codeDependsOn");
+const hierarchy = allEdges.filter(e => e.rel === "containedInSection");
+```
 
 ## Best Practices
 
-### Rule Design
+When creating custom edge rules, follow these guidelines:
 
-<Cards>
-  <Card title="Pass Through Edges">
-    Always yield previous edges unless you're intentionally filtering
-  </Card>
-  
-  <Card title="Use Generators">
-    Generators are memory-efficient and support lazy evaluation
-  </Card>
-  
-  <Card title="Single Responsibility">
-    Each rule should focus on one type of relationship
-  </Card>
-  
-  <Card title="Document Semantics">
-    Clearly document what relationships mean and when they're created
-  </Card>
-</Cards>
+1. **Single Responsibility** - Each rule should discover one relationship type
+2. **Yield Early** - Use generators to enable lazy evaluation
+3. **Cache Node Data** - Build lookup maps for efficiency
+4. **Document Semantics** - Clearly define what each relationship means
+5. **Test Edge Cases** - Handle empty documents, circular references, and missing targets
 
-### Performance Tips
+> **Note:** Well-designed edge rules are composable and can be combined to create rich semantic models.
 
-1. **Minimize AST traversals** - Cache results from visits
-2. **Use specific visitors** - Visit only node types you need
-3. **Lazy evaluation** - Generators don't compute until consumed
-4. **Build indices** - For repeated queries, create lookup maps
+## Rule Composition Example
 
-<Callout type="warning">
-**Performance Consideration**
-
-Visiting all nodes with `visit(root, (node) => {...})` is expensive. Prefer visiting specific types: `visit(root, "code", (node) => {...})`.
-</Callout>
-
-### Testing Rules
-
-Write tests to ensure your rules produce correct edges:
+Combine multiple rules for comprehensive analysis:
 
 ```typescript
-Deno.test("myRule produces expected edges", async () => {
-  const md = `# Test\n\`\`\`myLang\ncode\n\`\`\``;
-  const root = parse(md);
+import { graph } from "@spry/axiom";
 
-  const edges = [...astGraphEdges(root, {
-    prepareContext: (r) => ({ root: r }),
-    rules: () => [myCustomRule()],
-  })];
+// Compose custom rules with built-in rules
+const myRules = [
+  ...typicalRules(),
+  linkReferencesRule,
+  codeImportsRule,
+];
 
-  assertEquals(edges.length, 1);
-  assertEquals(edges[0].rel, "myRelationship");
-});
+const g = graph(root, myRules);
+
+// Now you have all relationships in one graph
+console.log(`Total edges: ${g.edges.length}`);
+console.log(`Relationship types: ${new Set(g.edges.map(e => e.rel)).size}`);
 ```
-
-**Testing Best Practices:**
-- Test both edge presence and absence
-- Verify edge direction (from/to)
-- Test with various document structures
-- Include edge cases and malformed input
-
-## Example: Custom Dependency Rule
-
-Let's build a complete custom rule that creates dependency edges between tasks:
-
-<Steps>
-  <Step>
-    ## Define the Rule
-    
-    Create a rule that finds task dependencies from code block attributes:
-
-    ```typescript
-    import { visit } from "unist-util-visit";
-    import { GraphEdgesRule, RuleContext } from "./lib/axiom/edge/rule/mod.ts";
-
-    export function taskDependencyRule<
-      Rel extends string,
-      Edge extends { rel: Rel; from: Node; to: Node }
-    >(): GraphEdgesRule<Rel, RuleContext, Edge> {
-      return function* (ctx, prevEdges) {
-        // Pass through existing edges
-        yield* prevEdges;
-
-        const tasks = new Map<string, Node>();
-        
-        // First pass: collect all tasks
-        visit(ctx.root, "code", (node) => {
-          const taskId = node.meta?.taskId;
-          if (taskId) {
-            tasks.set(taskId, node);
-          }
-        });
-
-        // Second pass: create dependency edges
-        visit(ctx.root, "code", (node) => {
-          const deps = node.meta?.dependsOn || [];
-          for (const depId of deps) {
-            const depNode = tasks.get(depId);
-            if (depNode) {
-              yield {
-                rel: "dependsOn" as Rel,
-                from: node,
-                to: depNode,
-              } as Edge;
-            }
-          }
-        });
-      };
-    }
-    ```
-  </Step>
-
-  <Step>
-    ## Register the Rule
-    
-    Add it to your custom rule pipeline:
-
-    ```typescript
-    export function* myProjectRules() {
-      yield* typicalRules();
-      yield taskDependencyRule();
-    }
-    ```
-  </Step>
-
-  <Step>
-    ## Use in Your Application
-    
-    Apply the rule to build graphs with task dependencies:
-
-    ```typescript
-    const g = graph(root, {
-      prepareContext: (root) => ({ root }),
-      rules: () => myProjectRules(),
-    });
-
-    // Find all task dependencies
-    const taskDeps = g.edges.filter(e => e.rel === "dependsOn");
-    ```
-  </Step>
-</Steps>

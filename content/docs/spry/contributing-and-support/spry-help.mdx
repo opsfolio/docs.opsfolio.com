@@ -102,9 +102,14 @@ If you're having trouble installing Spry:
 # Ensure you have Deno 2.5+ installed
 deno --version
 
+# Ensure you have spry installed
+spry --version
+
 # Run Spry initializer
 cd <your-project>
-deno run --node-modules-dir=auto -A https://raw.githubusercontent.com/programmablemd/spry/main/lib/sqlpage/cli.ts init
+spry sp init
+
+
 ```
 
 ### Spryfile.md Not Executing
