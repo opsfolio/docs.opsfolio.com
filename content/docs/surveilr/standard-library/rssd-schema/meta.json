@@ -46,6 +46,8 @@
     "ur-ingest-session-plm-issue-type",
     "ur-ingest-session-plm-milestone",
     "ur-ingest-session-plm-reaction",
-    "ur-ingest-session-plm-user"
+    "ur-ingest-session-plm-user",
+    "ur-ingest-session-task",
+    "ur-ingest-session-udi-pgp-sql"
     ]
 }
