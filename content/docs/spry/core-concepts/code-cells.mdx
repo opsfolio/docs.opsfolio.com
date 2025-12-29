@@ -1,0 +1,331 @@
+---
+title: Code Cells
+description: Executable units within a Spryfile
+icon: Braces
+index : 13
+---
+
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+
+Code cells are the executable units within a Spryfile.
+
+## What is a Code Cell?
+
+A **code cell** is a fenced code block that Spry can execute or materialize. The fence info string contains metadata that tells Spry how to handle the code.
+
+## Syntax
+
+````markdown
+```language identity --flags { json5-attributes }
+code content
+```
+````
+
+### Components
+
+<Steps>
+<Step>
+**Language** - The interpreter/handler (e.g., `bash`, `sql`, `python`)
+</Step>
+
+<Step>
+**Identity** - Unique name for this cell (e.g., `setup-env`)
+</Step>
+
+<Step>
+**Flags** - Command-line style options (e.g., `--dep other-task`)
+</Step>
+
+<Step>
+**Attributes** - JSON5 object with additional config (e.g., `{ timeout: 30 }`)
+</Step>
+</Steps>
+
+## Examples
+
+### Basic Shell Task
+
+````markdown
+```bash greet
+echo "Hello, World!"
+```
+````
+
+### With Description
+
+````markdown
+```bash greet --descr "Display a greeting message"
+echo "Hello, World!"
+```
+````
+
+### With Dependencies
+
+````markdown
+```bash process-data --dep fetch-data --descr "Process the fetched data"
+python process.py data.json
+```
+````
+
+### With Multiple Flags
+
+````markdown
+```bash build --dep test --descr "Build the project" --capture ./build.log
+npm run build
+```
+````
+
+### With JSON5 Attributes
+
+````markdown
+```bash long-task --descr "Task with timeout" { timeout: 300, retry: 3 }
+./long-running-script.sh
+```
+````
+
+## Cell Types
+
+Spry classifies cells into two natures based on their language:
+
+### Executable Cells
+
+Languages that run as processes via the unified spawn framework:
+
+| Language | Aliases | Engine | Description |
+|----------|---------|--------|-------------|
+| `shell` | `bash`, `sh`, `zsh`, `fish` | OS Shell | Shell scripts |
+| `pwsh` | `powershell` | OS Shell | PowerShell scripts |
+| `cmd` | | OS Shell | Windows command scripts |
+| `sql` | | SQL Shell | SQL via psql, sqlite3, or duckdb |
+| `python` | `py` | Shebang | Python scripts |
+| `typescript` | `ts` | Deno | TypeScript via Deno |
+| `javascript` | `js` | Deno | JavaScript via Deno |
+| `deno-task` | | Deno | Deno task runner |
+
+Executable cells:
+
+- Run via `lib/spawn` execution framework
+- Capture stdout/stderr
+- Return exit codes
+- Can be awaited by dependent tasks
+- **Interpolation is OFF by default**
+
+#### Execution Engines
+
+Spry uses a unified execution framework with distinct engine types:
+
+| Engine Type | Examples | Description |
+|-------------|----------|-------------|
+| **OS Shell** | bash, sh, pwsh, cmd, fish | Operating system shells |
+| **SQL Shell** | psql, sqlite3, duckdb | Database CLI tools |
+| **Function** | env, envrc | In-process execution (no subprocess) |
+| **Using** | External references | Reference to catalog-defined resources |
+
+<Callout type="info">
+The engine resolves the runtime based on the language and available tools.
+</Callout>
+
+### Materializable Cells
+
+Languages that produce content for external systems:
+
+| Language | Description |
+|----------|-------------|
+| `sql` | SQL statements (for SQLPage, databases) |
+| `html` | HTML markup |
+| `json` | JSON data |
+| `yaml` | YAML configuration |
+| `env`, `envrc` | Environment variable files |
+| `utf8` | Binary/blob content |
+
+Materializable cells:
+
+- Content is stored or emitted (filesystem, database, etc.)
+- **Interpolation is ON by default**
+- Can be injected into other cells via PARTIAL
+- Used with SQLPage and other playbooks
+
+### Function Engine Languages
+
+Some languages use in-process function engines rather than spawning external processes:
+
+| Language | Purpose |
+|----------|---------|
+| `env` | Environment variable files |
+| `envrc` | direnv configuration files |
+
+These are processed by `FunctionEngine` implementations in `lib/spawn/function-shell.ts`. They:
+
+- Execute in-process (no subprocess spawned)
+- Echo input directly to output or perform TypeScript-based processing
+- Are treated as materializable with `memoizeOnly` behavior
+- Behave identically to other engines from the caller's perspective
+
+### Directive Cells
+
+Special cells that configure behavior:
+
+| Directive | Purpose |
+|-----------|---------|
+| `PARTIAL` | Template fragment for injection |
+| `DEFAULTS` | Set default flags for cells |
+
+## Cell Identity
+
+Every executable cell needs a unique **identity**:
+
+````markdown
+```bash my-unique-name
+echo "I can be referenced as 'my-unique-name'"
+```
+````
+
+<Callout type="warn" title="Identity Rules">
+- Must be unique within the document
+- Should be descriptive (`build-frontend` not `step1`)
+- Use kebab-case by convention
+- Used in `--dep` references
+</Callout>
+
+## Common Flags
+
+### `--descr`
+
+Add a description:
+
+````markdown
+```bash setup --descr "Initialize the development environment"
+npm install
+```
+````
+
+### `--dep`, `-D`
+
+Declare dependencies (can be repeated):
+
+````markdown
+```bash deploy --dep build --dep test
+kubectl apply -f deployment.yaml
+```
+````
+
+### `--capture`, `-C`
+
+Capture output to file or memory:
+
+````markdown
+```bash get-version --capture version.txt
+git describe --tags
+```
+````
+
+### `--interpolate`, `-I`
+
+Enable template interpolation (off by default for executables):
+
+````markdown
+```bash greet -I
+echo "Hello, ${NAME}!"
+```
+````
+
+### `--injectable`, `-J`
+
+Mark as available for PARTIAL injection:
+
+````markdown
+```sql create-table --injectable
+CREATE TABLE users (id INT PRIMARY KEY);
+```
+````
+
+### `--graph`, `-G`
+
+Assign to a named graph for selective execution:
+
+````markdown
+```bash deploy-step -G deploy
+kubectl apply -f manifests/
+```
+````
+
+## Interpolation
+
+Cells can include interpolated values:
+
+````markdown
+```bash deploy -I
+echo "Deploying version ${VERSION} to ${ENVIRONMENT}"
+kubectl set image deployment/app app=${IMAGE}:${VERSION}
+```
+````
+
+Interpolation sources:
+
+- Environment variables: `${env.VAR_NAME}`
+- Frontmatter values: `${config.key}`
+- Captured outputs: `${TASK_NAME}`
+- Memory stores: `${memory.key}`
+
+<Callout type="important" title="Interpolation Defaults">
+- Executable cells have interpolation **OFF** by default (use `-I` to enable)
+- Materializable cells have interpolation **ON** by default (use `--noInterpolate` to disable)
+</Callout>
+
+## Anonymous Cells
+
+Cells without identity are not directly executable but may still be processed:
+
+````markdown
+```bash
+# This cell has no identity
+# It won't appear in task lists
+echo "Anonymous cell"
+```
+````
+
+Anonymous cells are useful for:
+
+- Display-only code examples
+- Non-runnable documentation
+- Code that shouldn't be in the workflow
+
+## Hooks
+
+Code cells can reference hooks for custom processing:
+
+````markdown
+```bash my-task --hook validate --hook notify
+echo "Extended behavior"
+```
+````
+
+## Best Practices
+
+<Cards>
+<Card title="Always name executable cells" icon="tag">
+Use descriptive identities for all executable cells
+</Card>
+
+<Card title="Add descriptions" icon="message-square">
+Explain what each task does with `--descr`
+</Card>
+
+<Card title="Explicit dependencies" icon="git-branch">
+Don't rely on file order, use `--dep` flags
+</Card>
+
+<Card title="Be careful with interpolation" icon="code">
+Only enable when needed for executables
+</Card>
+
+<Card title="Use appropriate languages" icon="layers">
+Match the task to the right language handler
+</Card>
+
+<Card title="Use graphs for organization" icon="network">
+Group related tasks with `--graph`
+</Card>
+</Cards>
+

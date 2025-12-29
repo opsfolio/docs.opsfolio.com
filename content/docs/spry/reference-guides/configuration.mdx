@@ -1,6 +1,6 @@
 ---
 title: Configuration Reference
-description: Complete guide to configuring Spry and SQLPage for your projects
+description: Complete reference for Spry configuration options
 icon: Settings
 index: 0
 ---
@@ -12,34 +12,30 @@ import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
 
 ## Overview
 
-Spry's configuration system is flexible and hierarchical, allowing you to set options at multiple levels. Configuration can be defined through:
+Spry configuration can be set through:
 
 1. **Document Frontmatter** - YAML at the top of Spryfiles
-2. **Environment Variables** - System environment settings
-3. **Command Line Flags** - Runtime overrides
-4. **Code DEFAULTS Directive** - Default flags for code cells
+2. **Environment Variables** - System environment
+3. **Command Line Flags** - Override at runtime
+4. **Code DEFAULTS Directive** - Set defaults for code cells
 
 <Callout type="info">
-**Configuration Hierarchy**
+**Configuration Precedence**
 
-Command-line arguments override environment variables, which override frontmatter, which override defaults. This flexibility lets you develop locally and deploy to different environments seamlessly.
+Command-line flags override environment variables, which override code cell metadata, which override Code DEFAULTS, which override document frontmatter. This hierarchy allows flexible configuration across different environments.
 </Callout>
 
 ---
 
 ## Document Frontmatter
 
-YAML frontmatter provides document-level configuration at the top of your Spryfile.
-
-### Basic Syntax
-
-Frontmatter is a YAML block delimited by `---` markers:
+YAML block at the start of a Spryfile, delimited by `---`:
 
 ```yaml
 ---
 key: value
 nested:
-  subkey: value
+  key: value
 ---
 ```
 
@@ -49,16 +45,15 @@ nested:
 YAML frontmatter must appear at the very beginning of your Spryfile, before any content.
 </Callout>
 
-### Environment Variable Interpolation
+### Interpolation Syntax
 
-Use `${env.VARIABLE_NAME}` syntax to reference environment variables anywhere in frontmatter:
+Environment variables can be interpolated in frontmatter using `${env.VAR}` syntax:
 
 ```yaml
 ---
 sqlpage-conf:
   database_url: ${env.DATABASE_URL}
   port: ${env.PORT}
-  api_key: ${env.API_KEY}
 ---
 ```
 
@@ -72,88 +67,29 @@ Never commit sensitive values like passwords or API keys directly in frontmatter
 
 ## SQLPage Configuration
 
-Configure SQLPage applications using the `sqlpage-conf` key in frontmatter. The configuration is written to `sqlpage.json` when using the `--conf` flag:
+For SQLPage playbooks, use the `sqlpage-conf` key in frontmatter. The configuration is written to `sqlpage.json` when using `--conf`:
 
 ```bash
 spry sp spc --conf sqlpage/sqlpage.json
 ```
 
-### Complete Example
-
-```yaml
----
-sqlpage-conf:
-  database_url: ${env.SPRY_DB}
-  web_root: ./dev-src.auto
-  port: ${env.PORT}
-  allow_exec: true
-  max_uploaded_file_size: 10485760
-  compress_responses: true
-  listen_on: 0.0.0.0:${env.PORT}
----
-```
-
-### Configuration Options Reference
+### Configuration Options
 
 | Option | Type | Description |
 |--------|------|-------------|
-| `database_url` | string | Database connection URL (SQLite or PostgreSQL) |
-| `web_root` | string | Web content directory for development mode |
-| `port` | number/string | Server port (supports `${env.PORT}`) |
-| `listen_on` | string | Listen address (use for PostgreSQL: `0.0.0.0:${env.PORT}`) |
-| `allow_exec` | boolean | Enable the exec component |
-| `max_database_pool_connections` | number | Maximum number of database connections |
+| `database_url` | string | Database connection URL |
+| `web_root` | string | Web root directory for development mode |
+| `port` | number/string | Server port (can use `${env.PORT}`) |
+| `allow_exec` | boolean | Allow exec components |
+| `max_database_pool_connections` | number | Max database connections |
+| `listen_on` | string | Listen address (PostgreSQL: `0.0.0.0:${env.PORT}`) |
+| `site_prefix` | string | URL prefix for the site |
 | `max_uploaded_file_size` | number | Maximum upload size in bytes |
 | `compress_responses` | boolean | Enable gzip compression |
 | `https_domain` | string | Domain name for HTTPS certificates |
-| `site_prefix` | string | URL prefix for the site |
 | `environment` | string | Environment identifier |
 
-### Database URL Formats
-
-<Tabs items={['SQLite', 'PostgreSQL']}>
-  <Tab value="SQLite">
-    **Relative Path:**
-    ```yaml
-    database_url: sqlite://app.db?mode=rwc
-    ```
-
-    **Absolute Path:**
-    ```yaml
-    database_url: sqlite:///absolute/path/to/app.db?mode=rwc
-    ```
-
-    **Common Query Parameters:**
-    - `mode=rwc` - Read, write, create if not exists
-    - `mode=rw` - Read and write only (no create)
-    - `mode=ro` - Read-only
-    - `cache=shared` - Enable shared cache
-  </Tab>
-
-  <Tab value="PostgreSQL">
-    **Basic Connection:**
-    ```yaml
-    database_url: postgresql://user:pass@host:5432/database
-    ```
-
-    **With Environment Variables:**
-    ```yaml
-    database_url: postgres://${env.PGUSER}:${env.PGPASSWORD}@${env.PGHOST}/${env.PGDATABASE}
-    ```
-
-    **With Connection Parameters:**
-    ```yaml
-    database_url: postgresql://user:pass@host:5432/db?sslmode=require&connect_timeout=10
-    ```
-
-    **Common Query Parameters:**
-    - `sslmode=require` - Require SSL connection
-    - `connect_timeout=10` - Connection timeout in seconds
-    - `application_name=myapp` - Application identifier
-  </Tab>
-</Tabs>
-
-### Configuration Examples by Environment
+### Example Configurations
 
 <Tabs items={['Development', 'Production (SQLite)', 'Production (PostgreSQL)']}>
   <Tab value="Development">
@@ -201,38 +137,30 @@ sqlpage-conf:
 
 ## Environment Variables
 
-Environment variables provide secure, flexible configuration across different environments.
+### Spry Environment Variables
 
-### Core Spry Variables
-
-| Variable | Purpose | Example |
-|----------|---------|---------|
-| `SPRY_DB` | Default database URL for SQLPage | `sqlite://app.db?mode=rwc` |
-| `PORT` | SQLPage server port | `9227` |
-| `DATABASE_URL` | Alternative database URL | `postgres://localhost/db` |
-| `GITHUB_TOKEN` | For remote imports | `ghp_xxxxxxxxxxxxx` |
-| `NO_COLOR` | Disable colored output when set | `1` |
+| Variable | Purpose |
+|----------|---------|
+| `SPRY_DB` | Default database URL for SQLPage |
+| `PORT` | SQLPage server port |
+| `NO_COLOR` | Disable colored output when set |
 
 ### Using Environment Variables
 
-**In Frontmatter:**
+**In frontmatter:**
 
 ```yaml
 ---
 sqlpage-conf:
   database_url: ${env.SPRY_DB}
-  port: ${env.PORT}
 ---
 ```
 
-**In Code Cells with Interpolation:**
-
-Enable interpolation with the `-I` flag:
+**In code cells with interpolation enabled:**
 
 ````markdown
-```bash deploy -I
+```bash task -I
 echo "Deploying to ${env.DEPLOY_ENV}"
-echo "Database: ${env.SPRY_DB}"
 ```
 ````
 
@@ -243,24 +171,22 @@ echo "Database: ${env.SPRY_DB}"
     **Using direnv with .envrc:**
 
     Create `.envrc` file in your project directory:
+    
     ```bash
-    # .envrc
     export SPRY_DB="sqlite://app.db?mode=rwc"
     export PORT=9227
-    export API_KEY="your-secret-key"
     ```
 
     Enable direnv for the directory:
+    
     ```bash
     direnv allow
     ```
 
-    Variables automatically load when you `cd` into the directory and unload when you leave!
-
     <Callout type="success">
     **Recommended Approach**
     
-    We highly recommend [direnv](https://direnv.net/) for automatic environment variable management. It's the cleanest way to handle per-project configuration.
+    We highly recommend [direnv](https://direnv.net/) for automatic environment variable management. Variables automatically load when you `cd` into the directory and unload when you leave.
     </Callout>
   </Tab>
 
@@ -272,40 +198,27 @@ echo "Database: ${env.SPRY_DB}"
     export PORT=9227
     ```
 
-    **Source from file:**
-    ```bash
-    source .envrc
-    ```
-
     **In CI/CD (GitHub Actions):**
+    
     ```yaml
     env:
       SPRY_DB: ${{ secrets.SPRY_DB }}
       PORT: 9227
-    ```
-
-    **In Docker:**
-    ```dockerfile
-    ENV SPRY_DB="sqlite://app.db?mode=rwc"
-    ENV PORT=9227
     ```
   </Tab>
 
   <Tab value="Spry-Generated">
     **Generate .envrc with Spry:**
 
-    Create a task in your Spryfile:
     ````markdown
-    ```bash
-    # Code block ID: prepare-env
-    # Flags: -C ./.envrc --gitignore --descr "Generate .envrc file"
+    ```bash prepare-env -C ./.envrc --gitignore --descr "Generate .envrc file"
     export SPRY_DB="sqlite://app.db?mode=rwc"
     export PORT=9227
-    export API_KEY="generated-key"
     ```
     ````
 
     Run the task:
+    
     ```bash
     spry rb task prepare-env
     ```
@@ -314,90 +227,43 @@ echo "Database: ${env.SPRY_DB}"
   </Tab>
 </Tabs>
 
-### Multi-Environment Setup
-
-Use environment-specific configuration files:
-
-<Tabs items={['Development', 'Staging', 'Production']}>
-  <Tab value="Development">
-    **`.envrc.dev`**
-    ```bash
-    export SPRY_DB="sqlite://dev.db?mode=rwc"
-    export PORT=9227
-    export DEBUG=true
-    export API_URL="http://localhost:3000"
-    ```
-
-    Load with: `source .envrc.dev`
-  </Tab>
-
-  <Tab value="Staging">
-    **`.envrc.staging`**
-    ```bash
-    export SPRY_DB="postgresql://user:pass@staging-db/app"
-    export PORT=9227
-    export DEBUG=false
-    export API_URL="https://api-staging.example.com"
-    ```
-
-    Load with: `source .envrc.staging`
-  </Tab>
-
-  <Tab value="Production">
-    **`.envrc.production`**
-    ```bash
-    export SPRY_DB="postgresql://user:pass@prod-db/app"
-    export PORT=443
-    export DEBUG=false
-    export API_URL="https://api.example.com"
-    export HTTPS_DOMAIN="app.example.com"
-    ```
-
-    Load with: `source .envrc.production`
-  </Tab>
-</Tabs>
-
 ---
 
-## Code Cell Configuration
+## Code DEFAULTS Directive
 
-Configure individual code blocks with cell-level options and defaults.
-
-### Code DEFAULTS Directive
-
-Set default flags for code cells matching specific patterns:
+Set default flags for code cells matching patterns:
 
 ````markdown
 ```code DEFAULTS
 sql * --interpolate
 bash test-* --silent
-python deploy-* --graph deploy
 ```
 ````
 
-**Syntax:**
+### Syntax
+
 ```
 LANGUAGE PATTERN FLAGS
 ```
 
 - **LANGUAGE** - Language identifier (bash, sql, python, etc.)
-- **PATTERN** - Glob pattern for matching cell identities (`*` matches all)
-- **FLAGS** - Space-separated flags to apply
+- **PATTERN** - Glob pattern for matching cell identities (`*` for all)
+- **FLAGS** - Flags to apply to matching cells
 
-**Examples:**
+### Examples
 
 ````markdown
-# All SQL cells use interpolation
+# All SQL cells are interpolated
 ```code DEFAULTS
 sql * --interpolate
 ```
 
-# Test scripts run silently
+# All bash cells with test- prefix are silent
 ```code DEFAULTS
 bash test-* --silent
 ```
 
-# Multiple defaults for different patterns
+# Multiple defaults
 ```code DEFAULTS
 sql * --interpolate --injectable
 bash deploy-* --graph deploy
@@ -405,239 +271,107 @@ python * --executable
 ```
 ````
 
-### Task Cell Options
+---
 
-Configure individual code cells with inline flags:
+## Runtime Catalogs
 
-| Option | Syntax | Description |
-|--------|--------|-------------|
-| Description | `--descr "text"` | Human-readable task description |
-| Dependencies | `--dep a,b,c` | Required tasks (comma-separated) |
-| Silent | `--silent` | Suppress output |
-| Capture | `-C <path>` | Write output to file |
-| Git Ignore | `--gitignore` | Add output file to .gitignore |
-| Graph | `--graph <name>` | Assign to named dependency graph |
-| Interpolate | `-I` or `--interpolate` | Enable variable interpolation |
+Spry's unified execution framework (`lib/spawn`) supports catalog-based runtime configuration. Catalogs define how code is executed declaratively.
 
-**Example:**
+### Catalog Format
 
-````markdown
-```bash build-app --descr "Build production bundle" --dep test,lint -C ./dist/output.log --gitignore
-npm run build
+Catalogs are defined in YAML and parsed via `catalogFromYaml()`:
+
+```yaml
+runtimes:
+  dev-db:
+    engine: sqlite3
+    connection: sqlite://app.db?mode=rwc
+
+  prod-db:
+    engine: psql
+    connection: ${env.DATABASE_URL}
+
+  shell:
+    engine: bash
 ```
-````
 
-### SQLPage Cell Metadata
+### Using Catalogs
 
-Add route configuration as JSON attributes:
+In code, catalogs are loaded and used via the `factory.ts` API:
 
-````markdown
-```sql dashboard.sql { route: { caption: "Dashboard", icon: "home" } }
-SELECT 'card' AS component, 'Welcome' AS title;
+```typescript
+import { catalogFromYaml, using } from "./lib/spawn/factory.ts";
+
+// Parse catalog from YAML
+const catalog = catalogFromYaml(yamlContent);
+
+// Get an executor for a specific runtime
+const executor = using(catalog, "dev-db");
+
+// Execute SQL
+const result = await executor.spawn({
+  code: "SELECT * FROM users;",
+});
 ```
-````
 
-**Route Attributes:**
+### Supported Engines
 
-| Attribute | Type | Description | Example |
-|-----------|------|-------------|---------|
-| `caption` | string | Navigation title | `"Dashboard"` |
-| `description` | string | Page description | `"Main dashboard view"` |
-| `icon` | string | Icon name | `"home"` |
-| `path` | string | Custom route path | `"/admin/users"` |
-| `virtual` | boolean | Hide from navigation | `true` |
+| Engine | Description |
+|--------|-------------|
+| `psql` | PostgreSQL via psql CLI |
+| `sqlite3` | SQLite via sqlite3 CLI |
+| `duckdb` | DuckDB via duckdb CLI |
+| `bash` | Bash shell |
+| `sh` | POSIX shell |
+| `pwsh` | PowerShell |
+| `cmd` | Windows Command Prompt |
+| `fish` | Fish shell |
+| `env` | Environment variable processor (in-process) |
+| `envrc` | direnv configuration processor (in-process) |
+
+### Execution Modes
+
+Engines support different execution modes for passing code:
+
+| Mode | Description |
+|------|-------------|
+| `stdin` | Pass code via stdin |
+| `file` | Write code to temp file, pass file path |
+| `eval` | Pass code as command-line argument |
+| `auto` | Engine chooses the best mode |
 
 ---
 
-## Directive Configuration
+## Contribution Specs
 
-Spry provides special directives for content management and imports.
-
-### PARTIAL Directive
-
-Create shared content that injects into multiple pages:
-
-````markdown
-```sql PARTIAL global-layout.sql --inject **/*.sql
-SELECT 'shell' AS component, 'My App' AS title;
-```
-````
-
-**Options:**
-- `--inject <glob>` - Pattern of files to inject into (supports `**` for recursive matching)
-
-**Use cases:**
-- Global navigation shells
-- Common headers and footers
-- Shared authentication checks
-- Consistent styling
-
-### IMPORT Directive
-
-Import code from external files:
-
-````markdown
-```import --base ./lib --spc
-sql database-schema.sql HEAD
-sql seed-data.sql TAIL
-```
-````
-
-**Options:**
-- `--base <path>` - Base directory for relative imports
-- `--spc` - Include in SQLPage content generation
-
-**Position Keywords:**
-- `HEAD` - Insert at beginning
-- `TAIL` - Insert at end
-
-### CONTRIBUTE Directive
-
-Include external files in the document's resource pool:
+Include external files into the document's resource pool:
 
 ````markdown
 ```contribute sqlpage_files --base ./templates
 **/*.sql
-*.css
 ```
 ````
 
-**Syntax:**
+### contribute Syntax
+
 ```
 contribute TARGET --base DIRECTORY
 GLOB_PATTERNS
 ```
 
----
-
-## Custom Metadata
-
-Define arbitrary metadata for custom processing, documentation, or workflow automation.
-
-### Project Metadata
-
-```yaml
----
-project:
-  name: My Application
-  version: 1.0.0
-  author: Your Name
-  repository: https://github.com/user/repo
-  
-deployment:
-  environment: production
-  region: us-east-1
-  cdn: cloudflare
----
-```
-
-### Runbook Configuration
-
-For DevOps automation and executable runbooks:
-
-```yaml
----
-runbook:
-  name: Server Maintenance
-  version: 1.0.0
-  author: DevOps Team
-  timeout: 3600
-  retry: 3
-  notify:
-    - ops@example.com
----
-```
-
-**Fields:**
-- `name` - Runbook identifier
-- `version` - Semantic version
-- `author` - Owner or team
-- `timeout` - Maximum execution time (seconds)
-- `retry` - Number of retry attempts
-- `notify` - Email addresses for notifications
-
-### Data Quality Configuration
-
-For data validation and quality checks:
-
-```yaml
----
-dq:
-  dataset: users
-  severity: error
-  threshold: 0.95
-  notify:
-    - data-team@example.com
-  schedule: "0 2 * * *"
----
-```
-
-**Fields:**
-- `dataset` - Dataset identifier
-- `severity` - `error`, `warning`, or `info`
-- `threshold` - Quality score threshold (0-1)
-- `notify` - Alert recipients
-- `schedule` - Cron expression for automated runs
-
-### Compliance Configuration
-
-For audit and compliance tracking:
-
-```yaml
----
-doc-classify:
-  role: evidence
-  framework: SOC2
-  control: CC6.1
-  status: pending
-  last_review: 2025-01-15
-  reviewer: security@example.com
----
-```
-
-**Fields:**
-- `role` - Document role: `evidence`, `policy`, `procedure`
-- `framework` - Compliance framework: `SOC2`, `CMMC`, `ISO27001`
-- `control` - Specific control identifier
-- `status` - Current status: `pending`, `passed`, `failed`
-- `last_review` - ISO date of last review
-- `reviewer` - Reviewer email address
-
-<Callout type="info">
-**Extensible by Design**
-
-These metadata schemas are examples. You can define any frontmatter structure that suits your workflow and access it in projections and custom code.
-</Callout>
-
-<Cards>
-  <Card title="Documentation" icon="FileText">
-    Extract project info for README generation and API documentation
-  </Card>
-  
-  <Card title="Deployment" icon="Upload">
-    Route deployments to correct environments based on metadata
-  </Card>
-  
-  <Card title="Compliance" icon="Shield">
-    Track audit requirements and test status for certifications
-  </Card>
-  
-  <Card title="Custom Workflows" icon="Workflow">
-    Build domain-specific automation based on structured metadata
-  </Card>
-</Cards>
+This allows you to include files matching glob patterns from a specified directory.
 
 ---
 
 ## Configuration Precedence
 
-When the same setting appears in multiple places, Spry uses this priority order (highest to lowest):
+When the same setting appears in multiple places:
 
-1. **Command-line arguments** - Always wins
-2. **Environment variables** - From `.envrc`, shell exports, or CI/CD
-3. **Code cell metadata** - Cell-level flags
-4. **Code DEFAULTS directive** - Pattern-based defaults
-5. **Document frontmatter** - Lowest priority
+1. **Command-line flags** (highest priority)
+2. **Environment variables**
+3. **Code cell metadata**
+4. **Code DEFAULTS directive**
+5. **Document frontmatter** (lowest priority)
 
 **Example:**
 
@@ -645,8 +379,7 @@ When the same setting appears in multiple places, Spry uses this priority order 
 # Environment variable
 export PORT=8080
 
-# Frontmatter says
-# port: 9227
+# Frontmatter says port: 9227
 
 # Command-line argument wins
 spry sp spc --port 3000  # Actually uses 3000
@@ -654,70 +387,23 @@ spry sp spc --port 3000  # Actually uses 3000
 
 ---
 
-## Validation and Debugging
+## Validation
 
-Spry validates all configuration using Zod schemas, providing clear error messages for issues.
-
-### Checking for Issues
-
-Validate your Spryfile before running:
+Validate your configuration:
 
 ```bash
-# Check current directory
-spry rb issues
-
-# Validate specific file
-spry rb issues path/to/Spryfile.md
-
-# JSON output for CI/CD
-spry rb issues --format json
-```
-
-### Understanding Validation Errors
-
-When configuration is invalid, you'll see detailed error messages:
-
-```
-Error: Invalid frontmatter in Spryfile.md
-
-Issues found:
-  - sqlpage-conf.port: Expected number, received string "abc"
-  - sqlpage-conf.database_url: Required field missing
-  - sqlpage-conf.max_uploaded_file_size: Must be positive integer
-```
-
-**JSON Format Example:**
-
-```json
-{
-  "issues": [
-    {
-      "severity": "error",
-      "location": "frontmatter.sqlpage-conf.port",
-      "message": "Expected number, received string",
-      "file": "Spryfile.md"
-    }
-  ]
-}
-```
-
-### Inspection Commands
-
-View document structure and metadata:
-
-```bash
-# Inspect document structure
+# Check document structure
 spry axiom inspect myfile.md
 
-# List all tasks
-spry rb ls myfile.md
+# View detected issues
+spry rb issues myfile.md
 
-# Show task details
-spry rb ls myfile.md --verbose
+# List tasks
+spry rb ls myfile.md
 ```
 
 <Callout type="success">
-CI/CD Integration**
+**CI/CD Integration**
 
 Add validation to your CI/CD pipeline to catch configuration errors before deployment:
 
@@ -730,113 +416,22 @@ Add validation to your CI/CD pipeline to catch configuration errors before deplo
 
 ---
 
-## Common Patterns and Best Practices
-
-### Secrets Management
-
-Never commit secrets to version control. Always use environment variables:
-
-```yaml
----
-sqlpage-conf:
-  database_url: ${env.DATABASE_URL}
-  
-api:
-  key: ${env.API_KEY}
-  secret: ${env.API_SECRET}
----
-```
-
-**Load from secrets manager:**
-
-```bash
-# From AWS Secrets Manager
-export API_KEY=$(aws secretsmanager get-secret-value \
-  --secret-id api-key \
-  --query SecretString \
-  --output text)
-
-# From 1Password CLI
-export API_KEY=$(op read "op://vault/api/key")
-
-# From environment file (not committed)
-source .env.secrets
-```
-
-### Configuration Templates
-
-Create reusable templates with sensible defaults:
-
-```yaml
----
-sqlpage-conf:
-  database_url: ${env.SPRY_DB:-sqlite://app.db?mode=rwc}
-  port: ${env.PORT:-9227}
-  web_root: ${env.WEB_ROOT:-./dev-src.auto}
-  allow_exec: ${env.ALLOW_EXEC:-true}
----
-```
-
-The `:-` syntax provides default values when variables aren't set.
-
-### Git Ignore Patterns
-
-Add generated files to `.gitignore`:
-
-```bash
-# Environment files
-.envrc
-.envrc.*
-.env.secrets
-
-# Generated configuration
-sqlpage.json
-dev-src.auto/
-
-# Build outputs
-*.log
-dist/
-```
-
-Or use Spry's automatic gitignore with `--gitignore` flag:
-
-````markdown
-```bash build -C output.log --gitignore
-npm run build
-```
-````
-
----
-
 ## Complete Example
 
-Here's a full Spryfile demonstrating all configuration features:
+Here's a comprehensive Spryfile demonstrating all configuration features:
 
 ```markdown
 ---
-# SQLPage Configuration
 sqlpage-conf:
   database_url: ${env.SPRY_DB}
   web_root: ./dev-src.auto
   port: ${env.PORT}
   allow_exec: true
-  compress_responses: true
-
-# Project Metadata
-project:
-  name: My Web App
-  version: 1.0.0
-  author: Development Team
-
-# Deployment Configuration
-deployment:
-  environment: production
-  region: us-east-1
 ---
 
 # My Application
 
-Set default flags for all SQL cells to enable interpolation:
+## Code Defaults
 
 ```code DEFAULTS
 sql * --interpolate
@@ -845,66 +440,20 @@ bash test-* --silent
 
 ## Environment Setup
 
-Generate `.envrc` file with project configuration:
-
-```bash
-# Code block ID: prepare-env
-# Flags: -C ./.envrc --gitignore --descr "Generate environment variables"
+```bash prepare-env -C ./.envrc --gitignore --descr "Generate .envrc file"
 export SPRY_DB="sqlite://app.db?mode=rwc"
 export PORT=9227
-export DEBUG=true
 ```
 
-## Database Setup
+## Development Commands
 
-Create database schema:
-
-```sql schema --descr "Initialize database schema" --injectable
-CREATE TABLE IF NOT EXISTS users (
-  id INTEGER PRIMARY KEY,
-  name TEXT NOT NULL,
-  email TEXT UNIQUE
-);
-```
-
-## Development Server
-
-Start the development server with hot reload:
-
-```bash dev --descr "Start development server" --dep schema
+```bash dev --descr "Start development server"
 spry sp spc --fs dev-src.auto --destroy-first --watch --with-sqlpage
 ```
 
-## Application Pages
-
-Home page with navigation:
+## Pages
 
 ```sql index.sql { route: { caption: "Home", icon: "home" } }
-SELECT 'card' AS component, 
-       'Welcome' AS title,
-       'My Application' AS description;
+SELECT 'card' as component, 'Welcome' as title;
 ```
 
-Dashboard page:
-
-```sql dashboard.sql { route: { caption: "Dashboard", icon: "activity" } }
-SELECT 'chart' AS component;
-```
-
-## Testing
-
-Run test suite:
-
-```bash test --descr "Run test suite" --silent
-npm test
-```
-
-## Deployment
-
-Build and deploy:
-
-```bash deploy --descr "Deploy to production" --dep test -I
-echo "Deploying to ${env.DEPLOY_ENV}"
-npm run build
-npm run deploy
-```

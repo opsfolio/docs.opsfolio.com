@@ -1,0 +1,245 @@
+---
+title: Spryfile
+description: A Markdown file that Spry treats as executable
+icon: FileText
+---
+
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+A Spryfile is a Markdown file that Spry treats as executable.
+
+## Definition
+
+A **Spryfile** is any Markdown file (`.md`) that contains:
+
+<Steps>
+<Step>
+Fenced code blocks with executable languages
+</Step>
+
+<Step>
+Optional YAML frontmatter for configuration
+</Step>
+
+<Step>
+Narrative prose explaining the workflow
+</Step>
+</Steps>
+
+<Callout type="info" title="Key Insight">
+**A Spryfile is still valid Markdown**. It renders normally in GitHub, VS Code, or any Markdown viewer. But when processed by Spry, the code blocks become runnable tasks.
+</Callout>
+
+## Anatomy of a Spryfile
+
+````markdown
+---
+# Document Frontmatter (Optional)
+project: My Workflow
+version: 1.0
+---
+
+# Document Title
+
+Introductory prose explaining what this workflow does.
+
+## Section Heading
+
+More explanatory text about this section.
+
+```bash task-name --descr "What this task does"
+# This is an executable code cell
+echo "Hello, Spry!"
+```
+
+More narrative text...
+
+## Another Section
+
+```bash another-task --dep task-name
+echo "This runs after task-name"
+```
+````
+
+## Components
+
+### 1. Frontmatter
+
+YAML block at the top, delimited by `---`:
+
+```yaml
+---
+project: Database Migration
+version: 2.1.0
+environment: ${env.DEPLOY_ENV}
+database_url: ${env.DATABASE_URL}
+---
+```
+
+Frontmatter can:
+
+- Define document metadata
+- Configure execution behavior
+- Include environment variable interpolation
+- Classify sections semantically
+
+### 2. Headings and Structure
+
+Standard Markdown headings organize your workflow:
+
+```markdown
+# Project Title (H1)
+## Phase 1: Setup (H2)
+### Subtask: Install Dependencies (H3)
+```
+
+Spry understands this hierarchy and can use it for:
+
+- Grouping related tasks
+- Creating navigation
+- Generating reports
+
+### 3. Narrative Prose
+
+Regular Markdown text explains your workflow:
+
+```markdown
+## Database Migration
+
+Before running the migration, ensure you have:
+
+- Backed up the production database
+- Notified the operations team
+- Verified the staging migration succeeded
+
+The following steps will apply changes to the production schema.
+```
+
+<Callout>
+This prose is preserved in the output and serves as documentation.
+</Callout>
+
+### 4. Code Cells
+
+Fenced code blocks with special syntax:
+
+````markdown
+```language identity --flags { attributes }
+code content here
+```
+````
+
+<Callout type="info">
+See [Code Cells](./code-cells) for detailed syntax.
+</Callout>
+
+## File Naming Conventions
+
+Common patterns for Spryfile names:
+
+| Pattern | Use Case |
+|---------|----------|
+| `Spryfile.md` | Primary project workflow |
+| `runbook.md` | DevOps runbook |
+| `playbook.md` | SQLPage playbook |
+| `deploy.md` | Deployment workflow |
+| `setup.md` | Setup/initialization |
+| `*.spry.md` | Explicit Spryfile marker |
+
+## Spryfile vs Regular Markdown
+
+| Feature | Regular Markdown | Spryfile |
+|---------|-----------------|----------|
+| Code blocks | Display only | Executable |
+| Frontmatter | Metadata only | Configuration |
+| Dependencies | None | Supported |
+| Output capture | None | Supported |
+| Task ordering | None | DAG-based |
+
+## Multiple Spryfiles
+
+You can organize complex projects across multiple files:
+
+```txt
+project/
+├── setup.md        # Environment setup
+├── build.md        # Build process
+├── test.md         # Test execution
+├── deploy.md       # Deployment
+└── Spryfile.md     # Main orchestration
+```
+
+<Callout>
+Each file is independent but can share patterns and be run in sequence.
+</Callout>
+
+## Validation
+
+Spry validates Spryfiles for:
+
+<Cards>
+<Card title="Syntax" icon="check">
+Valid Markdown structure
+</Card>
+
+<Card title="Dependencies" icon="git-branch">
+No circular dependencies
+</Card>
+
+<Card title="Identities" icon="tag">
+Unique task names
+</Card>
+
+<Card title="Languages" icon="code">
+Recognized executable languages
+</Card>
+</Cards>
+
+Run validation:
+
+```bash
+spry axiom ls myfile.md
+```
+
+## Best Practices
+
+<Tabs items={['Structure', 'Naming', 'Documentation']}>
+<Tab value="Structure">
+
+**Start with narrative** - Explain what the workflow does
+
+**Group by phase** - Use headings to organize related tasks
+
+**Document prerequisites** - Note what's needed before running
+
+</Tab>
+
+<Tab value="Naming">
+
+**Use meaningful names** - `deploy-production` not `step3`
+
+**Add descriptions** - `--descr "Deploy to production server"`
+
+**Be consistent** - Follow your team's naming conventions
+
+</Tab>
+
+<Tab value="Documentation">
+
+**Include examples** - Show expected output or usage
+
+**Explain dependencies** - Why tasks depend on each other
+
+**Add context** - Help future maintainers understand the workflow
+
+</Tab>
+</Tabs>
+
+---
+
+<Callout type="success" title="Quick Summary">
+A Spryfile is Markdown that executes. It combines documentation with automation, making your workflows both readable and runnable.
+</Callout>
