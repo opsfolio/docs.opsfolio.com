@@ -1,0 +1,221 @@
+---
+title: "Database Naming Guidelines"
+description: "Comprehensive naming conventions for SQL database objects in surveilr"
+version: "1.0"
+lastUpdated: "2025-01-29"
+owner: "surveilr Architecture Team"
+---
+
+# Database Naming Guidelines
+
+## Purpose
+
+This guide establishes clear, consistent naming conventions for all SQL database objects in surveilr. Poor naming creates cognitive overhead, makes incidents harder to debug, and degrades code maintainability. Good names are self-documenting and make the domain model immediately clear.
+
+---
+
+## Core Principles (Never Break These)
+
+<div className="core-principles">
+
+1. **Tables and views are singular nouns.** No plurals.
+2. **No prefixes or suffixes.** No `t_`, `v_`, `*_table`, or `*_view`.
+3. **Lowercase with underscores only.** No quotes, no camelCase, no mixed case.
+4. **Names describe meaning, not implementation.** Don't leak technical details.
+5. **Avoid vague, generic terms.** No `data`, `details`, `info`, or other non-specific words.
+
+</div>
+
+---
+
+## The Core Question Method
+
+Before naming any database object, answer these questions:
+
+### For a table or view
+**"What is one row?"** Name that thing.
+
+### For a column
+**"What is one value?"** Name that value.
+
+### The complexity test
+**If you can't answer in one sentence, the object is probably doing too much.** Refactor before naming.
+
+---
+
+## Tables
+
+### Guidelines
+
+- Use concrete domain nouns: `user`, `device`, `policy`, `audit_event`
+- Relationship tables use meaningful compound nouns: `user_role`, `account_membership`, `policy_control`
+- Avoid vague nouns: `data`, `info`, `record`, `item` (unless your domain genuinely uses these terms)
+- No prefixes or suffixes like `t_` or `_table`
+
+### Examples
+
+| Bad | Good | Why |
+|--------|---------|-----|
+| `users` | `user` | Singular, not plural |
+| `t_device` | `device` | No prefix |
+| `policy_data` | `policy` | No vague terms |
+| `user_info` | `user` | No generic suffixes |
+| `device_table` | `device` | No type suffixes |
+
+---
+
+## Views
+
+### Guidelines
+
+- Name the resulting concept, not the operation
+- If the view represents "latest", "current", or "active" data, include that in the noun phrase
+- No prefixes like `v_` or suffixes like `_view`
+
+### Examples
+
+| Bad | Good | Why |
+|--------|---------|-----|
+| `device_filtered` | `compliant_device` | Names the concept, not the operation |
+| `user_latest` | `active_user` | Describes the semantic meaning |
+| `evidence_rollup_view` | `latest_policy_evidence` | No `_view` suffix |
+| `v_current_policy` | `current_policy` | No `v_` prefix |
+
+---
+
+## Columns
+
+### Primary Keys
+- **Pattern:** `<tablename>_id`
+- **Example:** `user_id`, `device_id`, `policy_id`
+
+### Foreign Keys
+- **Pattern:** `<referenced_table>_id`
+- **Example:** `user_id` (references `user`), `policy_id` (references `policy`)
+
+### Timestamps
+Be explicit about semantic meaning:
+
+| Context | Column Name | Use When |
+|---------|-------------|----------|
+| Record creation | `created_at` | Timestamp of row creation |
+| Record modification | `updated_at` | Timestamp of last update |
+| Observation time | `observed_at` | When data was observed in the real world |
+| Ingestion time | `ingested_at` | When data entered the system |
+| Effective date | `effective_at` | When something becomes active |
+| Expiration date | `expires_at` | When something becomes inactive |
+
+### Booleans
+Use prefixes that read naturally in conditionals:
+- `is_active`, `is_compliant`, `is_verified`
+- `has_permission`, `has_access`, `has_expired`
+- `can_read`, `can_write`, `can_delete`
+
+### Abbreviations
+Avoid abbreviations unless they're universal in your team's domain.
+
+| Bad | Good |
+|--------|---------|
+| `usr_nm` | `user_name` |
+| `dev_sts` | `device_status` |
+| `pol_eff_dt` | `policy_effective_at` |
+
+---
+
+## Indexes
+
+### Pattern
+- **Default:** `<table>_<column>_idx`
+- **Composite:** `<table>_<col1>_<col2>_idx`
+- **Unique:** `<table>_<column>_uniq` or `<table>_<col1>_<col2>_uniq`
+
+### Examples
+
+| Bad | Good | Why |
+|--------|---------|-----|
+| `idx_1` | `user_email_idx` | Descriptive, debuggable |
+| `user_idx` | `user_created_at_idx` | Specifies the column |
+| `ix_device` | `device_serial_number_uniq` | Clear uniqueness constraint |
+
+<div className="callout callout-warning">
+**Why this matters:** During incidents, you need to know immediately what an index does. Generic names are useless.
+</div>
+
+---
+
+## Constraints
+
+### Guidelines
+- Name the rule, not the mechanism
+- Make the business logic clear from the name
+- Avoid auto-generated names in production schemas
+
+### Examples
+
+| Bad | Good |
+|--------|---------|
+| `check_1` | `user_email_must_be_unique` |
+| `fk_user_device` | `device_user_id_references_user` |
+| `constraint_abc` | `policy_effective_at_required` |
+
+---
+
+## Consistency Checks
+
+### Vocabulary Consistency
+- **Pick one term and stick with it:** `device_status` vs `device_state` — choose one
+- **No mixed vocabulary:** `customer` vs `client` vs `tenant` — choose one canonical noun
+- **Document your choices:** Maintain a glossary of domain terms
+
+### No Query Intent in Names
+Avoid encoding usage patterns in object names:
+- `reporting_user`
+- `tmp_device`
+- `test_policy`
+- `adhoc_audit`
+
+### No Leaking Technical Details
+Don't expose storage or implementation choices unless it represents a stable architectural layer:
+- `json_data`
+- `raw_events`
+- `staging_user` (unless "staging" is a genuine domain concept)
+
+---
+
+## surveilr-Specific Conventions
+
+### Core Domain Nouns
+Treat these as first-class nouns in the surveilr domain model:
+- **Resource:** `resource`, `uniform_resource`, `file_resource`, `email_message`
+- **Evidence:** `policy_evidence`, `control_evidence`, `evidence_assertion`
+- **Provenance:** `provenance_event` (distinct from `audit_event`)
+
+### Time Semantics
+Use `ingested_` or `observed_` prefixes only when time semantics are critical:
+- `ingested_at` — when data entered surveilr
+- `observed_at` — when data was observed in the source system
+
+### Audit vs Provenance
+Keep these concepts distinct:
+- **`audit_event`** — compliance and security audit trails
+- **`provenance_event`** — data lineage and transformation history
+
+---
+
+## Quick Review Script
+
+Say these sentences out loud. If they sound awkward, rename the object.
+
+### For tables and views:
+<div className="callout callout-info">
+> "One row in [object_name] is a ______."
+
+If that sentence sounds weird, rename it.
+</div>
+
+### For columns:
+<div className="callout callout-info">
+> "This column is the ______ of the ______."
+
+If you need to hand-wave or explain, rename the column.
+</div>
