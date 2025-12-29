@@ -1,42 +1,70 @@
-/*Theme CSS */
-body {
+/*Theme CSS - light */
+.light body {
     background-color: #fff !important;
     color: #000 !important;
 }
-.bg-fd-card {
-    background: linear-gradient(135deg, #edfbfe, #fdfeff) !important;
+:root {
+    --color-fd-primary:#06b1e0;
 }
 *, :after, :before, ::backdrop {
     border-color: #c5d7dc !important;
 }
-.data-\[active\=true\]\:bg-fd-primary\/10[data-active=true] {
+.light .bg-fd-card {
+    background: linear-gradient(135deg, #edfbfe, #fdfeff) !important;
+}
+.light .data-\[active\=true\]\:bg-fd-primary\/10[data-active=true] {
     background: linear-gradient(135deg, #06b1e0, #3333cc) !important;
     color: #fff !important;
 }
-/* .data-\[active\=true\]\:text-fd-primary[data-active=true] {
+/* .light .data-\[active\=true\]\:text-fd-primary[data-active=true] {
     color: #fff !important;
 } */
-.hover\:bg-fd-accent:hover {
+.light .hover\:bg-fd-accent:hover {
    background-color: #e6f7fb !important;
 }
-.data-\[active\=true\]\:before\:bg-fd-primary[data-active="true"]:before {
+.light .data-\[active\=true\]\:before\:bg-fd-primary[data-active="true"]:before {
     background-color: #fff !important;
 }
-.bg-fd-secondary {
+.light .bg-fd-secondary {
     background: #dbf3fa !important;
 }
-.text-fd-secondary-foreground {
+.light .text-fd-secondary-foreground {
     color: #06b1e0 !important;
 }
-.data-\[active\=true\]\:text-fd-primary[data-active=true] {
+.light .data-\[active\=true\]\:text-fd-primary[data-active=true] {
     color: #06b1e0;
 }
-.text-fd-primary {
+.light .text-fd-primary {
     color: #06b1e0;
 }
-.text-fd-muted-foreground {
+.light .text-fd-muted-foreground {
     color: #000;
 }
-.prose :where(code):not(:where([class~="not-prose"], [class~="not-prose"] *)){
+.light .prose :where(code):not(:where([class~="not-prose"], [class~="not-prose"] *)){
     background: #f5f9fa ;
 }
+.light .prose :where(a:not([data-card])):not(:where([class~=not-prose],[class~=not-prose] *)) {
+    text-decoration-color:#06b1e0;
+}
+.light .bg-fd-background\/80 {
+    background-color:#f0f7f8f0;
+}
+.light .prose :where(table):not(:where([class~=not-prose],[class~=not-prose] *)) {
+    background: transparent;
+}
+.light .prose :where(th):not(:where([class~=not-prose],[class~=not-prose] *)) {
+    background: #f5fdff;
+}
+.light .fd-step:before {
+    background-color: #06b1e0;
+    color: #fff;
+}
+.light .bg-fd-background {
+    background-color: #fcfeff;
+}
+.light .prose :where(h1):not(:where([class~=not-prose],[class~=not-prose] *)) {
+    font-weight: 700;
+}
+/* .light .hover\:bg-fd-accent\/50:hover {
+    color-mix(in oklab, #cdedf5 50%, transparent);
+} */

@@ -1,0 +1,10 @@
+{
+  "title": "Notebooks Schema",
+  "pages": [
+    "assurance-schema",
+    "code-notebook-cell",
+    "code-notebook-kernel",
+    "code-notebook-state",
+    "notebooks-schema"
+    ]
+}

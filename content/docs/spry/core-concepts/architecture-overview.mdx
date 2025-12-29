@@ -1,0 +1,550 @@
+---
+title: Architecture Overview
+description: Understanding how Spry processes Markdown into executable workflows
+icon: Network
+index: 11
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+## High-Level Architecture
+
+```
+
+┌─────────────────────────────────────────────────────────────┐
+│                        Spry CLI                             │
+│  ┌──────────┐     ┌──────────┐      ┌──────────┐            |
+│  │  axiom   │     │    rb    │      │    sp    │            |
+│  │ (graph)  │     │(runbook) │      │(sqlpage) │            |
+│  └────┬─────┘     └────┬─────┘      └────┬─────┘            |
+└───────┼────────────────┼─────────────────┼──────────────────┘
+        │                │                 │
+        ▼                ▼                 ▼
+┌─────────────────────────────────────────────────────────────┐
+│                     lib/axiom                               │
+│  ┌─────────┐  ┌──────────┐  ┌────────────┐  ┌──────────┐    │
+│  │   io    │→ │  remark  │→ │   edge     │→ │projection│    │
+│  │(loader) │  │(plugins) │  │  (rules)   │  │ (views)  │    │
+│  └─────────┘  └──────────┘  └────────────┘  └──────────┘    │
+│                                                ↓            │
+│  ┌─────────────┐  ┌───────────────────────────────────┐     │
+│  │ orchestrate │← │          Playbook/Task            │     │
+│  │  (runner)   │  │           Execution               │     │
+│  └─────────────┘  └───────────────────────────────────┘     │
+└─────────────────────────────────────────────────────────────┘
+        ↑                           ↑
+        │                           │
+┌───────┴───────────────────────────┴─────────────────────────┐
+│                      lib/spawn                              │
+│  ┌─────────┐  ┌───────────┐  ┌──────────┐  ┌──────────┐     │
+│  │ shell   │  │code-shell │  │ os-shell │  │sql-shell │     │
+│  │(process)│  │ (engine)  │  │  (bash)  │  │(postgres)│     │
+│  └─────────┘  └───────────┘  └──────────┘  └──────────┘     │
+│  ┌──────────────┐  ┌─────────────────────────────────┐      │
+│  │function-shell│  │          factory.ts             │      |
+│  │ (env/envrc)  │  │     (catalog & using API)       │      │
+│  └──────────────┘  └─────────────────────────────────┘      │
+└─────────────────────────────────────────────────────────────┘
+        ↑
+┌───────┴─────────────────────────────────────────────────────┐
+│                    lib/universal                            │
+│  ┌──────┐ ┌───────┐ ┌────────┐ ┌────────┐ ┌─────────┐       │
+│  │ task │ │ code  │ │render  │ │resource│ │directive│       │
+│  └──────┘ └───────┘ └────────┘ └────────┘ └─────────┘       │
+└─────────────────────────────────────────────────────────────┘
+```
+
+Spry transforms Markdown documents into executable workflows through a multi-stage pipeline. The architecture separates concerns into distinct layers: loading, parsing, graph construction, projection, and execution.
+
+---
+
+## Processing Pipeline
+
+### Stage 1: Input/Loading
+
+**Location:** `lib/axiom/io/`
+
+The loading stage accepts Markdown files from multiple sources and normalizes them into a unified resource format.
+
+```typescript
+// Load resources from files, URLs, or globs
+const resources = await markdownASTs({
+  sources: ["runbook.md", "*.md", "https://example.com/doc.md"],
+  cwd: process.cwd()
+});
+```
+
+**Key components:**
+- `resource.ts` - Abstract resource loading
+- `mod.ts` - Pipeline orchestration
+- VFile integration for metadata tracking
+
+<Callout type="info">
+**Flexible Input**
+
+Spry can load Markdown from local files, glob patterns, or remote URLs, making it easy to compose documentation from multiple sources.
+</Callout>
+
+---
+
+### Stage 2: Parsing
+
+**Location:** `lib/axiom/remark/`
+
+Markdown is parsed into MDAST (Markdown Abstract Syntax Tree) using unified and remark plugins:
+
+```typescript
+// Parser pipeline
+unified()
+  .use(remarkParse)
+  .use(remarkFrontmatter)
+  .use(remarkGfm)
+  .use(remarkDirective)
+```
+
+**The result is a tree structure:**
+
+```typescript
+interface Root {
+  type: "root";
+  children: Node[];
+  data?: {
+    documentFrontmatter?: Record<string, unknown>;
+  };
+}
+
+interface Code {
+  type: "code";
+  lang: string;
+  meta: string;
+  value: string;
+  data?: {
+    codeFM?: ParsedCodeFrontmatter;
+  };
+}
+```
+
+This AST representation allows Spry to analyze and transform the document structure programmatically.
+
+---
+
+### Stage 3: AST Enrichment
+
+**Location:** `lib/axiom/remark/`
+
+Remark plugins enhance the AST with semantic metadata and relationships:
+
+| Plugin | Purpose |
+|--------|---------|
+| `doc-frontmatter.ts` | Parse YAML frontmatter |
+| `code-directive-candidates.ts` | Identify PARTIAL directives |
+| `actionable-code-candidates.ts` | Mark executable cells |
+| `code-contribute.ts` | Handle file includes |
+| `node-decorator.ts` | Add semantic decorations |
+
+These plugins transform a raw syntax tree into a semantically rich structure that understands the document's intent.
+
+---
+
+### Stage 4: Graph Construction
+
+**Location:** `lib/axiom/edge/`
+
+Edge rules create semantic relationships between nodes, building a graph that represents the document's structure and dependencies:
+
+```typescript
+// Build graph from AST
+const graph = buildGraph(root, typicalRules());
+```
+
+**Edge Types:**
+
+| Edge Type | Description |
+|-----------|-------------|
+| `containedInSection` | Hierarchical containment relationships |
+| `codeDependsOn` | Task dependency relationships |
+| `frontmatterClassification` | Semantic classification from frontmatter |
+| `sectionSemanticId` | Section identity and grouping |
+| `nodesClassification` | Node role classification |
+
+The graph representation enables powerful queries and transformations that would be difficult with raw AST traversal.
+
+<Callout>
+**Graph-Based Architecture**
+
+By representing documents as graphs, Spry can analyze dependencies, validate relationships, and optimize execution order automatically.
+</Callout>
+
+---
+
+### Stage 5: Projection
+
+**Location:** `lib/axiom/projection/`
+
+Projections create domain-specific views of the graph for different use cases:
+
+```typescript
+// FlexibleProjection - UI-neutral view
+const flex = buildFlexibleProjection(graph);
+
+// PlaybookProjection - Execution view
+const playbook = buildPlaybookProjection(graph);
+
+// TreeProjection - Hierarchical view
+const tree = buildTreeProjection(graph);
+```
+
+**FlexibleProjection:**
+```typescript
+interface FlexibleProjection {
+  documents: ProjectedDocument[];
+  nodes: ProjectedNode[];
+  edges: ProjectedEdge[];
+  hierarchies: ProjectedHierarchy[];
+}
+```
+
+**PlaybookProjection:**
+```typescript
+interface PlaybookProjection {
+  executables: Executable[];
+  materializables: Materializable[];
+  directives: Directive[];
+  tasks: ExecutableTask[];
+}
+```
+
+Projections isolate domain concerns, making it easy to add new views without modifying core graph logic.
+
+---
+
+### Stage 6: Execution
+
+**Location:** `lib/axiom/orchestrate/`
+
+Execute tasks from the playbook in the correct order, respecting dependencies:
+
+```typescript
+// Build execution plan
+const plan = executionPlan(tasks);
+
+// Execute in topological order
+await executeDAG(plan, {
+  executor: shellExecutor,
+  onTaskStart: (task) => console.log(`Starting: ${task.taskId()}`),
+  onTaskComplete: (task, result) => console.log(`Done: ${task.taskId()}`),
+});
+```
+
+The execution engine handles:
+- Dependency resolution
+- Parallel execution of independent tasks
+- Error handling and rollback
+- Progress reporting
+
+---
+
+## Key Modules
+
+### lib/axiom/
+
+Core semantic processing layer:
+
+| Module | Description |
+|--------|-------------|
+| `graph.ts` | Graph construction and manipulation |
+| `edge/` | Edge rules for relationship extraction |
+| `projection/` | Domain-specific view builders |
+| `orchestrate/` | Execution engine and DAG runner |
+| `io/` | Resource loading and normalization |
+| `remark/` | AST plugins and transformations |
+| `mdast/` | AST utilities and hooks |
+| `text-ui/` | CLI interface components |
+
+---
+
+### lib/spawn/
+
+Unified execution framework providing language-agnostic code execution:
+
+| Module | Description |
+|--------|-------------|
+| `shell.ts` | Low-level process spawning (thin wrapper around Deno.Command) |
+| `code-shell.ts` | LanguageEngine interface and execution orchestration |
+| `function-shell.ts` | In-process function engines (env, envrc) |
+| `os-shell.ts` | OS shell engines (bash, sh, PowerShell, cmd, fish) |
+| `sql-shell/` | SQL database engines (postgres, sqlite, duckdb) |
+| `factory.ts` | Catalog parsing and `using()` API for engine resolution |
+
+**Key concepts:**
+- **Languages vs Runtimes**: Languages are semantic (SQL, shell), runtimes are concrete (psql, bash)
+- **Execution Modes**: `stdin`, `file`, `eval`, `auto` - how code is passed to the runtime
+- **Catalogs**: YAML-based declarative runtime configuration
+- **LanguageEngine**: Typed interface describing how a runtime should be invoked
+
+<Callout type="info">
+**Extensible Execution**
+
+The spawn layer abstracts execution details, making it easy to add support for new languages and runtimes without changing core logic.
+</Callout>
+
+---
+
+### lib/universal/
+
+Shared utilities used across the system:
+
+| Module | Description |
+|--------|-------------|
+| `task.ts` | DAG execution and planning |
+| `code.ts` | Language registry and specifications |
+| `directive.ts` | Directive parsing and handling |
+| `posix-pi.ts` | CLI flag parsing |
+| `render.ts` | Template interpolation |
+| `resource.ts` | Resource abstraction |
+
+---
+
+### lib/playbook/
+
+Domain-specific patterns and integrations:
+
+| Module | Description |
+|--------|-------------|
+| `sqlpage/` | SQLPage integration and configuration |
+
+---
+
+## Data Flow Example
+
+Here's how a document flows through the entire pipeline:
+
+```
+runbook.md
+    │
+    ▼ [axiom/io/resource.ts]
+VFile with content
+    │
+    ▼ [axiom/remark/parser pipeline]
+MDAST (raw)
+    │
+    ▼ [axiom/remark/plugins]
+MDAST (enriched with codeFM, decorations)
+    │
+    ▼ [axiom/edge/orchestrate.ts]
+Graph { root, edges: [...relationships] }
+    │
+    ▼ [axiom/projection/playbook.ts]
+PlaybookProjection { tasks: [...] }
+    │
+    ▼ [axiom/orchestrate/task.ts]
+ExecutionPlan { layers: [[task1], [task2, task3], [task4]] }
+    │
+    ▼ [spawn/factory.ts → spawn/code-shell.ts → spawn/shell.ts]
+LanguageEngine execution with catalog-based runtime resolution
+    │
+    ▼
+LanguageSpawnResult { stdout, stderr, exitCode, success }
+```
+
+Each stage transforms the data into a form appropriate for the next stage, maintaining clear separation of concerns.
+
+---
+
+## Extension Points
+
+Spry's architecture provides multiple extension points for customization:
+
+### 1. Custom Remark Plugins
+
+Add new AST transformations:
+
+```typescript
+const myPlugin: Plugin<[], Root> = () => {
+  return (tree) => {
+    visit(tree, "code", (node) => {
+      // Transform code nodes
+    });
+  };
+};
+```
+
+Use cases:
+- Custom code block metadata
+- Special directive handling
+- Document validation rules
+
+---
+
+### 2. Custom Edge Rules
+
+Add new relationship types:
+
+```typescript
+const myRule: EdgeRule = {
+  rel: "myRelationship",
+  apply: function* (root) {
+    // Yield edges
+    yield { from: nodeA, to: nodeB, rel: "myRelationship" };
+  },
+};
+```
+
+Use cases:
+- Custom dependency types
+- Semantic relationships
+- Cross-document references
+
+---
+
+### 3. Custom Projections
+
+Create new domain views:
+
+```typescript
+function myProjection(graph: Graph): MyProjection {
+  // Transform graph into domain-specific view
+  return { ... };
+}
+```
+
+Use cases:
+- Custom report formats
+- Specialized workflows
+- Domain-specific validations
+
+---
+
+### 4. Custom Language Engines
+
+Add new execution runtimes via `lib/spawn`:
+
+```typescript
+import { LanguageEngine, ExecutionMode } from "./lib/spawn/code-shell.ts";
+
+const myEngine: LanguageEngine<MyInit> = {
+  engineIdentity: "my-runtime",
+  supportedModes: ["stdin", "file"],
+
+  plan: (init, input, mode) => ({
+    argv: ["my-runtime", "--flag"],
+    stdin: mode === "stdin" ? input.code : undefined,
+    cleanup: async () => { /* cleanup temp files */ },
+  }),
+};
+```
+
+Engines can be registered in catalogs (YAML) for declarative configuration:
+
+```yaml
+runtimes:
+  my-db:
+    engine: my-runtime
+    connection: ${env.MY_DB_URL}
+```
+
+Use cases:
+- Custom database engines
+- Domain-specific languages
+- Integration with proprietary tools
+
+<Callout type="success">
+**Designed for Extension**
+
+Every major component in Spry is designed to be extended without modifying core code. This makes Spry adaptable to diverse workflows and use cases.
+</Callout>
+
+---
+
+## Type System
+
+Key types that define the system's structure:
+
+```typescript
+// From lib/axiom/
+type Graph<Rel, Edge> = {
+  root: Root;
+  edges: Edge[];
+};
+
+type GraphEdge<Rel> = {
+  rel: Rel;
+  from: Node;
+  to: Node;
+};
+
+// From lib/universal/
+type Task<Baggage> = {
+  taskId: () => string;
+  taskDeps?: () => string[];
+} & Baggage;
+
+type ExecutionPlan<T> = {
+  tasks: T[];
+  layers: T[][];
+  order: T[];
+};
+```
+
+The type system ensures type safety throughout the pipeline while remaining flexible enough for diverse use cases.
+
+---
+
+## Architecture Principles
+
+Spry's architecture follows these core principles:
+
+<Cards>
+  <Card title="Separation of Concerns" icon="Layers">
+    Each layer has a single, well-defined responsibility. Parsing doesn't know about execution, and execution doesn't know about graph structure.
+  </Card>
+  
+  <Card title="Progressive Enhancement" icon="TrendingUp">
+    Documents start as simple Markdown and gain semantic meaning through each processing stage without losing information.
+  </Card>
+  
+  <Card title="Graph-Based Reasoning" icon="Network">
+    Representing documents as graphs enables powerful analysis and transformation that would be impossible with linear processing.
+  </Card>
+  
+  <Card title="Extensibility" icon="Puzzle">
+    Every major component can be extended or replaced without modifying core code, enabling customization for diverse use cases.
+  </Card>
+</Cards>
+
+---
+
+## Performance Considerations
+
+Spry's architecture optimizes for:
+
+- **Lazy Evaluation**: Projections are built on-demand, not eagerly
+- **Parallel Execution**: Independent tasks execute concurrently
+- **Memory Efficiency**: Streaming processing for large documents
+- **Caching**: Parsed ASTs and graphs can be cached across invocations
+
+For large-scale deployments, consider:
+- Pre-parsing documents during CI/CD
+- Caching projection results
+- Parallelizing document processing across multiple cores
+
+---
+
+## Summary
+
+Spry's architecture transforms Markdown into executable workflows through a principled, multi-stage pipeline:
+
+1. **Load** documents from diverse sources
+2. **Parse** into abstract syntax trees
+3. **Enrich** with semantic metadata
+4. **Build** relationship graphs
+5. **Project** into domain-specific views
+6. **Execute** with dependency-aware orchestration
+
+This architecture provides:
+- **Clarity**: Each stage has a clear purpose
+- **Flexibility**: Easy to extend at every level
+- **Reliability**: Type-safe transformations throughout
+- **Performance**: Optimized for real-world usage
