@@ -227,7 +227,7 @@ Feedback is stored in `db/feedback.json`:
 [
   {
     "id": 1,
-    "url": "/docs/getting-started",
+    "url": "/spry/getting-started",
     "opinion": "good",
     "message": "Very helpful!",
     "session_id": "1701520800000-abc123",
