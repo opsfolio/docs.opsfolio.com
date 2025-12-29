@@ -227,7 +227,7 @@ Feedback is stored in `db/feedback.json`:
 [
   {
     "id": 1,
-    "url": "/docs/getting-started",
+    "url": "/docs/spry/getting-started",
     "opinion": "good",
     "message": "Very helpful!",
     "session_id": "1701520800000-abc123",
@@ -343,7 +343,7 @@ npm start
 
 ## 🤝 Contributing
 
-See [Contributing Guide](content/docs/contributing-and-support/contributing-to-spry.mdx) for:
+See [Contributing Guide](content/docs/spry/contributing-and-supportcontributing-to-spry.mdx) for:
 - Reporting issues
 - Creating pull requests
 - Documentation standards
