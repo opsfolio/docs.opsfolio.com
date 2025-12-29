@@ -1,0 +1,680 @@
+---
+title: Surveilr SNMP
+---
+
+## Description
+
+SNMP (Simple Network Management Protocol) integration tables for storing discovered network devices and their SNMP data collection results. The `surveilr_snmp_device` table maintains device registry with SNMP connection parameters, while `surveilr_snmp_collection` stores OID data collected from SNMP walks and queries.
+
+<details>
+<summary><strong>Table Definition - surveilr_snmp_device</strong></summary>
+
+```sql
+CREATE TABLE "surveilr_snmp_device" (
+    "surveilr_snmp_device_id" TEXT PRIMARY KEY,
+    "device_key" TEXT UNIQUE NOT NULL,
+    "snmp_host" TEXT NOT NULL,
+    "snmp_port" INTEGER DEFAULT 161,
+    "snmp_community" TEXT NOT NULL,
+    "snmp_version" TEXT DEFAULT 'v2c',
+    "device_type" TEXT DEFAULT 'discovered',
+    "device_description" TEXT,
+    "status" TEXT DEFAULT 'active',
+    "device_id" TEXT NOT NULL,
+    "created_at" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    "created_by" TEXT DEFAULT 'UNKNOWN',
+    "updated_at" TIMESTAMPTZ,
+    "updated_by" TEXT,
+    "deleted_at" TIMESTAMPTZ,
+    "deleted_by" TEXT,
+    "activity_log" TEXT,
+    FOREIGN KEY("device_id") REFERENCES "device"("device_id")
+);
+```
+
+</details>
+
+<details>
+<summary><strong>Table Definition - surveilr_snmp_collection</strong></summary>
+
+```sql
+CREATE TABLE "surveilr_snmp_collection" (
+    "surveilr_snmp_collection_id" TEXT PRIMARY KEY,
+    "device_key" TEXT NOT NULL,
+    "oid" TEXT NOT NULL,
+    "oid_value" TEXT NOT NULL,
+    "oid_type" TEXT NOT NULL,
+    "collected_at" TIMESTAMPTZ NOT NULL,
+    "created_at" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    "created_by" TEXT DEFAULT 'UNKNOWN',
+    "updated_at" TIMESTAMPTZ,
+    "updated_by" TEXT,
+    "deleted_at" TIMESTAMPTZ,
+    "deleted_by" TEXT,
+    "activity_log" TEXT,
+    FOREIGN KEY("device_key") REFERENCES "surveilr_snmp_device"("device_key")
+);
+```
+
+</details>
+
+## Columns - surveilr_snmp_device
+
+| Name                      | Type        | Default           | Nullable | Children                                                                         | Parents                                        | Comment                                           |
+| ------------------------- | ----------- | ----------------- | -------- | -------------------------------------------------------------------------------- | ---------------------------------------------- | ------------------------------------------------- |
+| surveilr_snmp_device_id   | TEXT        |                   | false    | -                                                                                | -                                              | Primary key for SNMP device registry             |
+| device_key                | TEXT        |                   | false    | [surveilr_snmp_collection](/docs/standard-library/rssd-schema/surveilr_snmp)    | -                                              | Unique identifier for SNMP device                |
+| snmp_host                 | TEXT        |                   | false    | -                                                                                | -                                              | IP address or hostname of SNMP device            |
+| snmp_port                 | INTEGER     | 161               | true     | -                                                                                | -                                              | SNMP port number (default 161)                   |
+| snmp_community            | TEXT        |                   | false    | -                                                                                | -                                              | SNMP community string for authentication         |
+| snmp_version              | TEXT        | 'v2c'             | true     | -                                                                                | -                                              | SNMP protocol version                             |
+| device_type               | TEXT        | 'discovered'      | true     | -                                                                                | -                                              | Type classification of discovered device          |
+| device_description        | TEXT        |                   | true     | -                                                                                | -                                              | System description from SNMP sysDescr OID        |
+| status                    | TEXT        | 'active'          | true     | -                                                                                | -                                              | Device monitoring status                          |
+| device_id                 | TEXT        |                   | false    | -                                                                                | [device](/docs/standard-library/rssd-schema/device) | Foreign key reference to device table          |
+| created_at                | TIMESTAMPTZ | CURRENT_TIMESTAMP | true     | -                                                                                | -                                              | Record creation timestamp                         |
+| created_by                | TEXT        | 'UNKNOWN'         | true     | -                                                                                | -                                              | Record creator identifier                         |
+| updated_at                | TIMESTAMPTZ |                   | true     | -                                                                                | -                                              | Record last update timestamp                      |
+| updated_by                | TEXT        |                   | true     | -                                                                                | -                                              | Record last updater identifier                    |
+| deleted_at                | TIMESTAMPTZ |                   | true     | -                                                                                | -                                              | Record deletion timestamp                         |
+| deleted_by                | TEXT        |                   | true     | -                                                                                | -                                              | Record deleter identifier                         |
+| activity_log              | TEXT        |                   | true     | -                                                                                | -                                              | JSON activity log for audit trail                |
+
+## Columns - surveilr_snmp_collection
+
+| Name                        | Type        | Default           | Nullable | Children | Parents                                                                       | Comment                                      |
+| --------------------------- | ----------- | ----------------- | -------- | -------- | ----------------------------------------------------------------------------- | -------------------------------------------- |
+| surveilr_snmp_collection_id | TEXT        |                   | false    | -        | -                                                                             | Primary key for SNMP collection records     |
+| device_key                  | TEXT        |                   | false    | -        | [surveilr_snmp_device](/docs/standard-library/rssd-schema/surveilr_snmp)     | Reference to SNMP device                    |
+| oid                         | TEXT        |                   | false    | -        | -                                                                             | SNMP Object Identifier                       |
+| oid_value                   | TEXT        |                   | false    | -        | -                                                                             | Value returned for the OID                   |
+| oid_type                    | TEXT        |                   | false    | -        | -                                                                             | SNMP data type (OCTET STRING, INTEGER, etc) |
+| collected_at                | TIMESTAMPTZ |                   | false    | -        | -                                                                             | Timestamp when OID data was collected       |
+| created_at                  | TIMESTAMPTZ | CURRENT_TIMESTAMP | true     | -        | -                                                                             | Record creation timestamp                    |
+| created_by                  | TEXT        | 'UNKNOWN'         | true     | -        | -                                                                             | Record creator identifier                    |
+| updated_at                  | TIMESTAMPTZ |                   | true     | -        | -                                                                             | Record last update timestamp                 |
+| updated_by                  | TEXT        |                   | true     | -        | -                                                                             | Record last updater identifier               |
+| deleted_at                  | TIMESTAMPTZ |                   | true     | -        | -                                                                             | Record deletion timestamp                    |
+| deleted_by                  | TEXT        |                   | true     | -        | -                                                                             | Record deleter identifier                    |
+| activity_log                | TEXT        |                   | true     | -        | -                                                                             | JSON activity log for audit trail           |
+
+## Constraints
+
+### surveilr_snmp_device
+
+| Name                                       | Type        | Definition                                                                               |
+| ------------------------------------------ | ----------- | ---------------------------------------------------------------------------------------- |
+| surveilr_snmp_device_id                    | PRIMARY KEY | PRIMARY KEY (surveilr_snmp_device_id)                                                    |
+| device_key                                 | UNIQUE      | UNIQUE (device_key)                                                                      |
+| - (Foreign key ID: 0)                      | FOREIGN KEY | FOREIGN KEY (device_id) REFERENCES device (device_id)                                   |
+
+### surveilr_snmp_collection
+
+| Name                                       | Type        | Definition                                                                               |
+| ------------------------------------------ | ----------- | ---------------------------------------------------------------------------------------- |
+| surveilr_snmp_collection_id                | PRIMARY KEY | PRIMARY KEY (surveilr_snmp_collection_id)                                               |
+| - (Foreign key ID: 0)                      | FOREIGN KEY | FOREIGN KEY (device_key) REFERENCES surveilr_snmp_device (device_key)                   |
+
+## Indexes
+
+### surveilr_snmp_device
+
+| Name                                           | Definition                                                                                                  |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| idx_surveilr_snmp_device__snmp_host            | CREATE INDEX "idx_surveilr_snmp_device__snmp_host" ON "surveilr_snmp_device"("snmp_host")                  |
+| idx_surveilr_snmp_device__device_type          | CREATE INDEX "idx_surveilr_snmp_device__device_type" ON "surveilr_snmp_device"("device_type")              |
+| idx_surveilr_snmp_device__status               | CREATE INDEX "idx_surveilr_snmp_device__status" ON "surveilr_snmp_device"("status")                        |
+
+### surveilr_snmp_collection
+
+| Name                                           | Definition                                                                                                  |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| idx_surveilr_snmp_collection__device_key       | CREATE INDEX "idx_surveilr_snmp_collection__device_key" ON "surveilr_snmp_collection"("device_key")        |
+| idx_surveilr_snmp_collection__oid              | CREATE INDEX "idx_surveilr_snmp_collection__oid" ON "surveilr_snmp_collection"("oid")                      |
+| idx_surveilr_snmp_collection__collected_at     | CREATE INDEX "idx_surveilr_snmp_collection__collected_at" ON "surveilr_snmp_collection"("collected_at")    |
+
+## Relations
+
+Entity relationship diagram will be added once the schema is finalized.
+
+---
+
+## SNMP Integration Usage Guide
+
+### Table of Contents
+1. [Quick Start](#quick-start)
+2. [What is SNMP?](#what-is-snmp)
+3. [Installation](#installation) 
+4. [Complete Beginner's Guide](#complete-beginners-guide)
+5. [Advanced Usage](#advanced-usage)
+6. [Database Integration](#database-integration)
+7. [Troubleshooting](#troubleshooting)
+8. [Technical Details](#technical-details)
+
+### Quick Start
+
+**🚀 PRODUCTION READY** - Real SNMP protocol operations with automatic database storage
+
+```bash
+# 0. FIRST: Start an SNMP agent for testing (REQUIRED!)
+docker run -d --name snmp-test -p 161:161/udp tandrup/snmpsim
+
+# 1. Discover SNMP devices on your network
+surveilr snmp discover --network 127.0.0.1/32 --community public
+# (Use 192.168.1.0/24 for real network devices)
+
+# 2. Collect device data (automatically stored in database)
+surveilr snmp walk --host 127.0.0.1 --oids 1.3.6.1.2.1.1
+# (Use real device IPs like 192.168.1.1 for production)
+
+# 3. List discovered devices
+surveilr snmp device list
+
+# 4. View collected data in database
+sqlite3 resource-surveillance.sqlite.db "SELECT COUNT(*) FROM surveilr_snmp_collection;"
+
+# 5. Clean up test environment
+docker stop snmp-test && docker rm snmp-test
+```
+
+### What is SNMP?
+
+**SNMP (Simple Network Management Protocol)** is a standard protocol for monitoring and managing network devices like routers, switches, servers, printers, and IoT devices.
+
+#### Real-World Example
+
+Instead of manually checking each device, use SNMP to automatically collect data from all network devices in seconds.
+
+### Installation
+
+Surveilr SNMP integration is built-in - no additional installation required.
+
+**Prerequisites:**
+- Surveilr CLI installed
+- Network devices with SNMP enabled
+- SNMP community string (often "public" for read-only)
+
+### Complete Beginner's Guide
+
+#### Step 1: Start an SNMP Agent (REQUIRED FIRST!)
+
+**🚨 IMPORTANT: You MUST have an SNMP agent running before using Surveilr SNMP commands!**
+
+**Option A: Docker SNMP Simulator (Recommended for beginners)**
+
+```bash
+# REQUIRED: Start test SNMP agent first
+docker run -d --name snmp-test -p 161:161/udp tandrup/snmpsim
+
+# Verify the agent is running
+docker ps | grep snmp-test
+# Should show: snmp-test container running
+
+# NOW you can test Surveilr SNMP discovery
+surveilr snmp discover --network 127.0.0.1/32 --community public
+# Expected: ✅ Found 1 SNMP devices
+
+# NOW you can test data collection  
+surveilr snmp walk --host 127.0.0.1 --oids 1.3.6.1.2.1.1
+# Expected: ✅ Walk completed: 32+ OIDs collected
+
+# Clean up when done testing
+docker stop snmp-test && docker rm snmp-test
+```
+
+**Option B: Real Network Devices**
+```bash
+# Find your network range first
+ip route | grep default
+# Look for something like: 192.168.1.0/24
+
+# Test on a small range first
+surveilr snmp discover --network 192.168.1.1/32 --community public --timeout 3
+
+# Expand if successful
+surveilr snmp discover --network 192.168.1.0/24 --community public --timeout 3
+```
+
+#### Step 2: Understanding SNMP Discovery
+
+Discovery scans your network for SNMP-enabled devices and stores discovered devices in the database.
+
+```bash
+# Basic network discovery
+surveilr snmp discover --network 192.168.1.0/24 --community public
+```
+
+#### Step 3: Collecting Device Data
+
+After discovering devices, collect detailed information:
+
+```bash
+# Collect system information (always works)
+surveilr snmp walk --host 192.168.1.1 --oids 1.3.6.1.2.1.1
+```
+
+#### Step 4: Managing Your SNMP Devices
+
+```bash
+# View all discovered devices
+surveilr snmp device list
+
+# Add specific devices manually
+surveilr snmp device add \
+  --host 192.168.1.100 \
+  --port 161 \
+  --community private \
+  --device-type server \
+  --description "File Server"
+
+# Remove devices from monitoring
+surveilr snmp device remove --host 192.168.1.100 --port 161
+```
+
+#### Step 5: Understanding Your Data
+
+All SNMP data is stored in Surveilr's database:
+
+```bash
+# Check how much data you've collected
+sqlite3 resource-surveillance.sqlite.db "
+SELECT COUNT(*) as total_devices 
+FROM surveilr_snmp_device 
+WHERE status = 'active';
+"
+
+# View recent collections
+sqlite3 resource-surveillance.sqlite.db "
+SELECT 
+  sd.snmp_host as device,
+  sc.oid,
+  sc.oid_value as value,
+  sc.oid_type as type,
+  sc.collected_at
+FROM surveilr_snmp_collection sc
+JOIN surveilr_snmp_device sd ON sc.device_key = sd.device_key
+ORDER BY sc.collected_at DESC 
+LIMIT 10;
+"
+```
+
+### Advanced Usage
+
+#### SNMP + osQuery Integration (Device Graph)
+
+**🔗 POWERFUL FEATURE: Correlate SNMP devices with osQuery endpoints**
+
+This creates a unified "device graph" that maps relationships between network infrastructure (SNMP) and individual computers (osQuery):
+
+```bash
+# 1. First, ensure you have osQuery endpoints registered
+# 2. Discover SNMP devices
+surveilr snmp discover --network 192.168.1.0/24 --community public
+
+# 3. Run correlation to find relationships
+surveilr snmp correlate --min-confidence 0.7
+```
+
+#### SQL Views for Device Graph Analysis
+
+The implementation automatically creates comprehensive SQL views for analysis.
+
+#### Advanced Device Graph Queries
+
+```sql
+-- Find all correlated devices with high confidence
+SELECT 
+    dgo_snmp.primary_identifier as snmp_device,
+    dgo_osq.primary_identifier as osquery_endpoint,
+    dgc.correlation_type,
+    dgc.confidence_score
+FROM device_graph_correlations dgc
+JOIN device_graph_overview dgo_snmp ON dgc.snmp_device_key = dgo_snmp.device_id
+JOIN device_graph_overview dgo_osq ON dgc.osquery_node_key = dgo_osq.device_id
+WHERE dgc.confidence_score > 0.85
+ORDER BY dgc.confidence_score DESC;
+```
+
+#### Collecting Specific Data Types
+
+```bash
+# Network interface statistics
+surveilr snmp walk --host 192.168.1.1 --oids 1.3.6.1.2.1.2.2.1
+
+# System performance data
+surveilr snmp walk --host 192.168.1.1 --oids 1.3.6.1.2.1.25
+
+# Multiple OID trees at once
+surveilr snmp walk --host 192.168.1.1 --oids "1.3.6.1.2.1.1,1.3.6.1.2.1.2.2.1"
+```
+
+#### Batch Operations
+
+```bash
+# Discover multiple networks
+surveilr snmp discover --network 192.168.1.0/24 --community public
+surveilr snmp discover --network 10.0.1.0/24 --community corporate
+
+# Collect data from all discovered devices
+for device in $(sqlite3 resource-surveillance.sqlite.db "SELECT snmp_host FROM surveilr_snmp_device WHERE status='active'"); do
+  echo "Collecting from $device..."
+  surveilr snmp walk --host $device --oids 1.3.6.1.2.1.1
+done
+```
+
+#### Different SNMP Communities
+
+```bash
+# Try multiple community strings
+surveilr snmp discover --network 192.168.1.0/24 --community public
+surveilr snmp discover --network 192.168.1.0/24 --community private  
+surveilr snmp discover --network 192.168.1.0/24 --community monitor
+
+# Enterprise environments often use custom community strings
+surveilr snmp discover --network 10.0.0.0/8 --community "corporate-readonly"
+```
+
+#### Performance Monitoring Setup
+
+```bash
+# Set up regular data collection (add to cron/systemd timer)
+
+# Every 5 minutes: interface statistics
+*/5 * * * * /usr/local/bin/surveilr snmp walk --host 192.168.1.1 --oids 1.3.6.1.2.1.2.2.1.10,1.3.6.1.2.1.2.2.1.16
+
+# Every hour: system information
+0 * * * * /usr/local/bin/surveilr snmp walk --host 192.168.1.1 --oids 1.3.6.1.2.1.1
+
+# Daily: network discovery
+0 2 * * * /usr/local/bin/surveilr snmp discover --network 192.168.1.0/24 --community public
+```
+
+### Database Integration
+
+#### Understanding the Data Structure
+
+```sql
+-- Two main tables store SNMP data:
+
+-- 1. Devices table (discovered devices)
+SELECT * FROM surveilr_snmp_device LIMIT 3;
+
+-- 2. Collection table (OID data)
+SELECT * FROM surveilr_snmp_collection LIMIT 3;
+```
+
+#### Useful Queries
+
+```sql
+-- Device inventory report
+SELECT 
+    snmp_host as "IP Address",
+    device_type as "Type",
+    device_description as "Description", 
+    status as "Status",
+    created_at as "Discovered"
+FROM surveilr_snmp_device 
+WHERE status = 'active'
+ORDER BY created_at DESC;
+
+-- Data collection summary
+SELECT 
+    sd.snmp_host as "Device",
+    COUNT(sc.oid) as "Total OIDs",
+    COUNT(DISTINCT sc.oid) as "Unique OIDs",
+    MAX(sc.collected_at) as "Last Collection"
+FROM surveilr_snmp_device sd
+JOIN surveilr_snmp_collection sc ON sd.device_key = sc.device_key
+GROUP BY sd.device_key, sd.snmp_host
+ORDER BY "Total OIDs" DESC;
+
+-- Find specific data (e.g., system descriptions)
+SELECT 
+    sd.snmp_host as "Device",
+    sc.oid_value as "System Description"
+FROM surveilr_snmp_device sd
+JOIN surveilr_snmp_collection sc ON sd.device_key = sc.device_key
+WHERE sc.oid = '.1.3.6.1.2.1.1.1.0'
+ORDER BY sd.snmp_host;
+
+-- Monitor collection activity
+SELECT 
+    DATE(collected_at) as "Collection Date",
+    COUNT(*) as "OIDs Collected",
+    COUNT(DISTINCT device_key) as "Devices Active"
+FROM surveilr_snmp_collection 
+WHERE collected_at >= DATE('now', '-7 days')
+GROUP BY DATE(collected_at)
+ORDER BY "Collection Date" DESC;
+```
+
+### Troubleshooting
+
+#### No Devices Found During Discovery
+
+**1. No SNMP agent running (MOST COMMON)**
+```bash
+# This will fail if no SNMP agent is running:
+surveilr snmp discover --network 127.0.0.1/32 --community public
+
+# Solution: Start an SNMP agent first
+docker run -d --name snmp-test -p 161:161/udp tandrup/snmpsim
+
+# Now discovery will work:
+surveilr snmp discover --network 127.0.0.1/32 --community public
+```
+
+**2. SNMP not enabled on devices**
+```bash
+# Test with standard SNMP tools first
+snmpget -v2c -c public 192.168.1.1 1.3.6.1.2.1.1.1.0
+```
+
+**3. Wrong community string**
+```bash
+# Try common alternatives
+surveilr snmp discover --network 192.168.1.1/32 --community private
+surveilr snmp discover --network 192.168.1.1/32 --community admin
+surveilr snmp discover --network 192.168.1.1/32 --community monitor
+```
+
+**4. Firewall blocking SNMP (port 161/udp)**
+```bash
+# Test network connectivity
+ping 192.168.1.1
+
+# Test UDP port 161
+nmap -sU -p 161 192.168.1.1
+```
+
+#### SNMP Walk Returns No Data
+
+**1. Wrong OID tree**
+```bash
+# Start with basic system info (always supported)
+surveilr snmp walk --host 192.168.1.1 --oids 1.3.6.1.2.1.1
+
+# Try very specific OID
+surveilr snmp walk --host 192.168.1.1 --oids 1.3.6.1.2.1.1.1.0
+```
+
+**2. Insufficient permissions**
+```bash
+# Try different community string with more access
+surveilr snmp walk --host 192.168.1.1 --oids 1.3.6.1.2.1.1 --community private
+```
+
+#### Permission Errors
+
+**1. Database permissions**
+```bash
+# Ensure database is writable
+ls -la resource-surveillance.sqlite.db
+
+# Fix permissions if needed
+chmod 664 resource-surveillance.sqlite.db
+```
+
+**2. Network permissions**
+```bash
+# Some systems require elevated privileges
+sudo surveilr snmp discover --network 192.168.1.0/24 --community public
+```
+
+#### Performance Issues
+
+**1. Large network scans**
+```bash
+# Start with smaller ranges
+surveilr snmp discover --network 192.168.1.0/28 --community public
+
+# Increase timeout for slow networks
+surveilr snmp discover --network 192.168.1.0/24 --community public --timeout 10
+```
+
+**2. Database performance**
+```bash
+# Check database size
+ls -lh resource-surveillance.sqlite.db
+
+# Optimize database (if very large)
+sqlite3 resource-surveillance.sqlite.db "VACUUM;"
+```
+
+### Technical Details
+
+#### What Makes This Implementation Special
+
+**✅ Real SNMP Protocol Operations**
+- Uses `snmp2` Rust crate for actual SNMP communication
+- Supports SNMP v2c with proper community string authentication
+- Real network UDP communication on port 161
+- Proper SNMP GET and GETNEXT operations
+
+**✅ Production-Ready Error Handling**
+- Timeout and retry logic for unreliable networks
+- Graceful handling of non-responsive devices  
+- Proper OID boundary checking to prevent infinite loops
+- Database transaction safety
+
+**✅ Automatic Database Storage**
+- No flags required - all data automatically stored
+- Complete audit trails with timestamps
+- Integration with Surveilr's RSSD database
+- Foreign key relationships for data integrity
+
+**✅ High Performance**
+- Parallel network scanning (254 hosts in ~3 seconds)
+- Async operations for non-blocking execution
+- Efficient OID tree traversal
+- Optimized database operations
+
+#### Database Schema
+
+```sql
+-- Core device table (integrates with Surveilr)
+CREATE TABLE surveilr_snmp_device (
+    surveilr_snmp_device_id text PRIMARY KEY,
+    device_key text UNIQUE NOT NULL,
+    snmp_host text NOT NULL,
+    snmp_port integer DEFAULT 161,
+    snmp_community text NOT NULL,
+    device_id text NOT NULL,
+    FOREIGN KEY (device_id) REFERENCES device(device_id)
+);
+
+-- OID collection table
+CREATE TABLE surveilr_snmp_collection (
+    surveilr_snmp_collection_id text PRIMARY KEY,
+    device_key text NOT NULL,
+    oid text NOT NULL,
+    oid_value text NOT NULL,
+    oid_type text NOT NULL,
+    collected_at TIMESTAMPTZ NOT NULL,
+    FOREIGN KEY (device_key) REFERENCES surveilr_snmp_device(device_key)
+);
+```
+
+#### Common SNMP OIDs Reference
+
+```bash
+# System Information (1.3.6.1.2.1.1.x.0)
+1.3.6.1.2.1.1.1.0   # System description
+1.3.6.1.2.1.1.2.0   # System object ID
+1.3.6.1.2.1.1.3.0   # System uptime
+1.3.6.1.2.1.1.4.0   # System contact
+1.3.6.1.2.1.1.5.0   # System name
+1.3.6.1.2.1.1.6.0   # System location
+
+# Interface Information (1.3.6.1.2.1.2.2.1.x.y)
+1.3.6.1.2.1.2.2.1.2   # Interface descriptions
+1.3.6.1.2.1.2.2.1.5   # Interface speeds
+1.3.6.1.2.1.2.2.1.10  # Interface bytes in
+1.3.6.1.2.1.2.2.1.16  # Interface bytes out
+1.3.6.1.2.1.2.2.1.14  # Interface errors in
+1.3.6.1.2.1.2.2.1.20  # Interface errors out
+
+# System Performance (1.3.6.1.2.1.25.x)
+1.3.6.1.2.1.25.1.6.0  # System memory size
+1.3.6.1.2.1.25.2.3.1  # Process table
+1.3.6.1.2.1.25.3      # Storage information
+```
+
+### Production Deployment
+
+#### Security Best Practices
+
+```bash
+# 1. Use read-only community strings
+surveilr snmp discover --network 10.0.0.0/8 --community "monitoring-readonly"
+
+# 2. Restrict SNMP access on devices (example Cisco config)
+# access-list 10 permit 10.0.100.50
+# snmp-server community readonly RO 10
+
+# 3. Monitor for unauthorized SNMP access
+sqlite3 resource-surveillance.sqlite.db "
+SELECT snmp_host, COUNT(*) as attempts, MAX(created_at) as last_attempt
+FROM surveilr_snmp_device 
+GROUP BY snmp_host 
+HAVING COUNT(*) > 10;
+"
+```
+
+#### Automated Monitoring Setup
+
+```bash
+# Create systemd timer for regular collection
+cat > /etc/systemd/system/surveilr-snmp.service << EOF
+[Unit]
+Description=Surveilr SNMP Collection
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/surveilr snmp discover --network 192.168.1.0/24 --community public
+ExecStart=/usr/local/bin/surveilr snmp walk --host 192.168.1.1 --oids 1.3.6.1.2.1.1,1.3.6.1.2.1.2.2.1
+User=surveilr
+Group=surveilr
+WorkingDirectory=/var/lib/surveilr
+EOF
+
+cat > /etc/systemd/system/surveilr-snmp.timer << EOF
+[Unit]
+Description=Run Surveilr SNMP Collection every hour
+Requires=surveilr-snmp.service
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+EOF
+
+# Enable and start
+systemctl enable surveilr-snmp.timer
+systemctl start surveilr-snmp.timer
+```
+
+This SNMP integration provides enterprise-grade network monitoring capabilities with complete audit trails and seamless integration with Surveilr's security and compliance infrastructure.

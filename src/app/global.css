@@ -10,9 +10,3 @@
   /* Primary color for TOC indicator - amber like Fumadocs */
   --color-fd-primary: #d97706;
 }
-
-/*Theme CSS */
-body {
-    background-color: #fff !important;
-    color: #000 !important;
-}
