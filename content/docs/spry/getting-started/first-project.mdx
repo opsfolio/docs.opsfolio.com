@@ -35,7 +35,7 @@ This project demonstrates the core concepts of Spry while building something pra
 
 Before starting, ensure you have:
 
-- **Spry** installed ([Installation Guide](/docs/getting-started/installation))
+- **Spry** installed ([Installation Guide](/docs/spry/getting-started/installation))
 - **SQLPage** installed (`brew install sqlpage` or [download here](https://github.com/lovasoa/SQLpage/releases))
 - **SQLite** (usually pre-installed on macOS/Linux)
 - Basic familiarity with SQL and bash
@@ -461,19 +461,19 @@ The `Spryfile.md` is your source of truth. The `dev-src.auto/` directory is gene
 This project showcases several core Spry concepts:
 
 <Cards>
-  <Card title="Frontmatter Configuration" href="/docs/core-concepts/fundamental-building-blocks#frontmatter">
+  <Card title="Frontmatter Configuration" href="/docs/spry/core-concepts/fundamental-building-blocks#frontmatter">
     Using `sqlpage-conf` to configure database connection and server settings
   </Card>
   
-  <Card title="Environment Variables" href="/docs/reference-guides/configuration#environment-variables">
+  <Card title="Environment Variables" href="/docs/spry/reference-guides/configuration#environment-variables">
     Interpolating values with `${env.SPRY_DB}` syntax
   </Card>
   
-  <Card title="Executable Cells" href="/docs/core-concepts/executable-markdown">
+  <Card title="Executable Cells" href="/docs/spry/core-concepts/code-cells#executable-cells">
     Running bash scripts to create and populate databases
   </Card>
   
-  <Card title="Materializable Cells">
+  <Card title="Materializable Cells" href="/docs/spry/core-concepts/code-cells#materializable-cells">
     Generating SQL files from code blocks
   </Card>
 </Cards>
@@ -482,12 +482,12 @@ This project showcases several core Spry concepts:
 
 | Concept | Example in Project | Where to Learn More |
 |---------|-------------------|---------------------|
-| **Frontmatter** | `sqlpage-conf` with database URL and port | [Configuration Reference](/docs/core-concepts/fundamental-building-blocks#frontmatter) |
-| **Environment Variables** | `${env.SPRY_DB}` interpolation | [Core Concepts](/docs/reference-guides/configuration#environment-variables) |
-| **Executable Cells** | `bash prepare-db` task | [Code Cells](/docs/core-concepts/fundamental-building-blocks#cells) |
+| **Frontmatter** | `sqlpage-conf` with database URL and port | [Configuration Reference](/docs/spry/core-concepts/fundamental-building-blocks#frontmatter) |
+| **Environment Variables** | `${env.SPRY_DB}` interpolation | [Core Concepts](/docs/spry/reference-guides/configuration#environment-variables) |
+| **Executable Cells** | `bash prepare-db` task | [Code Cells](/docs/spry/core-concepts/fundamental-building-blocks#cells) |
 | **Materializable Cells** | `sql index.sql` page definition | Cell Types |
-| **PARTIAL Directive** | `global-layout.sql` injected everywhere | [Directives](/docs/reference-guides/configuration#partial-directive) |
-| **Route Attributes** | `{ route: { caption: "Home" } }` metadata | [SQLPage Integration](/docs/core-concepts/sql-page-integration) |
+| **PARTIAL Directive** | `global-layout.sql` injected everywhere | [Directives](/docs/spry/reference-guides/configuration#partial-directive) |
+| **Route Attributes** | `{ route: { caption: "Home" } }` metadata | [SQLPage Integration](/docs/spry/core-concepts/sql-page-integration) |
 
 ## Customization Ideas
 
@@ -668,19 +668,19 @@ ORDER BY sale_date DESC;
 Congratulations! You've built a complete data application with Spry. Here are some paths to explore next:
 
 <Cards>
-  <Card title="Learn More About Spryfiles" href="/docs/core-concepts/executable-markdown">
+  <Card title="Learn More About Spryfiles" href="/docs/spry/core-concepts/executable-markdown">
     Understand the structure and capabilities of executable Markdown
   </Card>
   
-  <Card title="Explore Code Cells" href="/docs/core-concepts/fundamental-building-blocks#cells">
+  <Card title="Explore Code Cells" href="/docs/spry/core-concepts/fundamental-building-blocks#cells">
     Master different cell types and execution patterns
   </Card>
   
-  <Card title="Build Complex Workflows" href="/docs/use-cases/devops-runbook">
+  <Card title="Build Complex Workflows" href="/docs/spry/use-cases/devops-runbook">
     Create multi-step automation with task dependencies
   </Card>
   
-  <Card title="CLI Reference" href="/docs/reference-guides/cli-commands">
+  <Card title="CLI Reference" href="/docs/spry/reference-guides/cli-commands">
     Discover all available Spry commands and options
   </Card>
 </Cards>
