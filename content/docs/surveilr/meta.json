@@ -2,7 +2,9 @@
   "title": "Surveilr",
   "pages": [
     "core",
-    "standard-library"
+    "standard-library",
+    "patterns"
     ],
-    "root": true
+    "root": true,
+    "defaultOpen": false
 }

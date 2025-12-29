@@ -8,5 +8,6 @@
     "use-cases",
     "contributing-and-support"
     ],
-    "root": true
+    "root": true,
+    "defaultOpen": false
 }
