@@ -1,0 +1,313 @@
+---
+title: Pull Request Workflow
+description: How to submit changes to Spry
+icon: GitPullRequest
+---
+
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+How to submit changes to Spry.
+
+## Before You Start
+
+<Callout type="info">
+Planning ahead saves time and increases the chance of your PR being accepted.
+</Callout>
+
+1. **Check existing issues** - Your idea may already be discussed
+2. **Open an issue first** - For significant changes, discuss before coding
+3. **Understand the codebase** - Read relevant documentation
+
+## Workflow
+
+<Steps>
+<Step>
+
+### Fork and Clone
+
+```bash
+# Fork on GitHub, then clone your fork
+git clone https://github.com/YOUR_USERNAME/spry.git
+cd spry
+
+# Add upstream remote
+git remote add upstream https://github.com/programmablemd/spry.git
+```
+
+</Step>
+
+<Step>
+
+### Create a Branch
+
+```bash
+# Sync with upstream
+git fetch upstream
+git checkout main
+git merge upstream/main
+
+# Create feature branch
+git checkout -b feature/my-feature
+# Or for fixes:
+git checkout -b fix/issue-123
+```
+
+**Branch naming conventions:**
+- `feature/description` - New features
+- `fix/issue-number` - Bug fixes
+- `docs/description` - Documentation
+- `refactor/description` - Refactoring
+
+</Step>
+
+<Step>
+
+### Make Changes
+
+```bash
+# Make your changes
+# Write tests
+# Update documentation if needed
+
+# Format and lint
+deno task fmt
+deno task lint
+
+# Run tests
+deno task test
+```
+
+</Step>
+
+<Step>
+
+### Commit
+
+Follow [conventional commits](https://www.conventionalcommits.org/):
+
+```bash
+git add .
+git commit -m "feat(axiom): add support for nested dependencies"
+```
+
+**Commit message format:**
+```
+type(scope): subject
+
+body (optional)
+
+Fixes #123 (optional)
+```
+
+**Types:** `feat`, `fix`, `docs`, `refactor`, `test`, `chore`
+
+</Step>
+
+<Step>
+
+### Push
+
+```bash
+git push origin feature/my-feature
+```
+
+</Step>
+
+<Step>
+
+### Create Pull Request
+
+1. Go to your fork on GitHub
+2. Click "Compare & pull request"
+3. Fill in the template
+4. Submit for review
+
+</Step>
+</Steps>
+
+## Pull Request Template
+
+```markdown title="PR Template"
+## Description
+
+Brief description of the changes.
+
+## Type of Change
+
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Documentation
+- [ ] Refactoring
+- [ ] Other (describe)
+
+## How Has This Been Tested?
+
+Describe testing approach.
+
+## Checklist
+
+- [ ] My code follows the project's style guidelines
+- [ ] I have performed a self-review of my code
+- [ ] I have added tests that prove my fix/feature works
+- [ ] New and existing tests pass locally
+- [ ] I have updated relevant documentation
+```
+
+## Review Process
+
+### What Reviewers Look For
+
+<Tabs items={['Correctness', 'Tests', 'Style', 'Documentation', 'Simplicity']}>
+<Tab value="Correctness">
+
+Does it work as intended? Does it handle edge cases?
+
+</Tab>
+<Tab value="Tests">
+
+Are changes adequately tested? Do tests cover the expected behavior?
+
+</Tab>
+<Tab value="Style">
+
+Does the code follow the project's style guidelines and conventions?
+
+</Tab>
+<Tab value="Documentation">
+
+Is documentation updated to reflect the changes?
+
+</Tab>
+<Tab value="Simplicity">
+
+Is this the simplest solution that solves the problem?
+
+</Tab>
+</Tabs>
+
+### Responding to Feedback
+
+<Callout type="info">
+Constructive collaboration leads to better code quality.
+</Callout>
+
+- Be responsive to comments
+- Ask for clarification if needed
+- Push fixes as new commits
+- Don't rebase during review
+
+### After Approval
+
+<Steps>
+<Step>
+
+Maintainer will merge your PR
+
+</Step>
+
+<Step>
+
+Delete your branch and sync your fork:
+
+```bash
+git checkout main
+git fetch upstream
+git merge upstream/main
+git push origin main
+git branch -d feature/my-feature
+```
+
+</Step>
+</Steps>
+
+## Types of Contributions
+
+<Tabs items={['Bug Fixes', 'New Features', 'Documentation', 'Refactoring']}>
+<Tab value="Bug Fixes">
+
+1. Reference the issue: `Fixes #123`
+2. Add regression test
+3. Keep changes minimal
+4. Test the fix thoroughly
+
+</Tab>
+<Tab value="New Features">
+
+1. Discuss in an issue first
+2. Start with design/API
+3. Implement incrementally
+4. Add comprehensive tests
+5. Update documentation
+
+</Tab>
+<Tab value="Documentation">
+
+1. Check for accuracy
+2. Follow existing style
+3. Include examples
+4. Test code examples
+
+</Tab>
+<Tab value="Refactoring">
+
+1. Explain the motivation
+2. Don't change behavior
+3. Add tests if missing
+4. Keep commits focused
+
+</Tab>
+</Tabs>
+
+## Tips for Success
+
+### Do ✅
+
+- Keep PRs focused and small
+- Write clear commit messages
+- Respond to feedback promptly
+- Test thoroughly
+- Update docs
+
+### Don't ❌
+
+- Mix multiple changes in one PR
+- Force push during review
+- Ignore CI failures
+- Add unrelated changes
+
+<Callout type="warn">
+Small, focused PRs are easier to review and more likely to be merged quickly.
+</Callout>
+
+## Getting Help
+
+- Ask in the PR comments
+- Reference documentation
+- Check similar past PRs
+
+## CI Checks
+
+<Callout type="info">
+All automated checks must pass before your PR can be merged.
+</Callout>
+
+PRs run automated checks:
+
+1. **Formatting** - `deno fmt --check`
+2. **Linting** - `deno lint`
+3. **Type Check** - `deno task check`
+4. **Tests** - `deno task test`
+
+All checks must pass before merge.
+
+## After Merge
+
+<Callout>
+🎉 Your contribution is now part of Spry! Thank you.
+</Callout>
+
+You'll be:
+- Listed in contributors
+- Credited in release notes (for features/fixes)

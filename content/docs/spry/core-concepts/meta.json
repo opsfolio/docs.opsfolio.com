@@ -17,6 +17,7 @@
     "code-default",
     "capture",
     "code-cells",
-    "spryfiles"
+    "spryfiles",
+    "meta-data"
   ]
 }

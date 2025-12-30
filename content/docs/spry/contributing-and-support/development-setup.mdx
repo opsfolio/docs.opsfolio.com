@@ -1,0 +1,277 @@
+---
+title: Development Setup
+description: Set up your environment for Spry development
+icon: Wrench
+---
+
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+Set up your environment for Spry development.
+
+## Prerequisites
+
+### Required
+
+<Steps>
+<Step>
+
+**Deno 2.5+** - TypeScript runtime
+
+```bash
+curl -fsSL https://deno.land/install.sh | sh
+deno --version  # Verify: deno 2.5.x
+```
+
+</Step>
+
+<Step>
+
+**Git** - Version control
+
+```bash
+git --version  # Any recent version
+```
+
+</Step>
+</Steps>
+
+### Recommended
+
+- **VS Code** with Deno extension
+- **SQLPage** for testing playbooks
+- **Docker** for integration tests
+
+## Getting the Code
+
+```bash
+# Clone the repository
+git clone https://github.com/programmablemd/spry.git
+cd spry
+
+# Verify setup
+deno task doctor
+```
+
+## Project Structure
+
+```
+spry/
+├── bin/                    # CLI entry points
+│   └── spry.ts            # Main CLI
+├── lib/
+│   ├── axiom/             # Core engine
+│   │   ├── edge/          # Graph edge rules
+│   │   ├── io/            # Resource loading
+│   │   ├── mdast/         # AST utilities
+│   │   ├── orchestrate/   # Task execution
+│   │   ├── projection/    # View builders
+│   │   ├── remark/        # Remark plugins
+│   │   ├── text-ui/       # CLI interface
+│   │   └── fixture/       # Test fixtures
+│   ├── universal/         # Shared utilities
+│   ├── playbook/          # Domain patterns
+│   │   └── sqlpage/       # SQLPage integration
+│   └── reflect/           # Reflection utilities
+├── support/               # Examples and docs
+├── deno.jsonc            # Deno configuration
+└── import_map.json       # Import mappings
+```
+
+## Development Tasks
+
+Available Deno tasks:
+
+```bash
+# Initialize development environment
+deno task init
+
+# Run all tests
+deno task test
+
+# Format code
+deno task fmt
+
+# Lint code
+deno task lint
+
+# Type check
+deno task check
+
+# Run pre-commit checks
+deno task git-hook-pre-commit
+
+# Sync import map
+deno task sync-import-map
+```
+
+## Running the CLI
+
+```bash
+# Run directly
+deno run -A bin/spry.ts --help
+
+# Or create an alias
+alias spry-dev="deno run -A $(pwd)/bin/spry.ts"
+spry-dev rb run example.md
+```
+
+## IDE Setup
+
+<Tabs items={['VS Code', 'Vim/Neovim', 'JetBrains', 'Sublime Text']}>
+<Tab value="VS Code">
+
+Install the Deno extension and configure:
+
+```json title=".vscode/settings.json"
+{
+  "deno.enable": true,
+  "deno.lint": true,
+  "deno.unstable": true,
+  "editor.formatOnSave": true,
+  "[typescript]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  }
+}
+```
+
+</Tab>
+<Tab value="Vim/Neovim">
+
+Use `coc-deno` or `nvim-lspconfig` for Deno support.
+
+</Tab>
+<Tab value="JetBrains">
+
+Use the Deno plugin available in the marketplace.
+
+</Tab>
+<Tab value="Sublime Text">
+
+Use the LSP package for Deno integration.
+
+</Tab>
+</Tabs>
+
+## Common Development Workflows
+
+### Adding a New Feature
+
+<Steps>
+<Step>
+
+Create a feature branch:
+
+```bash
+git checkout -b feature/my-feature
+```
+
+</Step>
+
+<Step>
+
+Make changes and add tests
+
+</Step>
+
+<Step>
+
+Run checks:
+
+```bash
+deno task fmt
+deno task lint
+deno task test
+```
+
+</Step>
+
+<Step>
+
+Commit and push:
+
+```bash
+git add .
+git commit -m "feat: add my feature"
+git push origin feature/my-feature
+```
+
+</Step>
+</Steps>
+
+### Testing Changes
+
+```bash
+# Run all tests
+deno task test
+
+# Run specific test file
+deno test lib/axiom/edge/rule/contained-in-section_test.ts
+
+# Run tests matching pattern
+deno test --filter "graph"
+
+# Run with coverage
+deno task test --coverage=coverage/
+```
+
+### Debugging
+
+```bash
+# Run with debugger
+deno run --inspect-brk -A bin/spry.ts rb run example.md
+
+# Then attach VS Code debugger or Chrome DevTools
+```
+
+## Building Releases
+
+```bash
+# Compile binary
+deno compile -A bin/spry.ts -o spry
+
+# Cross-compile
+deno compile -A --target x86_64-unknown-linux-gnu bin/spry.ts -o spry-linux
+deno compile -A --target x86_64-apple-darwin bin/spry.ts -o spry-macos
+deno compile -A --target x86_64-pc-windows-msvc bin/spry.ts -o spry-windows.exe
+```
+
+## Troubleshooting
+
+### Import Errors
+
+Sync the import map:
+
+```bash
+deno task sync-import-map
+```
+
+### Cache Issues
+
+Clear the Deno cache:
+
+```bash
+deno cache --reload bin/spry.ts
+```
+
+### Permission Errors
+
+<Callout type="warn">
+Ensure you're using `-A` or specific permissions when running Deno commands.
+</Callout>
+
+```bash
+deno run -A bin/spry.ts  # All permissions
+# Or
+deno run --allow-read --allow-write --allow-run bin/spry.ts
+```
+
+### Type Errors
+
+Run type check:
+
+```bash
+deno task check
+```
+

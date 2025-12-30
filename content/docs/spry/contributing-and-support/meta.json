@@ -14,6 +14,9 @@
     "spry-start",
     "api-doc",
     "faq",
-    "playbook"
+    "playbook",
+    "development-setup",
+    "testing",
+    "pull-requests"
   ]
 }
