@@ -343,7 +343,7 @@ npm start
 
 ## 🤝 Contributing
 
-See [Contributing Guide](content/docs/contributing-and-support/contributing-to-spry.mdx) for:
+See [Contributing Guide](content/docs/spry/contributing-and-supportcontributing-to-spry.mdx) for:
 - Reporting issues
 - Creating pull requests
 - Documentation standards

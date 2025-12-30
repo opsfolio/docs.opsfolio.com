@@ -8,6 +8,7 @@
     "resource-surveillance",
     "surveilr-orchestrate",
     "surveilr-shell",
-    "uniform-resource-table"
+    "uniform-resource-table",
+    "database-naming-guidelines"
     ]
   }

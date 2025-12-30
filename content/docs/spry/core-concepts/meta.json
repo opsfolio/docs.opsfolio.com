@@ -13,8 +13,10 @@
     "common-workflows",
     "dag",
     "ast",
-    "architecture-pattern-edge-engineering",
+    "architecture-overview",
     "code-default",
-    "capture"
+    "capture",
+    "code-cells",
+    "spryfiles"
   ]
 }
