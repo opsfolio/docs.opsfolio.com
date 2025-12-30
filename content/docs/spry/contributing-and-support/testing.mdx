@@ -1,0 +1,429 @@
+---
+title: Testing Strategy
+description: How to write and run tests for Spry
+icon: TestTube
+---
+
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+How to write and run tests for Spry.
+
+## Overview
+
+Spry uses Deno's built-in test runner with:
+- Unit tests for individual functions
+- Integration tests for workflows
+- Fixture-based tests for Markdown processing
+
+## Running Tests
+
+<Tabs items={['All Tests', 'Specific File', 'Filter by Name', 'Coverage', 'Watch Mode']}>
+<Tab value="All Tests">
+
+```bash
+deno task test
+```
+
+</Tab>
+<Tab value="Specific File">
+
+```bash
+deno test lib/axiom/graph_test.ts
+```
+
+</Tab>
+<Tab value="Filter by Name">
+
+```bash
+deno test --filter "edge rule"
+```
+
+</Tab>
+<Tab value="Coverage">
+
+```bash
+deno task test --coverage=coverage/
+deno coverage coverage/
+```
+
+</Tab>
+<Tab value="Watch Mode">
+
+```bash
+deno test --watch
+```
+
+</Tab>
+</Tabs>
+
+## Test Structure
+
+### File Organization
+
+```
+lib/
+├── axiom/
+│   ├── graph.ts
+│   ├── graph_test.ts         # Unit tests
+│   ├── fixture/
+│   │   └── sample.md         # Test fixtures
+│   └── integration_test.ts   # Integration tests
+```
+
+### Basic Test
+
+```typescript title="basic_test.ts"
+import { assertEquals } from "std/assert/mod.ts";
+
+Deno.test("function name - scenario", () => {
+  const result = myFunction("input");
+  assertEquals(result, "expected");
+});
+```
+
+### BDD Style
+
+```typescript title="bdd_test.ts"
+import { describe, it } from "std/testing/bdd.ts";
+import { assertEquals, assertThrows } from "std/assert/mod.ts";
+
+describe("GraphBuilder", () => {
+  describe("build", () => {
+    it("creates edges for dependencies", () => {
+      // Arrange
+      const root = parseMarkdown(fixture);
+
+      // Act
+      const graph = build(root);
+
+      // Assert
+      assertEquals(graph.edges.length, 2);
+    });
+
+    it("throws on circular dependencies", () => {
+      const root = parseMarkdown(circularFixture);
+
+      assertThrows(
+        () => build(root),
+        Error,
+        "Circular dependency"
+      );
+    });
+  });
+});
+```
+
+## Test Categories
+
+### Unit Tests
+
+Test individual functions in isolation:
+
+```typescript title="unit_test.ts"
+import { assertEquals } from "std/assert/mod.ts";
+import { parseCodeFrontmatter } from "./code-frontmatter.ts";
+
+Deno.test("parseCodeFrontmatter - extracts identity", () => {
+  const result = parseCodeFrontmatter("bash my-task --descr 'test'");
+
+  assertEquals(result.lang, "bash");
+  assertEquals(result.identity, "my-task");
+  assertEquals(result.spawnableArgs?.descr, "test");
+});
+
+Deno.test("parseCodeFrontmatter - handles no identity", () => {
+  const result = parseCodeFrontmatter("bash --descr 'test'");
+
+  assertEquals(result.lang, "bash");
+  assertEquals(result.identity, undefined);
+});
+```
+
+### Integration Tests
+
+Test complete workflows:
+
+```typescript title="integration_test.ts"
+import { assertEquals } from "std/assert/mod.ts";
+import { markdownASTs } from "./io/mod.ts";
+import { graph, typicalRules } from "./graph.ts";
+import { buildPlaybookProjection } from "./projection/playbook.ts";
+
+Deno.test("full pipeline - runbook execution", async () => {
+  // Load fixture
+  const [doc] = await markdownASTs({
+    sources: ["./fixture/runbook-01.md"],
+    cwd: import.meta.dirname,
+  });
+
+  // Build graph
+  const g = graph(doc.root, typicalRules());
+
+  // Create projection
+  const playbook = buildPlaybookProjection(g);
+
+  // Verify
+  assertEquals(playbook.tasks.length, 3);
+  assertEquals(playbook.tasks[0].taskId(), "setup");
+  assertEquals(playbook.tasks[1].taskDeps(), ["setup"]);
+});
+```
+
+### Fixture-Based Tests
+
+Use Markdown fixtures for realistic testing:
+
+```typescript title="fixture_test.ts"
+import { assertEquals } from "std/assert/mod.ts";
+
+const fixture = `
+# Test Runbook
+
+## Setup
+
+\`\`\`bash setup --descr "Initial setup"
+echo "Setting up"
+\`\`\`
+
+## Build
+
+\`\`\`bash build --dep setup
+npm run build
+\`\`\`
+`;
+
+Deno.test("fixture - parses task dependencies", async () => {
+  const root = await parseMarkdownString(fixture);
+  const g = graph(root, typicalRules());
+
+  const depEdges = g.edges.filter(e => e.rel === "codeDependsOn");
+  assertEquals(depEdges.length, 1);
+});
+```
+
+## Testing Patterns
+
+### Arrange-Act-Assert
+
+<Callout type="info">
+The AAA pattern helps structure tests clearly: set up data (Arrange), execute the function (Act), and verify results (Assert).
+</Callout>
+
+```typescript
+Deno.test("pattern - AAA", () => {
+  // Arrange
+  const input = createTestInput();
+  const config = { timeout: 30 };
+
+  // Act
+  const result = processInput(input, config);
+
+  // Assert
+  assertEquals(result.status, "success");
+  assertEquals(result.duration, 25);
+});
+```
+
+### Testing Async Code
+
+```typescript title="async_test.ts"
+Deno.test("async - file loading", async () => {
+  const content = await loadFile("./fixture/test.md");
+  assertEquals(content.length > 0, true);
+});
+
+Deno.test("async - with timeout", async () => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 5000);
+
+  try {
+    await longOperation({ signal: controller.signal });
+  } finally {
+    clearTimeout(timeout);
+  }
+});
+```
+
+### Testing Errors
+
+```typescript title="error_test.ts"
+import { assertThrows, assertRejects } from "std/assert/mod.ts";
+
+Deno.test("errors - sync", () => {
+  assertThrows(
+    () => validateInput(""),
+    Error,
+    "Input cannot be empty"
+  );
+});
+
+Deno.test("errors - async", async () => {
+  await assertRejects(
+    async () => await loadFile("nonexistent.md"),
+    Error,
+    "File not found"
+  );
+});
+```
+
+### Testing Generators
+
+```typescript title="generator_test.ts"
+Deno.test("generators - yields expected values", () => {
+  const gen = findMatches(testData);
+  const results = [...gen];
+
+  assertEquals(results.length, 3);
+  assertEquals(results[0].id, "first");
+});
+```
+
+### Mocking
+
+<Callout type="warn">
+Always restore original state after mocking to prevent test pollution.
+</Callout>
+
+```typescript title="mock_test.ts"
+Deno.test("mocking - environment", () => {
+  // Save original
+  const original = Deno.env.get("MY_VAR");
+
+  try {
+    // Set test value
+    Deno.env.set("MY_VAR", "test-value");
+
+    // Test
+    const result = getConfig();
+    assertEquals(result.myVar, "test-value");
+  } finally {
+    // Restore
+    if (original) {
+      Deno.env.set("MY_VAR", original);
+    } else {
+      Deno.env.delete("MY_VAR");
+    }
+  }
+});
+```
+
+## Test Fixtures
+
+### Location
+
+Store fixtures in `fixture/` directories near the tests:
+
+```
+lib/axiom/
+├── fixture/
+│   ├── basic-runbook.md
+│   ├── complex-deps.md
+│   └── sqlpage-example.md
+└── integration_test.ts
+```
+
+### Creating Fixtures
+
+```markdown title="fixture/basic-runbook.md"
+---
+project: Test
+---
+
+# Test Runbook
+
+## Task 1
+
+```bash task-1 --descr "First task"
+echo "Task 1"
+```
+
+## Task 2
+
+```bash task-2 --dep task-1
+echo "Task 2"
+```
+```
+
+### Loading Fixtures
+
+```typescript title="fixture_loader.ts"
+import { join } from "std/path/mod.ts";
+
+async function loadFixture(name: string): Promise<string> {
+  const path = join(import.meta.dirname, "fixture", name);
+  return await Deno.readTextFile(path);
+}
+
+Deno.test("loads fixture", async () => {
+  const content = await loadFixture("basic-runbook.md");
+  // Use content...
+});
+```
+
+## Coverage
+
+<Steps>
+<Step>
+
+### Generate Coverage
+
+```bash
+deno task test --coverage=coverage/
+```
+
+</Step>
+
+<Step>
+
+### View Report
+
+```bash
+deno coverage coverage/
+```
+
+</Step>
+
+<Step>
+
+### HTML Report
+
+```bash
+deno coverage coverage/ --lcov > coverage.lcov
+genhtml coverage.lcov -o coverage-html
+```
+
+</Step>
+</Steps>
+
+## Best Practices
+
+<Callout type="info">
+Follow these principles for maintainable, reliable tests:
+</Callout>
+
+1. **Test behavior, not implementation** - Focus on what, not how
+2. **One assertion per test** - Makes failures clear
+3. **Descriptive names** - Describe the scenario
+4. **Fast tests** - Keep unit tests under 100ms
+5. **Isolated tests** - No shared state between tests
+6. **Test edge cases** - Empty inputs, nulls, boundaries
+7. **Use fixtures** - Real Markdown is better than mocks
+
+## Common Assertions
+
+```typescript
+import {
+  assertEquals,
+  assertNotEquals,
+  assertStrictEquals,
+  assertThrows,
+  assertRejects,
+  assertExists,
+  assertStringIncludes,
+  assertArrayIncludes,
+  assertMatch,
+} from "std/assert/mod.ts";
+```
+
