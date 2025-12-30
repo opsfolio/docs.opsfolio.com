@@ -3,7 +3,8 @@
   "pages": [
     "core",
     "standard-library",
-    "patterns"
+    "patterns",
+    "evidence"
     ],
     "root": true,
     "defaultOpen": false
