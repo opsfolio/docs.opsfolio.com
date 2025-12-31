@@ -68,3 +68,6 @@
 /* .light .hover\:bg-fd-accent\/50:hover {
     color-mix(in oklab, #cdedf5 50%, transparent);
 } */
+ .data-\[state\=active\]\:text-fd-primary[data-state=active] {
+    color: #06b1e0 !important;
+}
