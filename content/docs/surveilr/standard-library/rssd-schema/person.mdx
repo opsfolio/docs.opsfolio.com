@@ -44,16 +44,16 @@ CREATE TABLE "person" (
 | Name               | Type        | Default           | Nullable | Parents                       | Comment                                                 |
 | ------------------ | ----------- | ----------------- | -------- | ----------------------------- | ------------------------------------------------------- |
 | person_id          | ULID        |                   | false    |                               | `{"isSqlDomainZodDescrMeta":true,"isUlid":true}`          |
-| party_id           | VARCHAR     |                   | false    | [party](/docs/standard-library/rssd-schema/party)             | `{"isSqlDomainZodDescrMeta":true,"isVarChar":true}`       |
-| person_type_id     | ULID        |                   | false    | [person_type](/docs/standard-library/rssd-schema/person_type) | `{"isSqlDomainZodDescrMeta":true,"isUlid":true}`          |
+| party_id           | VARCHAR     |                   | false    | [party](/surveilr/standard-library/rssd-schema/party)             | `{"isSqlDomainZodDescrMeta":true,"isVarChar":true}`       |
+| person_type_id     | ULID        |                   | false    | [person_type](/surveilr/standard-library/rssd-schema/person_type) | `{"isSqlDomainZodDescrMeta":true,"isUlid":true}`          |
 | person_first_name  | TEXT        |                   | false    |                               |                                                         |
 | person_middle_name | TEXT        |                   | true     |                               |                                                         |
 | person_last_name   | TEXT        |                   | false    |                               |                                                         |
 | previous_name      | TEXT        |                   | true     |                               |                                                         |
 | honorific_prefix   | TEXT        |                   | true     |                               |                                                         |
 | honorific_suffix   | TEXT        |                   | true     |                               |                                                         |
-| gender_id          | ULID        |                   | false    | [gender_type](/docs/standard-library/rssd-schema/gender_type) | `{"isSqlDomainZodDescrMeta":true,"isUlid":true}`          |
-| sex_id             | ULID        |                   | false    | [sex_type](/docs/standard-library/rssd-schema/sex_type)       | `{"isSqlDomainZodDescrMeta":true,"isUlid":true}`          |
+| gender_id          | ULID        |                   | false    | [gender_type](/surveilr/standard-library/rssd-schema/gender_type) | `{"isSqlDomainZodDescrMeta":true,"isUlid":true}`          |
+| sex_id             | ULID        |                   | false    | [sex_type](/surveilr/standard-library/rssd-schema/sex_type)       | `{"isSqlDomainZodDescrMeta":true,"isUlid":true}`          |
 | elaboration        | TEXT        |                   | true     |                               | `{"isSqlDomainZodDescrMeta":true,"isJsonText":true}`      |
 | created_at         | TIMESTAMPTZ | CURRENT_TIMESTAMP | true     |                               |                                                         |
 | created_by         | TEXT        | 'UNKNOWN'         | true     |                               |                                                         |
