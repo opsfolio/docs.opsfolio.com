@@ -102,7 +102,7 @@ import { Steps, Step } from 'fumadocs-ui/components/steps';
 
     ```bash
     # Package the UI and inject it into the production database
-    spry sp spc --package --conf sqlpage/sqlpage.json | surveilr shell sales.sqlite.db
+    spry sp spc --package --conf sqlpage/sqlpage.json | sqlite3 sales.sqlite.db
     ```
 
   </Step>

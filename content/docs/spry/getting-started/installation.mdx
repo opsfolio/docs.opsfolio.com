@@ -13,94 +13,121 @@ import { Steps, Step } from 'fumadocs-ui/components/steps';
 
 Spry can be installed via multiple methods depending on your platform and preferences. Choose the method that works best for your workflow.
 
-<Tabs items={['Homebrew', 'Binary Download']}>
+<Tabs items={['Homebrew', 'Ubuntu', 'Debian', 'macOS', 'Windows']}>
   <Tab value="Homebrew">
     ### Homebrew (Recommended for macOS & Linux)
     
     The easiest way to install Spry on macOS or Linux is via Homebrew:
-
     ```bash
-    # Install via Homebrew
-    brew install programmablemd/packages/spry
+        # Install via Homebrew
+        brew install programmablemd/packages/spry
     ```
-
     Or add the tap first, then install:
-
     ```bash
-    brew tap programmablemd/homebrew-packages
-    brew install spry
+        brew tap programmablemd/homebrew-packages
+        brew install spry
     ```
-
     <Callout type="info">
     Homebrew automatically manages updates and dependencies, making it the recommended installation method for most users.
     </Callout>
-
     #### Install Specific Version
-
     To install a specific version of Spry:
-
     **Option 1: Using version suffix**
-
     ```bash
-    brew install programmablemd/packages/spry@0.102.1
+        brew install programmablemd/packages/spry@1.0.2
     ```
-
     **Option 2: Switch between installed versions**
-
     If you have multiple versions installed:
-
     ```bash
-    brew unlink spry@0.102.1 && brew link spry@0.101.3
+        brew unlink spry@1.0.2 && brew link spry@1.0.3
     ```
   </Tab>
+  <Tab value="Ubuntu">
+  #### Latest Binary Download
 
-  <Tab value="Binary Download">
-    ### Direct Binary Download
+  Download the latest version using these stable links for Ubuntu 22.04 (Jammy) :
+
+  ```bash
+  wget https://github.com/programmablemd/packages/releases/download/latest/spry-ubuntu22.04u1_amd64.deb
+  sudo dpkg -i spry-ubuntu22.04u1_amd64.deb
+  ```
+  #### Versioned Packages (v1.0.3) for Ubuntu 22.04 (Jammy)
+
+  ```bash
+  wget https://github.com/programmablemd/packages/releases/download/v1.0.3/spry_1.0.3-ubuntu22.04u1_amd64.deb
+  sudo dpkg -i spry_1.0.3-ubuntu22.04u1_amd64.deb
+  ```
+  </Tab>
+  <Tab value="Debian">
+  #### Install Latest Binary Download  for Debian 12 (Bookworm)
+  ```bash
+  wget https://github.com/programmablemd/packages/releases/download/latest/spry-debian12u1_amd64.deb
+  sudo dpkg -i spry-debian12u1_amd64.deb
+  ```
+  #### Versioned Packages (v1.0.3) for Debian 12 (Bookworm)
+  ```bash
+  wget https://github.com/programmablemd/packages/releases/download/v1.0.3/spry_1.0.3-debian12u1_amd64.deb
+  sudo dpkg -i spry_1.0.3-debian12u1_amd64.deb
+  ```
+
+
+  </Tab>
+  
+  <Tab value="macOS">
+    ### macOS Binary Download
     
-    Download pre-built binaries from the [GitHub Releases page](https://github.com/programmablemd/packages/releases):
+    Download pre-built binaries from the [GitHub Releases page](https://github.com/programmablemd/packages/releases).
+    
+    #### Installation Steps:
+    ```bash
+    wget https://github.com/programmablemd/packages/releases/download/latest/spry-macos.tar.gz
+    tar -xzf spry-macos.tar.gz
+    sudo cp spry-macos /usr/local/bin/spry
+    chmod +x /usr/local/bin/spry
+    ```
+    
+    #### Versioned Packages (v1.0.3) for macOS
+    ```bash
+        # Download and extract the archive
+        wget https://github.com/programmablemd/packages/releases/download/v0.80.0/spry-sqlpage-macos.tar.gz
+        tar -xzf spry-sqlpage-macos.tar.gz
+        
+        # Move to your PATH
+        sudo mv spry-sqlpage-macos /usr/local/bin/spry-sqlpage
+    ```
+    
+    <Callout type="info">
+    Binaries support both Intel and Apple Silicon Macs.
+    </Callout>
+    
+    <Callout type="warning">
+    Manual binary installations won't receive automatic updates. You'll need to download new versions manually.
+    </Callout>
+  </Tab>
+  
+  <Tab value="Windows">
 
-    | Platform | Format |
-    |----------|--------|
-    | macOS (Intel & Apple Silicon) | `.tar.gz` |
-    | Ubuntu 22.04 / Debian 12 | `.deb` |
-    | Windows x64 | `.zip` |
+    ### Download Latest Stable Version for Windows
+     Download the [spry-windows.zip](https://github.com/programmablemd/packages/releases/download/latest/spry-windows.zip).
 
-    #### For Debian-based systems:
+    ### Download Versioned Packages (v1.0.3)- Installation Steps :
+     Download the `.zip` file for your desired version from the [GitHub Releases page](https://github.com/programmablemd/packages/releases/)
+
+    ### Installation Steps :
+    1. Extract the `.zip` file to a location of your choice
+    2. Add the extracted directory to your system PATH:
+       - Open System Properties → Advanced → Environment Variables
+       - Edit the `Path` variable and add the directory containing `spry.exe`
+    3. Restart your terminal or command prompt
+  
+    
+    #### Verify Installation:
 
     ```bash
-    # Download and install the .deb package
-    sudo dpkg -i spry_<version>_amd64.deb
-
-    # Ubuntu 22.04 (Jammy)
-    wget https://github.com/programmablemd/packages/releases/download/v0.80.0/spry-sqlpage_0.80.0-ubuntu22.04u1_amd64.deb
-    sudo dpkg -i spry-sqlpage_0.80.0-ubuntu22.04u1_amd64.deb
-
-    # Debian 12 (Bookworm)
-    wget https://github.com/programmablemd/packages/releases/download/v0.80.0/spry-sqlpage_0.80.0-debian12u1_amd64.deb
-    sudo dpkg -i spry-sqlpage_0.80.0-debian12u1_amd64.deb
+        spry --version
+        spry --help
     ```
-
-    #### For macOS (manual installation):
-
-    ```bash
-    # Extract the archive
-    tar -xzf spry_<version>_darwin_amd64.tar.gz
     
-    # Move to your PATH
-    sudo mv spry /usr/local/bin/
-
-    # Example
-    wget https://github.com/programmablemd/packages/releases/download/v0.80.0/spry-sqlpage-macos.tar.gz
-    tar -xzf spry-sqlpage-macos.tar.gz
-    sudo mv spry-sqlpage-macos /usr/local/bin/spry-sqlpage
-    ```
-
-    #### For Windows:
-
-    1. Extract the `.zip` file
-    2. Add the extracted directory to your system PATH
-    3. Restart your terminal
-
     <Callout type="warning">
     Manual binary installations won't receive automatic updates. You'll need to download new versions manually.
     </Callout>
@@ -121,7 +148,9 @@ Spry can be installed via multiple methods depending on your platform and prefer
 
     You should see output like:
     ```
-    Spry v0.101.x
+    Spry vx.x.x
+    #Example:
+    Spry v1.0.3
     ```
   </Step>
 
