@@ -1,202 +1,224 @@
 ---
 title: Quick Start Guide
-description: This document provides step-by-step instructions to install and set up Qualityfolio, a Test Management as Code (TMaC) platform integrated with Surveilr.
+description: This document outlines the step-by-step setup of Qualityfolio, a Test-Management-as-Code (TMaC) system powered by Spry’s Axiom-based execution pattern and Surveilr’s ingestion, transformation, and ETL pipeline.
 ---
 
-This guide provides a complete, step-by-step walkthrough to help you install, configure, and successfully run your first Qualityfolio project. It covers prerequisites, environment setup, project structure, test authoring, execution, and how to interpret results. with Qualityfolio
+This guide helps you quickly set up **Qualityfolio**, generate a queryable SQLite database from test artifacts, and launch a Test Management Dashboard using **Spry**, **Surveilr**, and **SQLPage**.
 
-Welcome to Qualityfolio. This guide helps you quickly set up your environment and run your first Markdown‑driven tests using Spry and the Runbook engine.
+Welcome to Qualityfolio - a Markdown-native Test Management system backed by Spry’s ontology engine and Surveilr’s data ingestion pipeline. Qualityfolio follows a **Test Management as Code (TMaC)** approach, where test artifacts, execution evidence, and dashboards are all derived from structured files under version control.
+
+---
+
+## Objectives
+
+Qualityfolio is designed to:
+
+1. **Generate an SQLite database** from test artifact and execution evidence files.
+2. **Generate a Test Management Dashboard** for test metrics, traceability, and execution insights.
+3. **HTML UI Generation (Live Preview)** with real-time ontology parsing, live reload, and structural validation.
+
+---
+
+## Prerequisites
+
+Ensure the following tools and files are available on your system before proceeding:
+
+1. **Deno** – runtime required by Spry
+2. **Homebrew (brew)** – package manager for installing dependencies
+3. **Surveilr** – ingestion and transformation engine
+4. **Spry** – runbook and SQLPage orchestration engine
+5. **SQLPage** – UI layer for the Test Management Dashboard
+6. **qualityfolio-json-etl.sql** – SQL-based ETL script for Qualityfolio data
+7. **qualityfolio.md** – Markdown file containing database configuration and SQLPage queries
+8. **sqlpage.json** – SQLPage runtime configuration file (under `./sqlpage/`)
 
 ---
 
 ## Installation
 
-To work with Spry and the runbook-based Qualityfolio framework, you need to install **Deno** and set up **Spry** in your system.
+To work with Spry and the Surveilr-based Qualityfolio framework, you need to install **Deno**, **Homebrew**, **Spry**, **Surveilr**, and **SQLPage**, and ensure the required Qualityfolio files are available in your workspace.
 
-### Installation in a Linux Environment
+---
 
-1. Open your terminal and switch to your workspace directory:
+### Installation Steps
 
-   ```bash
-   cd $HOME/workspaces
-   ```
+Open your terminal and switch to your workspace directory:
 
-2. Install Deno using the following command:
+```bash
+cd $HOME/workspaces
+```
 
-   ```bash
-   curl -fsSL https://deno.com/install.sh | sh
-   ```
+---
 
-3. Verify your Deno installation:
+#### 1. Install Homebrew (if not already installed)
 
-   ```bash
-   deno --version
-   ```
+Homebrew is required to install Spry.
 
-4. Upgrade Deno to the latest version:
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
 
-   ```bash
-   deno upgrade
-   ```
+Verify Homebrew installation:
 
-5. Clone the Spry repository:
+```bash
+brew --version
+```
 
-   ```bash
-   git clone https://github.com/programmablemd/spry.git github.com/programmablemd/spry
-   ```
+---
 
-6. Verify the Spry installation by running:
+#### 2. Install Deno
 
-   ```bash
-   ../../../lib/runbook/cli.ts run Spryfile.md
-   ```
+Install Deno using the following command:
 
-7. Run Qualityfolio tests using:
+```bash
+curl -fsSL https://deno.com/install.sh | sh
+```
 
-   ```bash
-   ../../../lib/runbook/cli.ts mdast tree qf-complex.md
-   ```
+Verify your Deno installation:
+
+```bash
+deno --version
+```
+
+Upgrade Deno to the latest version:
+
+```bash
+deno upgrade
+```
+
+---
+
+#### 3. Install Spry
+
+**If you are a first-time Spry user:**
+
+```bash
+brew install programmablemd/packages/spry
+```
+
+**If Spry is already installed:**
+
+```bash
+brew uninstall spry
+brew untap programmablemd/packages
+brew install programmablemd/packages/spry
+```
+
+Verify your Spry installation:
+
+```bash
+spry --version
+```
+
+For more details on Spry installation and usage, refer to the [official Spry documentation](https://github.com/programmablemd/packages).
+
+---
+
+#### 4. Install Surveilr
+
+Check if Surveilr already exists on your system:
+
+```bash
+which surveilr
+```
+
+If an existing version is found, remove it:
+
+```bash
+sudo rm -rf <surveilr_path_with_file_name>
+```
+
+Download Surveilr version 3.10.0 or above (the following example uses version **3.10.0**):
+
+```bash
+wget https://github.com/surveilr/packages/releases/download/3.10.0/surveilr_3.10.0_x86_64-unknown-linux-gnu.tar.gz
+```
+
+Extract the archive:
+
+```bash
+tar -xzf surveilr_3.10.0_x86_64-unknown-linux-gnu.tar.gz
+```
+
+Move Surveilr to `/usr/local/bin/`:
+
+```bash
+sudo mv surveilr /usr/local/bin/
+```
+
+Verify Surveilr installation and ensure the version is **v3.10.0** or above:
+
+```bash
+surveilr --version
+sudo surveilr upgrade -v 3.10.0
+```
+
+For more details on Surveilr installation and usage, refer to the [official Surveilr documentation](https://www.surveilr.com/docs/core/installation/).
+
+---
+
+#### 5. Install SQLPage
+
+Install SQLPage using Homebrew:
+
+```bash
+brew install sqlpage
+```
+
+Verify SQLPage installation:
+
+```bash
+sqlpage --version
+```
 
 ---
 
 ## Folder Structure
 
-A typical Qualityfolio project structure looks like this:
+Qualityfolio expects the following directory structure:
 
-```bash
-support/
-  assurance/
-    qualityfolio/
-      evidence/
-      qf-small.md
-      qf-medium.md
-      qf-large.md
-      qf-complex.md
-      spry.ts
-      Spryfile.md
-lib/
-  runbook/
-    cli.ts
+```text
+ASSURANCE-PRIME/
+├── support/
+│   └── assurance/
+│       └── qualityfolio/
+│           ├── evidence/
+│           │   ├── TC-GLUE-001/
+│           │   │   └── 1.1/
+│           │   │       ├── result.auto.json
+│           │   │       └── run.auto.md
+│           │   └── TC-GLUE-002/
+│           │       └── 1.1/
+│           │           ├── loginButtonClick.png
+│           │           ├── result.auto.json
+│           │           └── run.auto.md
+│           ├── sqlpage/
+│           │   └── sqlpage.json                  # runtime configuration file for SQLPage
+│           ├── test-artifacts/
+│           │   └── example-artifact.md
+│           ├── qualityfolio-json-etl.sql         # SQL ETL script for Qualityfolio data
+│           ├── qualityfolio.md                   # SQLPage Markdown page (DB config + queries)
+│           └── resource-surveillance.sqlite.db   # Database generated
 ```
+
+### Key Directories and Files
+
+- **test-artifacts/** – Authoring location for test cases, plans, suites, and metadata
+- **evidence/** – Auto-generated test execution evidence (results, runs, attachments)
+- **qualityfolio.md** – Core logic file that defines database creation and SQLPage queries
+- **qualityfolio-json-etl.sql** – ETL script that transforms ingested JSON into relational tables
+- **sqlpage/sqlpage.json** – SQLPage runtime configuration
+- **resource-surveillance.sqlite.db** – Generated SQLite database containing test data
 
 ---
 
-## Running Your First Test
+## Authoring Tests in Markdown
 
-From the integrated terminal inside the `qualityfolio` folder, run your first test using the following command:
+Qualityfolio tests follow a structured Markdown hierarchy to ensure full traceability and machine-readable execution. Qualityfolio projects can range from simple to highly complex structures. You can explore ready-made examples based on real-world implementations.
 
-```bash
-../../../lib/runbook/cli.ts mdast tree qf-complex.md
-```
+An example test artifact file (example-artifact.md) for the project, OWASP - GLUE UP (with Qualityfolio's Small pattern) is available [here](https://github.com/programmablemd/assurance-prime/tree/main/support/assurance/qualityfolio/test-artifacts/example-artifact.md).
 
-Once executed, the framework will parse the Markdown structure, execute the test steps, and generate evidence automatically.
-
----
-
-## Writing Tests in Markdown
-
-Qualityfolio tests follow a structured Markdown hierarchy to ensure full traceability and machine-readable execution.
-
-### Heading Hierarchy (Qualityfolio – Complex Model)
-
-```
-#   heading[depth="1"] → project
-##  heading[depth="2"] → strategy
-### heading[depth="3"] → plan
-#### heading[depth="4"] → suite
-##### heading[depth="5"] → case
-###### heading[depth="6"] → evidence
-```
-
-Each test file must include the following frontmatter at the top of the document:
-
-```yaml
----
-doc-classify:
-  - select: heading[depth="1"]
-    role: project
-  - select: heading[depth="2"]
-    role: strategy
-  - select: heading[depth="3"]
-    role: plan
-  - select: heading[depth="4"]
-    role: suite
-  - select: heading[depth="5"]
-    role: case
-  - select: heading[depth="6"]
-    role: evidence
----
-```
-
----
-
-## Test Case Structure Example
-
-Below is a sample Markdown test structure:
-
-```markdown
-### Login Test Plan
-
-#### TC-LOGIN-0001
-- Open Login page
-- Enter username and password
-- Click Sign In
-
-##### Evidence
-- Test execution result
-- Screenshot of error message
-- Network logs
-```
-
----
-
-## YAML META / HFM Overrides
-
-You can override classification at any level using `META` or `HFM` blocks.
-
-Example:
-
-```yaml
-HFM:
-  doc-classify:
-    role: requirement
-  requirementID: REQ-CMMC-001
-  title: "CMMC Self Assessment Implementation"
-  description: "Navigation structure completeness, navigation consistency, and readiness percentage accuracy for CMMC self-assessments."
-```
-
----
-
-## Evidence & Telemetry
-
-### Evidence Folder
-
-All execution artifacts are stored under:
-
-```bash
-support/assurance/qualityfolio/evidence/
-```
-
-Each test case generates its own folder containing:
-
-* Execution logs
-* Screenshots
-* JSON results
-* Network traces
-
----
-
-## Example Project Files
-
-Qualityfolio projects can range from simple to highly complex structures. You can explore ready-made examples based on real-world implementations.
-
-**Reference Repository**
-
-```
-https://github.com/programmablemd/spry/tree/main/support/assurance/qualityfolio
-```
-
-These examples demonstrate:
+This example demonstrate:
 
 * Header-based classification
 * Hierarchical test design
@@ -204,57 +226,103 @@ These examples demonstrate:
 
 ---
 
-## HTML UI Generation (Live Preview)
+## Step 1: Generate SQLite Database from Test Artifacts
 
-You can launch the server using the following command:
+To generate a queryable SQLite database from your test artifacts and execution evidence, run the following command from the `qualityfolio` directory:
 
 ```bash
-./spry.ts doc <markdown-files> --serve
+spry rb run qualityfolio.md
 ```
 
-Running this command loads the parsed Qualityfolio document(s) in your browser with:
+### What This Does
 
-* **Real-time ontology parsing**
-* **Automatic live reload** whenever you save a file
-* **A structured HTML UI** showing headings, roles, metadata, hierarchy, cases, and evidence
-* **Built-in validation** of classification rules and document structure
+- Parses test artifacts under `test-artifacts/`
+- Ingests execution evidence under `evidence/`
+- Applies the ETL logic defined in `qualityfolio.md` and `qualityfolio-json-etl.sql`
+- Produces a clean, ready-to-use SQLite database: `resource-surveillance.sqlite.db`
 
-This feature allows you to visually inspect and validate your Qualityfolio model directly from Markdown.
+You can open this database using any SQLite-compatible SQL editor for ad-hoc analysis or reporting.
 
 ---
 
-### Sample Terminal Output
+## Step 2: Generate Test Management Dashboard
 
-When the server starts, a message similar to the following is displayed:
+The Test Management Dashboard provides a live, browser-based view of Qualityfolio metrics.
 
-```
-Listening on http://127.0.0.1:9876/
-Serving ontology at http://127.0.0.1:9876 (Ctrl+C to stop)
-Watching for changes in: qf-complex.md
-```
+### 2.1 Prepare Test Artifacts
 
-You can click the link or open it in a browser to view the generated HTML interface.
+Ensure your test cases and related metadata are authored as Markdown files under: `test-artifacts/`
 
 ---
 
-### Serving a Single Markdown File
+### 2.2 Run Spry + SQLPage Pipeline
 
-To generate the HTML UI for a single Qualityfolio document:
+Execute the following commands in a terminal from the `qualityfolio` directory:
 
 ```bash
-./spry.ts doc qf-complex.md --serve
+spry rb run qualityfolio.md
+spry sp spc --fs dev-src.auto --destroy-first --conf sqlpage/sqlpage.json --md qualityfolio.md
+spry sp spc --fs dev-src.auto --destroy-first --conf sqlpage/sqlpage.json --md qualityfolio.md --watch
 ```
 
-A brief delay may occur while the UI is being built.
+This pipeline:
+
+- Rebuilds the database from artifacts and evidence
+- Generates `sqlpage.json` in the `sqlpage` folder and configures SQLPage using `sqlpage.json`
+- Loads SQLPage queries defined in `qualityfolio.md`
+- Watches for file changes and auto-refreshes the data
 
 ---
 
-### Serving Multiple Files (Recommended for Full Model Review)
+### 2.3 Start SQLPage Server
 
-To generate a combined HTML UI for several Qualityfolio Markdown files:
+In a **separate terminal**, from the `qualityfolio` directory, start the SQLPage server:
 
 ```bash
-./spry.ts doc qf-complex.md qf-large.md qf-medium.md qf-small.md Qualityfolio.md --serve
+sqlpage
 ```
 
-This HTML UI becomes the primary way to validate and review Qualityfolio documentation.
+---
+
+### 2.4 Access the Test Management Dashboard
+
+Open your browser and navigate to: `http://localhost:9227/`
+
+The dashboard includes:
+
+- Test metrics and summaries
+- Requirement Traceability Matrix (RTM)
+- Test cycle-wise execution status
+- Case-level execution details with linked evidence
+
+---
+
+## Step 3: HTML UI Generation (Live Preview)
+
+You can launch the server using the following command in a terminal from the `qualityfolio` directory:
+
+```bash
+spry axiom web-ui test-artifacts/example-artifact.md
+```
+
+Running this command loads the parsed test artifact(s) in your browser with:
+
+* Real-time ontology parsing
+* Automatic live reload whenever you save a file
+* A structured HTML UI showing headings, roles, metadata, hierarchy, cases, and evidence
+* Built-in validation of classification rules and document structure
+
+This feature allows you to visually inspect and validate your Qualityfolio pattern directly from HTML UI.
+
+---
+
+## Next Steps
+
+Once your database and dashboard are running, you can:
+
+- Query `resource-surveillance.sqlite.db` for custom analytics
+- Extend SQLPage views by updating `qualityfolio.md`
+- Add new test artifacts and execution evidence
+- Integrate Qualityfolio into CI/CD pipelines
+
+
