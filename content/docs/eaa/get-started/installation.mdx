@@ -1,0 +1,203 @@
+---
+title: Installation Guide for Fleetfolio EAA
+description: This document provide the installation steps for setting up the Fleetfolio EAA – Pentest Lite framework on Kali Linux.
+---
+
+
+This guide provides the step-by-step instructions required to manually install **Kali Linux** and the **Fleetfolio EAA – Pentest Lite** framework, along with all necessary dependencies and tools. The installation process is designed to be straightforward, ensuring that you can quickly set up a controlled and efficient environment for conducting Enterprise asset assessments.
+
+## **Prerequisites**
+
+Before beginning the installation process, ensure you have the following:
+
+### **Software Requirements**
+
+1. **VirtualBox** (for running Kali Linux as a virtual machine)
+
+   * [Download VirtualBox](https://www.virtualbox.org/wiki/Downloads)
+
+2. **Kali Linux Virtual Machine**
+
+   * [Download Kali Linux VM for VirtualBox](https://www.kali.org/get-kali/#kali-platforms)
+   * File size: **3.3 GB** (in `.7z` format)
+
+3. **WinRAR or 7-Zip**
+
+   * [Download WinRAR](https://www.win-rar.com/download.html?&L=0) (recommended)
+
+4. **Visual C++ Redistributable (for Windows Users)**
+
+   * [Download Visual C++ Redistributable Runtimes All-in-One](https://www.techpowerup.com/download/visual-c-redistributable-runtime-package-all-in-one)
+   * This is required if you're using Windows as your host machine to install **VirtualBox**.
+
+5. **Homebrew** (for package management)
+
+   * [Install Homebrew](https://brew.sh/)
+
+### **Dependencies**
+
+1. **Go** (for certain tools like `Deno`, `Subzy`, etc.)
+
+   * Install Go using the following command:
+
+     ```bash
+     sudo apt install golang-go -y
+     ```
+
+2. **Deno** (JavaScript/TypeScript runtime)
+
+   * Install using Homebrew:
+
+     ```bash
+     brew install deno
+     ```
+
+3. **Surveilr** (Resource Surveillance & Integration Engine for Critical Systems)
+
+   * Install with the following command:
+
+     ```bash
+     wget https://github.com/surveilr/packages/releases/download/3.19.0/surveilr_3.19.0_x86_64-unknown-linux-gnu.tar.gz && \
+     tar -xvf surveilr_3.19.0_x86_64-unknown-linux-gnu.tar.gz && \
+     mv surveilr /usr/local/bin
+     ```
+
+4. **Homebrew Dependency Setup** (for Kali Linux)
+
+   * If **Homebrew** isn't installed, install it with the following command:
+
+     ```bash
+     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+     ```
+
+   * After installation, you may need to adjust your shell profile to include Homebrew paths. Run the following:
+
+     ```bash
+     echo >> /home/kali/.zshrc && echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/kali/.zshrc && \
+     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+     ```
+
+5. **Install Packages and Dependencies for Fleetfolio Tools**
+
+   * Run the following command to install various security tools required for the Fleetfolio EAA framework:
+
+     ```bash
+     sudo apt install -y subfinder dnsx httpx-toolkit naabu nuclei xq jq dirsearch testssl.sh paramspider commix && \
+     git clone https://github.com/s0md3v/Corsy.git && cd Corsy && pip3 install -r requirements.txt --break-system-packages && \
+     go install github.com/projectdiscovery/katana/cmd/katana@latest && sudo cp ~/go/bin/katana /bin/ && \
+     go install github.com/projectdiscovery/tlsx/cmd/tlsx@latest && sudo cp ~/go/bin/tlsx /bin/ && \
+     go install -v github.com/PentestPad/subzy@latest && sudo cp ~/go/bin/subzy /bin/ && \
+     go install -v github.com/projectdiscovery/pdtm/cmd/pdtm@latest && sudo cp ~/go/bin/pdtm /bin/ && \
+     go install github.com/intigriti/misconfig-mapper/cmd/misconfig-mapper@latest && sudo cp ~/go/bin/misconfig-mapper /bin/ && \
+     sudo apt install -y libpcap-dev && pdtm -install-all && sudo cp /home/kali/.pdtm/go/bin/* /bin && \
+     git clone https://github.com/r0oth3x49/ghauri.git && cd ghauri && sudo python3 setup.py install && \
+     pip install fierce --break-system-packages && \
+     wget https://github.com/cerberauth/vulnapi/releases/download/v0.8.9/vulnapi_0.8.9_linux_amd64.deb && \
+     dpkg -i vulnapi_0.8.9_linux_amd64.deb && \
+     git clone https://github.com/nemesida-waf/waf_bypass.git waf_bypass && cd waf_bypass && pip3 install -r requirements.txt --break-system-packages && \
+     brew install rustscan dalfox trivy
+     ```
+
+## **Step-by-Step Installation Guide**
+
+### **Step 1: Install VirtualBox**
+
+1. Download and install **VirtualBox** from the official site.
+2. After installation, open **VirtualBox** and configure it to run **Kali Linux**.
+
+### **Step 2: Download and Install Kali Linux VM**
+
+1. Download the Kali Linux VirtualBox VM file.
+2. Extract the `.7z` file using **WinRAR** or **7-Zip**.
+3. Open the extracted `.vbox` file to automatically import the Kali Linux virtual machine into **VirtualBox**.
+4. Set the **Base Memory** to **4096 MB** and **Processor Cores** to **2–3** (recommended).
+5. Start the Kali VM.
+
+### **Step 3: Log in to Kali Linux**
+
+1. Use the following default credentials to log into **Kali Linux**:
+
+   * Username: `kali`
+   * Password: `kali`
+
+2. Once logged in, open the **Terminal** and elevate to root privileges:
+
+   ```bash
+   sudo su
+   ```
+
+### **Step 4: Update System Packages**
+
+1. Run the following commands to ensure your system is fully updated:
+
+   ```bash
+   sudo apt update && sudo apt upgrade -y && sudo apt full-upgrade -y
+   ```
+
+### **Step 5: Install Homebrew**
+
+If you are using **Homebrew** to install additional dependencies, ensure it is set up with the following steps:
+
+1. Run this command to install **Homebrew**:
+
+   ```bash
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   ```
+
+2. Then add the Homebrew path to the shell configuration file:
+
+   ```bash
+   echo >> /home/kali/.zshrc && echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/kali/.zshrc && \
+   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+   ```
+
+### **Step 6: Install Required Dependencies and Tools**
+
+1. Run the following command to install the required tools and dependencies for **Fleetfolio EAA – Pentest Lite**:
+
+   ```bash
+   sudo apt install -y subfinder dnsx httpx-toolkit naabu nuclei xq jq dirsearch testssl.sh paramspider commix && \
+   git clone https://github.com/s0md3v/Corsy.git && cd Corsy && pip3 install -r requirements.txt --break-system-packages && \
+   go install github.com/projectdiscovery/katana/cmd/katana@latest && sudo cp ~/go/bin/katana /bin/ && \
+   go install github.com/projectdiscovery/tlsx/cmd/tlsx@latest && sudo cp ~/go/bin/tlsx /bin/ && \
+   go install -v github.com/PentestPad/subzy@latest && sudo cp ~/go/bin/subzy /bin/ && \
+   go install -v github.com/projectdiscovery/pdtm/cmd/pdtm@latest && sudo cp ~/go/bin/pdtm /bin/ && \
+   go install github.com/intigriti/misconfig-mapper/cmd/misconfig-mapper@latest && sudo cp ~/go/bin/misconfig-mapper /bin/ && \
+   sudo apt install -y libpcap-dev && pdtm -install-all && sudo cp /home/kali/.pdtm/go/bin/* /bin && \
+   git clone https://github.com/r0oth3x49/ghauri.git && cd ghauri && sudo python3 setup.py install && \
+   pip install fierce --break-system-packages && \
+   wget https://github.com/cerberauth/vulnapi/releases/download/v0.8.9/vulnapi_0.8.9_linux_amd64.deb && \
+   dpkg -i vulnapi_0.8.9_linux_amd64.deb && \
+   git clone https://github.com/nemesida-waf/waf_bypass.git waf_bypass && cd waf_bypass && pip3 install -r requirements.txt --break-system-packages && \
+   brew install rustscan dalfox trivy
+   ```
+
+### **Step 7: Configure Fleetfolio EAA Environment Variables**
+
+1. Clone the repository and configure the **`.env`** file with your specific environment variables:
+
+   ```bash
+   git clone https://github.com/surveilr/www.surveilr.com.git && \
+   cd www.surveilr.com/lib/service/fleetfolio/eaa
+   ```
+
+2. Update the `.env` file with the following configuration (adjust values as needed):
+
+   ```bash
+   sudo tee -a .env > /dev/null << 'EOF'
+   OPSFOLIO_EAA_HOME=/opt/eaa/sessions
+   OPSFOLIO_EAA_TENANT_ID=NET1234
+   OPSFOLIO_EAA_TENANT_NAME=Netspective
+   OPSFOLIO_EAA_PURPOSE=Threat
+   OPSFOLIO_EAA_DESCRIPTION=Demo_Threat
+   OPSFOLIO_EAA_CONTEXT_JSON='{ "Sample": "Value" }'
+   OPSFOLIO_EAA_EXIT_EMAIL_ADDRESSES=example@nespective.com,example2@nespective.com,example3@gmal.com
+   OPSFOLIO_EAA_DOMAINS=netspective.com
+   OPSFOLIO_EAA_NAABU_PORTS=top-100
+   OPSFOLIO_EAA_NUCLEI_TEMPLATES=cves,default
+   EOF
+   ```
+
+---
+
+With these steps, you should be ready to begin using **Fleetfolio EAA – Pentest Lite** for Enterprise asset assessments. If you encounter any errors during installation, refer to the troubleshooting section for solutions.

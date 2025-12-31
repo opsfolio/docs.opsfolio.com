@@ -1,7 +1,8 @@
 {
   "title": "EAA",
   "pages": [
-    "fleetfolio-eaa-pentest-lite"
+    "core-concept",
+    "get-started"
     ],
     "root": true,
     "defaultOpen": false
