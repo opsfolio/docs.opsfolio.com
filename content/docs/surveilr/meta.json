@@ -2,8 +2,13 @@
   "title": "Surveilr",
   "pages": [
     "core",
+    "pro",
     "standard-library",
-    "patterns"
+    "patterns",
+    "services",
+    "cookbook",
+    "releases",
+    "evidence"
     ],
     "root": true,
     "defaultOpen": false

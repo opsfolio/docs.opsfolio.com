@@ -1,0 +1,9 @@
+{
+  "title": "EAA",
+  "pages": [
+    "core-concept",
+    "get-started"
+    ],
+    "root": true,
+    "defaultOpen": false
+}

@@ -9,17 +9,17 @@ const config = {
     return [
       {
         source: '/',
-        destination: '/docs/spry/getting-started/introduction',
+        destination: '/spry/getting-started/introduction',
         permanent: false,
       },
       {
-        source: '/docs',
-        destination: '/docs/spry/getting-started/introduction',
+        source: '/',
+        destination: '/spry/getting-started/introduction',
         permanent: false,
       },
       {
-        source: '/docs/',
-        destination: '/docs/spry/getting-started/introduction',
+        source: '/',
+        destination: '/spry/getting-started/introduction',
         permanent: false,
       },
     ];

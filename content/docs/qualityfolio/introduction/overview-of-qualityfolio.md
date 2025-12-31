@@ -1,0 +1,65 @@
+---
+title: Overview of Qualityfolio
+description: This document provides an overview of Qualityfolio, a Test Management as Code (TMaC) platform integrated with Surveilr for comprehensive test management and evidence tracking.
+---
+
+Qualityfolio is a modern **Test Management as Code (TMaC)** and evidence-driven assurance framework built to bring structure, transparency, and governance to the entire testing and compliance lifecycle. It aligns quality engineering, security validation, site reliability practices, and compliance requirements into a single, repeatable operating model.
+
+Unlike traditional test management tools, Qualityfolio treats tests, execution steps, and evidence as **version-controlled assets**, enabling true auditability and continuous improvement.
+
+## What is Qualityfolio?
+
+Qualityfolio is a unified framework that helps organizations design, execute, and govern their quality processes with a strong focus on evidence and traceability. It connects the work of:
+
+* Quality Assurance (QA)
+* Security Engineering
+* Site Reliability Engineering (SRE)
+* DevOps and Platform teams
+* Compliance and Audit functions
+
+Key capabilities include:
+
+* **Markdown-first test design** – Write human-readable, developer-friendly test cases in simple Markdown that live alongside your code.
+* **Runbook-based execution** – Standardize execution using structured operational runbooks for repeatability and consistency.
+* **SQL-backed evidence storage** – Store test results, artifacts, logs, and proof in a structured, queryable evidence store.
+* **Git-native versioning and auditability** – Track every change through Git, enabling full change history and audit trails.
+
+Qualityfolio is fully integrated with **Surveilr**, enabling:
+
+* Real-time dashboards and test health visibility
+* Compliance and control coverage analytics
+* Continuous audit readiness with live evidence
+
+## Who Uses Qualityfolio
+
+Qualityfolio is designed for cross-functional teams, including:
+
+* **QA & Test Engineers** – To design structured test strategies and manage execution at scale.
+* **SRE & DevOps Teams** – To validate system reliability, resilience, and operational readiness.
+* **Security Engineers** – To manage security test cases, threat validations, and control verification.
+* **Audit & Compliance Teams** – To access real-time evidence and traceability for regulatory requirements.
+* **Product and Quality Leaders** – To gain visibility into quality posture, risk exposure, and delivery readiness.
+
+## Core Benefits
+
+Organizations using Qualityfolio gain significant operational and governance advantages:
+
+* **End-to-end traceability** – Every requirement, test, execution, and evidence artifact is linked and traceable.
+* **Code-reviewable test artifacts** – Tests live as code, enabling peer review, approvals, and collaboration.
+* **Unified manual and automated testing** – A single framework to manage both human-driven and automated validations.
+* **Structured evidence model** – A standardized, queryable approach to storing logs, screenshots, system outputs, and proofs.
+* **Continuous governance and compliance** – Always-on control validation with continuous policy and regulatory alignment.
+
+## How Qualityfolio Works
+
+1. Define tests in Markdown aligned to requirements and controls.
+2. Execute tests using standardized operational runbooks.
+3. Capture structured evidence automatically during execution.
+4. Store all results in SQL-backed evidence repositories.
+5. Version and audit all changes through Git.
+6. Visualize quality and compliance posture using Surveilr dashboards.
+
+## Getting Started
+
+Start by installing Qualityfolio, connecting your source repository, and creating your first Markdown-based test case. Follow the setup guides to begin building continuous, evidence-driven quality across your organization.
+
