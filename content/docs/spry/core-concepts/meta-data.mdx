@@ -1,0 +1,556 @@
+---
+title: "Metadata & Frontmatter"
+description: "Configure your Spryfile with structured metadata using YAML frontmatter and code cell attributes"
+icon: LifeBuoy
+---
+## Purpose
+
+This guide establishes how to configure Spryfiles using structured metadata at both the document and code cell level. Proper metadata configuration enables environment variable interpolation, dependency management, execution control, and semantic document classification.
+
+---
+
+## Core Principles
+
+<div className="core-principles">
+
+1. **Document frontmatter for global configuration.** Environment, versions, and project-level settings.
+2. **Code cell metadata for execution behavior.** Dependencies, timeouts, capture settings, and descriptions.
+3. **Environment variables for secrets.** Never hardcode sensitive values—always interpolate from `${env.*}`.
+4. **Semantic classification for structure.** Use `doc-classify` to add meaning to document hierarchy.
+5. **Keep metadata simple and readable.** Avoid deeply nested structures that create cognitive overhead.
+
+</div>
+
+---
+
+## Document Frontmatter
+
+### Overview
+
+YAML block at the document start, delimited by `---`:
+
+```yaml
+---
+project: My Application
+version: 1.0.0
+environment: production
+---
+
+# My Application Runbook
+...
+```
+
+### Basic Properties
+
+Common frontmatter properties for project identification and configuration:
+
+```yaml
+---
+# Project identification
+project: Customer Portal
+version: 2.3.1
+author: DevOps Team
+
+# Environment configuration
+environment: ${env.DEPLOY_ENV}
+database_url: ${env.DATABASE_URL}
+
+# Execution settings
+timeout: 300
+parallel: true
+---
+```
+
+### Environment Variable Interpolation
+
+Reference environment variables using `${env.VAR_NAME}` syntax:
+
+```yaml
+---
+api_key: ${env.API_KEY}
+database: ${env.DB_NAME}
+region: ${env.AWS_REGION}
+deployment_env: ${env.DEPLOY_ENV}
+---
+```
+
+**At runtime**, Spry replaces `${env.VAR_NAME}` with the actual environment variable value.
+
+<div className="callout callout-warning">
+**Security:** Always use environment variable interpolation for secrets. Never commit sensitive values directly to frontmatter.
+</div>
+
+### Nested Configuration
+
+Complex structures are supported for organizing related settings:
+
+```yaml
+---
+database:
+  host: ${env.DB_HOST}
+  port: 5432
+  name: production
+  pool_size: 10
+
+deployment:
+  strategy: rolling
+  replicas: 3
+  timeout: 300
+
+notifications:
+  slack: "#deployments"
+  email: ops@example.com
+---
+```
+
+**Access nested values** with dot notation: `${config.database.host}`
+
+---
+
+## Code Cell Metadata
+
+### Structure
+
+Metadata in the fence info string follows this pattern:
+
+````markdown
+```language identity --flags { json5-attributes }
+code
+```
+````
+
+### Parsing Order
+
+The info string is parsed in this sequence:
+
+1. **Language** — First token (e.g., `bash`, `sql`, `python`)
+2. **Identity** — Second token if not a flag (e.g., `my-task`, `setup-db`)
+3. **Flags** — POSIX-style options (e.g., `--dep`, `--descr`)
+4. **Attributes** — JSON5 object at the end (e.g., `{ timeout: 60 }`)
+
+### Examples by Complexity
+
+````markdown
+# Minimal: Just language
+```bash
+echo "anonymous task"
+```
+
+# With identity
+```bash my-task
+echo "named task"
+```
+
+# With flags
+```bash my-task --descr "Deploy application" --dep build-step
+echo "with options"
+```
+
+# Full metadata
+```bash deploy-app --descr "Deploy to prod" --dep build { timeout: 300, retry: 3 }
+./deploy.sh
+```
+````
+
+---
+
+## Common Flags Reference
+
+| Flag | Alias | Description | Example |
+|------|-------|-------------|---------|
+| `--descr` | `-d` | Task description | `--descr "Build Docker image"` |
+| `--dep` | | Dependency on another task | `--dep build-step` |
+| `--capture` | | Output capture path | `--capture results.txt` |
+| `--interpolate` | `-I` | Enable template interpolation | `--interpolate` |
+| `--injectable` | | Mark as injectable for PARTIALs | `--injectable` |
+
+### Flag Examples
+
+````markdown
+# Task with description
+```bash build-image -d "Build production Docker image"
+docker build -t myapp:latest .
+```
+
+# Task with dependency
+```bash deploy --dep build-image
+kubectl apply -f deployment.yaml
+```
+
+# Task with output capture
+```bash check-status --capture status.log
+curl -s https://api.example.com/health
+```
+
+# Task with interpolation enabled
+```bash show-config -I
+echo "Database: ${config.database.host}"
+echo "Version: ${config.version}"
+```
+````
+
+---
+
+## JSON5 Attributes
+
+Extended configuration using JSON5 format for complex execution parameters:
+
+````markdown
+```bash long-task {
+  timeout: 300,
+  retry: 3,
+  retryDelay: 10,
+  env: { 
+    VERBOSE: "true",
+    LOG_LEVEL: "debug"
+  }
+}
+./long-running-script.sh
+```
+````
+
+### JSON5 Features
+
+JSON5 allows more readable configuration:
+- **Unquoted keys** — `timeout: 60` instead of `"timeout": 60`
+- **Single-line comments** — `// This is a comment`
+- **Trailing commas** — `{ a: 1, b: 2, }` is valid
+- **Single-quoted strings** — `'string'` or `"string"`
+
+### Common Attributes
+
+| Attribute | Type | Description | Example |
+|-----------|------|-------------|---------|
+| `timeout` | number | Max execution time (seconds) | `timeout: 300` |
+| `retry` | number | Number of retry attempts | `retry: 3` |
+| `retryDelay` | number | Delay between retries (seconds) | `retryDelay: 10` |
+| `env` | object | Additional environment variables | `env: { DEBUG: "1" }` |
+
+---
+
+## Section Classification
+
+Add semantic meaning to document structure using `doc-classify`:
+
+```yaml
+---
+doc-classify:
+  - select: heading[depth="1"]
+    role: project
+  - select: heading[depth="2"]
+    role: phase
+  - select: heading[depth="3"]
+    role: task
+---
+```
+
+**Purpose:** This classifies document sections semantically, enabling better tooling and automation based on document structure.
+
+### Classification Example
+
+```yaml
+---
+doc-classify:
+  - select: heading[depth="1"]
+    role: application
+  - select: heading[depth="2"]
+    role: deployment_stage
+  - select: heading[depth="3"]
+    role: operation
+---
+
+# Customer Portal
+
+## Build Phase
+
+### Compile Assets
+### Run Tests
+
+## Deploy Phase
+
+### Push to Registry
+### Update Kubernetes
+```
+
+---
+
+## SQLPage Configuration
+
+For SQLPage playbooks, configure database and server settings:
+
+```yaml
+---
+sqlpage-conf:
+  database_url: ${env.SPRY_DB}
+  port: 9628
+  site_prefix: /app
+  max_database_pool_connections: 10
+  listen_on: 0.0.0.0
+---
+```
+
+---
+
+## Accessing Metadata
+
+### In Shell Tasks
+
+Access frontmatter values via environment variables with `--interpolate` flag:
+
+````markdown
+---
+version: 1.2.3
+app_name: MyApp
+---
+
+```bash show-version --interpolate
+echo "Application: ${config.app_name}"
+echo "Version: ${config.version}"
+```
+````
+
+### In Materializable Cells
+
+Interpolation is enabled by default in materializable cells (HTML, SQL, etc.):
+
+````markdown
+---
+app_name: MyApp
+company: Acme Corp
+---
+
+```html header
+<html>
+  <head>
+    <title>${config.app_name} - ${config.company}</title>
+  </head>
+</html>
+```
+````
+
+### Accessing Nested Values
+
+Use dot notation for nested configuration:
+
+````markdown
+---
+database:
+  host: localhost
+  port: 5432
+  name: production
+---
+
+```bash connect -I
+psql -h ${config.database.host} \
+     -p ${config.database.port} \
+     -d ${config.database.name}
+```
+````
+
+---
+
+## Code DEFAULTS Directive
+
+Set default flags for multiple cells using pattern matching:
+
+````markdown
+```code DEFAULTS
+sql * --interpolate --injectable
+bash * --descr "Automated task"
+python * --interpolate { timeout: 60 }
+```
+````
+
+**Pattern syntax:**
+- `sql *` — Matches all SQL cells
+- `bash setup-*` — Matches bash cells starting with "setup-"
+- `* test-*` — Matches any language with identity starting with "test-"
+
+### DEFAULTS Example
+
+````markdown
+```code DEFAULTS
+sql * --interpolate --injectable
+bash deploy-* --descr "Deployment task" { timeout: 300, retry: 2 }
+```
+
+```sql get-users
+SELECT * FROM user WHERE active = true;
+```
+
+```bash deploy-frontend
+npm run deploy
+```
+
+```bash deploy-backend
+docker-compose up -d
+```
+````
+
+---
+
+## Best Practices
+
+### Configuration Organization
+
+1. **Use frontmatter for configuration** — Environment variables, versions, project settings
+2. **Use cell metadata for behavior** — Dependencies, execution control, descriptions
+3. **Interpolate secrets from environment** — Never hardcode API keys, passwords, or tokens
+4. **Keep frontmatter simple** — Avoid deeply nested structures (3+ levels)
+5. **Document every task** — Use `--descr` to explain what each cell does
+
+### Naming Conventions
+
+| Context | Convention | Example |
+|---------|-----------|---------|
+| Task identities | Kebab-case | `build-image`, `deploy-app` |
+| Frontmatter keys | Snake_case | `database_url`, `app_name` |
+| Environment variables | UPPER_SNAKE | `DATABASE_URL`, `API_KEY` |
+
+### Security Guidelines
+
+<div className="callout callout-warning">
+
+**Never commit secrets to frontmatter:**
+- `api_key: abc123xyz`
+- `api_key: ${env.API_KEY}`
+
+**Always use environment variable interpolation for:**
+- API keys and tokens
+- Database passwords
+- Service credentials
+- Private URLs or endpoints
+
+</div>
+
+---
+
+## Validation and Debugging
+
+### Inspect Parsed Metadata
+
+Validate your Spryfile's metadata structure:
+
+```bash
+spry axiom inspect myfile.md
+```
+
+**Output shows:**
+- Parsed frontmatter structure
+- All code cell metadata
+- Applied DEFAULTS
+- Section classifications
+
+### Common Issues
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Interpolation not working | Missing `--interpolate` flag | Add `-I` or `--interpolate` |
+| Invalid JSON5 | Syntax error in attributes | Validate JSON5 syntax |
+| Environment variable empty | Variable not set | Export variable before running |
+| Flag not recognized | Typo in flag name | Check flag reference table |
+
+---
+
+## Complete Example
+
+````markdown
+---
+# Project metadata
+project: Customer Portal
+version: 2.1.0
+author: DevOps Team
+
+# Environment configuration
+environment: ${env.DEPLOY_ENV}
+api_key: ${env.API_KEY}
+
+# Database settings
+database:
+  host: ${env.DB_HOST}
+  port: 5432
+  name: customer_portal
+
+# Deployment settings
+deployment:
+  strategy: rolling
+  replicas: 3
+  timeout: 300
+
+# Section classification
+doc-classify:
+  - select: heading[depth="1"]
+    role: project
+  - select: heading[depth="2"]
+    role: phase
+---
+
+# Customer Portal Deployment
+
+## Build Phase
+
+```code DEFAULTS
+bash * { timeout: 300, retry: 2 }
+```
+
+```bash install-deps --descr "Install application dependencies"
+npm ci
+```
+
+```bash build-app --descr "Build production bundle" --dep install-deps
+npm run build
+```
+
+```bash build-image --descr "Build Docker image" --dep build-app
+docker build -t customer-portal:${config.version} .
+```
+
+## Deploy Phase
+
+```bash push-image --descr "Push to registry" --dep build-image
+docker push customer-portal:${config.version}
+```
+
+```bash deploy-k8s --descr "Deploy to Kubernetes" --dep push-image -I {
+  timeout: 600,
+  env: { KUBECONFIG: "${env.KUBECONFIG}" }
+}
+kubectl set image deployment/customer-portal \
+  app=customer-portal:${config.version}
+kubectl rollout status deployment/customer-portal
+```
+
+```bash verify-health --descr "Verify deployment health" --dep deploy-k8s
+curl -f https://portal.example.com/health || exit 1
+```
+````
+
+---
+
+## Quick Reference
+
+### Frontmatter Structure
+```yaml
+---
+key: value
+nested:
+  key: value
+env_var: ${env.VAR_NAME}
+---
+```
+
+### Code Cell Structure
+````markdown
+```language identity --flag value { json5: "attributes" }
+code
+```
+````
+
+### Common Patterns
+- **Named task:** `bash task-name`
+- **With description:** `bash task --descr "Description"`
+- **With dependency:** `bash task --dep other-task`
+- **With interpolation:** `bash task -I`
+- **With timeout:** `bash task { timeout: 60 }`
+- **Full metadata:** `bash task -d "Desc" --dep other { timeout: 300 }`
+
