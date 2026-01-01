@@ -12,9 +12,9 @@ Qualityfolio uses a fully declarative, Markdown-driven execution model powered b
 
 Qualityfolio is designed around three key principles:
 
-1. **Declarative by Design** – Test logic is defined in Markdown, not in imperative scripts.
-2. **Traceability First** – Every action, step, and result is recorded as structured evidence.
-3. **Execution as Data** – MDAST is used as an intermediate, machine-readable format that drives execution.
+1. Declarative by Design – Test logic is defined in Markdown, not in imperative scripts.
+2. Traceability First – Every action, step, and result is recorded as structured evidence.
+3. Execution as Data – MDAST is used as an intermediate, machine-readable format that drives execution.
 
 This approach enables version‑controlled testing, human‑readable specifications, and machine‑executable workflows from the same source of truth.
 
@@ -89,12 +89,12 @@ The typical command used to trigger execution from the `qualityfolio` folder is:
 
 Qualityfolio uses a hybrid storage model:
 
-1. **File‑based Storage**
+1. File‑based Storage
 
    * Located under the `evidence/` folder
    * Stores binary and large artifacts
 
-2. **Database‑backed Storage**
+2. Database‑backed Storage
 
    * Implemented using `*.sqlite.db`
    * Stores normalized, query‑ready telemetry

@@ -1,5 +1,5 @@
 ---
-title: Core Principles of Qualityfolio
+title: Core Principles
 ---
 
 Qualityfolio is built on a set of foundational principles that ensure consistency, auditability, and scalability across quality, security, and compliance operations. These principles enable teams to treat testing, evidence, and governance as first-class, version-controlled assets.
