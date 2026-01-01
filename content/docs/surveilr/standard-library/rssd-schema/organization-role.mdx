@@ -40,7 +40,7 @@ CREATE TABLE "organization_role" (
 | organization_role_id      | VARCHAR     |                   | false    |                                                     | `{"isSqlDomainZodDescrMeta":true,"isVarChar":true}`       |
 | person_id                 | VARCHAR     |                   | false    | [party](/surveilr/standard-library/rssd-schema/party)                                   | `{"isSqlDomainZodDescrMeta":true,"isVarChar":true}`       |
 | organization_id           | VARCHAR     |                   | false    | [party](/surveilr/standard-library/rssd-schema/party)                                   | `{"isSqlDomainZodDescrMeta":true,"isVarChar":true}`       |
-| organization_role_type_id | ULID        |                   | false    | [organization_role_type](/surveilr/standard-library/rssd-schema/organization_role_type) | `{"isSqlDomainZodDescrMeta":true,"isUlid":true}`          |
+| organization_role_type_id | ULID        |                   | false    | [organization_role_type](/surveilr/standard-library/rssd-schema/organization-role-type) | `{"isSqlDomainZodDescrMeta":true,"isUlid":true}`          |
 | elaboration               | TEXT        |                   | true     |                                                     | `{"isSqlDomainZodDescrMeta":true,"isJsonText":true}`      |
 | created_at                | TIMESTAMPTZ | CURRENT_TIMESTAMP | true     |                                                     |                                                         |
 | created_by                | TEXT        | 'UNKNOWN'         | true     |                                                     |                                                         |
