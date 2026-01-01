@@ -1,5 +1,6 @@
 {
   "title": "Notebooks Schema",
+  "icon" : "NotebookPen",
   "pages": [
     "assurance-schema",
     "code-notebook-cell",
