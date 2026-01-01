@@ -1,5 +1,6 @@
 {
   "title": "Surveilr CLI",
+  "icon": "Terminal",
   "pages": [
     "cli-commands",
     "ingest-commands"

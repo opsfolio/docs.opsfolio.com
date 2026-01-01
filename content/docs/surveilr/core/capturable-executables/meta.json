@@ -1,5 +1,6 @@
 {
   "title": "Capturable Executables",
+  "icon": "Cpu",
   "pages": [
     "content-extensibility",
     "integrated-ts",

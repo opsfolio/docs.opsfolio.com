@@ -1,5 +1,6 @@
 {
   "title": "Standard Library",
+  "icon": "Library",
   "pages": [
     "rssd-schema",
     "notebooks-schema"

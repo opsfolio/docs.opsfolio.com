@@ -1,5 +1,6 @@
 {
   "title": "Patterns",
+  "icon": "Asterisk",
   "pages": [
     "discipline-centric-patterns"
     ]

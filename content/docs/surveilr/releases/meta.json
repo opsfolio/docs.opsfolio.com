@@ -1,5 +1,6 @@
 {
   "title": "Releases",
+  "icon": "GitBranch",
   "pages": [
     "v0_9_9",
     "v0_9_10",
