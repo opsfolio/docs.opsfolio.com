@@ -42,6 +42,37 @@ deno --version
 - Any OS: Linux, macOS, Windows
 - No other dependencies
 
+### How do I fix errors that occur while upgrading Spry to the latest version using Homebrew?
+
+If you encounter any errors while upgrading Spry to the latest version using Homebrew, follow these steps to perform a clean reinstall:
+
+1. **If a specific version is installed and linked (for example, `v1.0.2`), uninstall it first:**
+
+   ```bash
+   brew uninstall spry@1.0.2
+   ```
+2. **Uninstall Spry completely:**
+  
+   ```bash
+   brew uninstall spry
+    ```
+3. **Remove the old Homebrew tap:**
+
+   ```bash
+   brew untap programmablemd/homebrew-packages
+   ```
+4. **Reinstall Spry from the official tap:**
+
+    ```bash
+    brew install programmablemd/packages/spry
+    ```
+5. **Verify the installation:**
+
+   ```bash
+   spry --version
+   spry --help
+   ```
+
 ### How do I bootstrap a new Spry project?
 
 Use the built-in CLI initializer:
