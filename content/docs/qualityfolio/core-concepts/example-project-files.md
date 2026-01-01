@@ -11,7 +11,8 @@ Structure:
 ```
 Project → Case → Evidence
 ```
-```
+
+````markdown
 ---
 doc-classify:
   - select: heading[depth="1"]
@@ -60,12 +61,11 @@ authenticate and access the system without UI or backend issues.
 
 @id TC-CMMC-0001
 
-```yaml HFM
-doc-classify:
-requirementID: REQ-CMMC-001
-Priority: High
-Tags: [CMMC Self-Assessment]
-Scenario Type: Happy Path
+```yaml META
+  requirementID: REQ-CMMC-001
+  Priority: High
+  Tags: [CMMC Self-Assessment]
+  Scenario Type: Happy Path
 ```
 
 **Description**
@@ -130,10 +130,10 @@ displayed in the left-side navigation panel.
 @id TC-CMMC-0001
 
 ```yaml META
-role: evidence
-cycle: 1.1
-assignee: prathitha
-status: passed
+  cycle: 1.1
+  cycle-date: 12-12-2025
+  assignee: Emily Davis
+  status: passed
 ```
 
 **Attachment**
@@ -142,6 +142,7 @@ status: passed
 - [CMMC Level 1 navigation screenshot](./evidence/TC-CMMC-0001/1.1/cmmc1.auto.png)
 - [CMMC Level 2 navigation screenshot](./evidence/TC-CMMC-0001/1.1/cmmc2.auto.png)
 - [Run MD](./evidence/TC-CMMC-0001/1.1/run.auto.md/;)
+````
 
 ---
 
@@ -152,7 +153,8 @@ Used when tests require suites:
 ```
 Project → Suite → Case → Evidence
 ```
-```
+
+````markdown
 ---
 doc-classify:
   - select: heading[depth="1"]
@@ -216,12 +218,11 @@ Verifies visibility and ordering of CMMC Level 1 and Level 2 sections.
 
 @id TC-CMMC-0001
 
-```yaml HFM
-doc-classify:
-requirementID: REQ-CMMC-001
-Priority: High
-Tags: [CMMC Self-Assessment]
-Scenario Type: Happy Path
+```yaml META
+  requirementID: REQ-CMMC-001
+  Priority: High
+  tags: [CMMC Self-Assessment]
+  Scenario Type: Happy Path
 ```
 
 **Description**
@@ -286,10 +287,10 @@ displayed in the left-side navigation panel.
 @id TC-CMMC-0001
 
 ```yaml META
-role: evidence
-cycle: 1.1
-assignee: prathitha
-status: passed
+  cycle: 1.1
+  cycle-date: 12-12-2025
+  assignee: Emily Davis
+  status: passed
 ```
 
 **Attachment**
@@ -298,7 +299,7 @@ status: passed
 - [CMMC Level 1 navigation screenshot](./evidence/TC-CMMC-0001/1.1/cmmc1.auto.png)
 - [CMMC Level 2 navigation screenshot](./evidence/TC-CMMC-0001/1.1/cmmc2.auto.png)
 - [Run MD](./evidence/TC-CMMC-0001/1.1/run.auto.md/;)
-
+````
 ---
 
 ## 3. qf-large.md
@@ -308,7 +309,7 @@ Enterprise‑level:
 Project → Plan → Suite → Case → Evidence
 ```
 
-```
+````markdown
 ---
 doc-classify:
   - select: heading[depth="1"]
@@ -387,12 +388,11 @@ Verifies visibility and ordering of CMMC Level 1 and Level 2 sections.
 
 @id TC-CMMC-0001
 
-```yaml HFM
-doc-classify:
-requirementID: REQ-CMMC-001
-Priority: High
-Tags: [CMMC Self-Assessment]
-Scenario Type: Happy Path
+```yaml META
+  requirementID: REQ-CMMC-001
+  Priority: High
+  Tags: [CMMC Self-Assessment]
+  Scenario Type: Happy Path
 ```
 
 **Description**
@@ -457,10 +457,10 @@ displayed in the left-side navigation panel.
 @id TC-CMMC-0001
 
 ```yaml META
-role: evidence
-cycle: 1.1
-assignee: prathitha
-status: passed
+  cycle: 1.1
+  cycle-date: 12-12-2025
+  assignee: Emily Davis
+  status: passed
 ```
 
 **Attachment**
@@ -469,7 +469,7 @@ status: passed
 - [CMMC Level 1 navigation screenshot](./evidence/TC-CMMC-0001/1.1/cmmc1.auto.png)
 - [CMMC Level 2 navigation screenshot](./evidence/TC-CMMC-0001/1.1/cmmc2.auto.png)
 - [Run MD](./evidence/TC-CMMC-0001/1.1/run.auto.md/;)
-
+````
 ---
 
 
@@ -480,7 +480,7 @@ Audit‑grade, deep hierarchy:
 Project → Strategy → Plan → Suite → Case → Evidence
 ```
 
-```
+````markdown
 ---
 doc-classify:
   - select: heading[depth="1"]
@@ -609,13 +609,11 @@ Verifies visibility and ordering of CMMC Level 1 and Level 2 sections.
 
 @id TC-CMMC-0005
 
-```yaml HFM
-doc-classify:
-FII: TC-CMMC-0005
-requirementID: REQ-CMMC-006
-Priority: High
-Tags: [CMMC Self-Assessment, Analytics - Self-Assessment Tool]
-Scenario Type: Happy Path
+```yaml META
+  requirementID: REQ-CMMC-006
+  Priority: High
+  Tags: [CMMC Self-Assessment, Analytics - Self-Assessment Tool]
+  Scenario Type: Happy Path
 ```
 
 **Description**
@@ -648,12 +646,11 @@ Level 1 self-assessment are completed.
 
 @id TC-CMMC-0005
 
-```yaml HFM
-doc-classify:
-  role: evidence
-cycle: 1.5
-assignee: arun-ramanan
-status: failed
+```yaml META
+  cycle: 1.5
+  cycle-date: 12-12-2025
+  assignee: John Carter
+  status: failed
 ```
 
 **Attachment**
@@ -677,5 +674,5 @@ status: open
 **Issue Details**
 
 - [Bug Details](https://github.com/surveilr/surveilr/issues/354)
+````
 
----
