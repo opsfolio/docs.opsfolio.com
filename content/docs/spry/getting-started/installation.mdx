@@ -13,6 +13,7 @@ import { Steps, Step } from 'fumadocs-ui/components/steps';
 
 Spry can be installed via multiple methods depending on your platform and preferences. Choose the method that works best for your workflow.
 
+### Latest Version Installation
 <Tabs items={['Homebrew', 'Ubuntu', 'Debian', 'macOS', 'Windows']}>
   <Tab value="Homebrew">
     ### Homebrew (Recommended for macOS & Linux)
@@ -30,17 +31,7 @@ Spry can be installed via multiple methods depending on your platform and prefer
     <Callout type="info">
     Homebrew automatically manages updates and dependencies, making it the recommended installation method for most users.
     </Callout>
-    #### Install Specific Version
-    To install a specific version of Spry:
-    **Option 1: Using version suffix**
-    ```bash
-        brew install programmablemd/packages/spry@1.0.2
-    ```
-    **Option 2: Switch between installed versions**
-    If you have multiple versions installed:
-    ```bash
-        brew unlink spry@1.0.2 && brew link spry@1.0.3
-    ```
+    
   </Tab>
   <Tab value="Ubuntu">
   #### Latest Binary Download
@@ -51,12 +42,6 @@ Spry can be installed via multiple methods depending on your platform and prefer
   wget https://github.com/programmablemd/packages/releases/download/latest/spry-ubuntu22.04u1_amd64.deb
   sudo dpkg -i spry-ubuntu22.04u1_amd64.deb
   ```
-  #### Versioned Packages (v1.0.3) for Ubuntu 22.04 (Jammy)
-
-  ```bash
-  wget https://github.com/programmablemd/packages/releases/download/v1.0.3/spry_1.0.3-ubuntu22.04u1_amd64.deb
-  sudo dpkg -i spry_1.0.3-ubuntu22.04u1_amd64.deb
-  ```
   </Tab>
   <Tab value="Debian">
   #### Install Latest Binary Download  for Debian 12 (Bookworm)
@@ -64,13 +49,6 @@ Spry can be installed via multiple methods depending on your platform and prefer
   wget https://github.com/programmablemd/packages/releases/download/latest/spry-debian12u1_amd64.deb
   sudo dpkg -i spry-debian12u1_amd64.deb
   ```
-  #### Versioned Packages (v1.0.3) for Debian 12 (Bookworm)
-  ```bash
-  wget https://github.com/programmablemd/packages/releases/download/v1.0.3/spry_1.0.3-debian12u1_amd64.deb
-  sudo dpkg -i spry_1.0.3-debian12u1_amd64.deb
-  ```
-
-
   </Tab>
   
   <Tab value="macOS">
@@ -84,12 +62,75 @@ Spry can be installed via multiple methods depending on your platform and prefer
     tar -xzf spry-macos.tar.gz
     sudo cp spry-macos /usr/local/bin/spry
     chmod +x /usr/local/bin/spry
-    ```
+    ```    
+    <Callout type="info">
+    Binaries support both Intel and Apple Silicon Macs.
+    </Callout>
     
-    #### Versioned Packages (v1.0.3) for macOS
+    <Callout type="warning">
+    Manual binary installations won't receive automatic updates. You'll need to download new versions manually.
+    </Callout>
+  </Tab>
+  
+  <Tab value="Windows">
+
+    ### Download and InstallLatest Stable Version for Windows
+
+    1. Download the [spry-windows.zip](https://github.com/programmablemd/packages/releases/download/latest/spry-windows.zip).
+    2. Extract the `.zip` file to a location of your choice
+    3. Add the extracted directory to your system PATH:
+       - Open System Properties → Advanced → Environment Variables
+       - Edit the `Path` variable and add the directory containing `spry.exe`
+    4. Restart your terminal or command prompt 
+    
+    <Callout type="warning">
+    Manual binary installations won't receive automatic updates. You'll need to download new versions manually.
+    </Callout>
+  </Tab>
+</Tabs>
+
+#### Verify Installation
+
+    ```bash
+        spry --version
+        spry --help
+    ```
+
+### Versioned Packages (v1.0.3) Installation
+You can find all released versions on the [GitHub Releases page](https://github.com/programmablemd/packages/releases). Select the version you wish to install (for example, `v1.0.3`) before continuing.
+
+<Tabs items={['Homebrew', 'Ubuntu', 'Debian', 'macOS', 'Windows']}>
+  <Tab value="Homebrew">
+    
+    To install a specific version of Spry:
+    **Option 1: Using version suffix**
+    ```bash
+        brew install spry@1.0.3
+    ```
+  </Tab>
+  <Tab value="Ubuntu">
+  ```bash
+  wget https://github.com/programmablemd/packages/releases/download/v1.0.3/spry_1.0.3-ubuntu22.04u1_amd64.deb
+  sudo dpkg -i spry_1.0.3-ubuntu22.04u1_amd64.deb
+  ```
+  </Tab>
+  <Tab value="Debian">
+  ```bash
+  wget https://github.com/programmablemd/packages/releases/download/v1.0.3/spry_1.0.3-debian12u1_amd64.deb
+  sudo dpkg -i spry_1.0.3-debian12u1_amd64.deb
+  ```
+
+
+  </Tab>
+  
+  <Tab value="macOS">
+    ### macOS Binary Download
+    
+    Download pre-built binaries from the [GitHub Releases page](https://github.com/programmablemd/packages/releases).
+    
     ```bash
         # Download and extract the archive
-        wget https://github.com/programmablemd/packages/releases/download/v0.80.0/spry-sqlpage-macos.tar.gz
+        wget https://github.com/programmablemd/packages/releases/download/v1.0.3/spry-macos.tar.gz
         tar -xzf spry-sqlpage-macos.tar.gz
         
         # Move to your PATH
@@ -107,26 +148,12 @@ Spry can be installed via multiple methods depending on your platform and prefer
   
   <Tab value="Windows">
 
-    ### Download Latest Stable Version for Windows
-     Download the [spry-windows.zip](https://github.com/programmablemd/packages/releases/download/latest/spry-windows.zip).
-
-    ### Download Versioned Packages (v1.0.3)- Installation Steps :
-     Download the `.zip` file for your desired version from the [GitHub Releases page](https://github.com/programmablemd/packages/releases/)
-
-    ### Installation Steps :
-    1. Extract the `.zip` file to a location of your choice
-    2. Add the extracted directory to your system PATH:
+    1. Download the `.zip` file for your desired version ([`v1.0.3`](https://github.com/programmablemd/packages/releases/download/v1.0.3/spry-windows.zip)) from the [GitHub Releases page](https://github.com/programmablemd/packages/releases/)
+    2. Extract the `.zip` file to a location of your choice
+    3. Add the extracted directory to your system PATH:
        - Open System Properties → Advanced → Environment Variables
        - Edit the `Path` variable and add the directory containing `spry.exe`
-    3. Restart your terminal or command prompt
-  
-    
-    #### Verify Installation:
-
-    ```bash
-        spry --version
-        spry --help
-    ```
+    4. Restart your terminal or command prompt
     
     <Callout type="warning">
     Manual binary installations won't receive automatic updates. You'll need to download new versions manually.
@@ -287,9 +314,9 @@ EOF
 source .envrc
 ```
 
-### Updating Spry
+## Updating Spry
 
-<Tabs items={['Homebrew', 'Manual']}>
+<Tabs items={['Homebrew', 'Manual', 'Version switching using Homebrew']}>
   <Tab value="Homebrew">
     ```bash
     # Update Homebrew
@@ -297,6 +324,15 @@ source .envrc
     
     # Upgrade Spry
     brew upgrade spry
+    ```
+  </Tab>
+  <Tab value="Version switching using Homebrew">
+    **Example: Installing and using Spry version 1.0.2 when spry@1.0.3 is already installed**
+
+    ```bash
+    brew install spry@1.0.2
+    brew link --overwrite spry@1.0.2 
+    brew unlink spry@1.0.3 && brew link spry@1.0.2
     ```
   </Tab>
 
