@@ -29,8 +29,8 @@ compliance verification processes.
 ## How to generate an RSSD
 
 Generating a `RSSD` requires you to execute a `survielr ingest` command which
-can either be [file ingestion](/docs/core/cli/ingest-commands/files) or
-[task ingestion](/docs/core/cli/ingest-commands/tasks). Suppose you have folder
+can either be [file ingestion](/surveilr/core/cli/ingest-commands/ingest-files) or
+[task ingestion](/surveilr/core/cli/ingest-commands/tasks). Suppose you have folder
 named `my-files` and it is located within your current working directory, you
 can ingest the files in this folder by navigating into the folder ( `cd` ), and
 executing this script:
@@ -53,7 +53,7 @@ The outcome of the execution of this script above is a
 `resource-surveillance.sqlite.db` file ( known as
 `resource surveillance state database - RSSD` ) created in your root directory.
 The database consist of several tables which can you can learn about
-[here](/docs/standard-library/rssd-schema/state_schema#tables).
+[here](/surveilr/standard-library/rssd-schema/state-schema#tables).
 
 ## Configuring Unique Identifiers for RSSD Databases
 
@@ -61,7 +61,7 @@ The database consist of several tables which can you can learn about
 `resource-surveillance.sqlite.db` for storing file system state data. However,
 in environments with multiple surveillance databases, it's beneficial to
 distinguish each `RSSD` by including unique identifiers in the filename, such as
-the hostname. This setup simplifies [merging](/docs/core/admin/merge)
+the hostname. This setup simplifies [merging](/surveilr/core/admin/merge)
 of databases. Unique identifiers can be configured for `RSSD` databases in two
 ways:
 
