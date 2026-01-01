@@ -2,158 +2,242 @@
 title: Architecture Overview
 ---
 
-This page explains the architecture of Qualityfolio and how it transforms declarative Markdown files into executable, traceable test workflows.
+# Architecture Overview
 
-Qualityfolio uses a fully declarative, Markdown-driven execution model powered by Runbooks, MDAST processing, and SQL‑backed telemetry. At the core of the system is `lib/runbook/cli.ts`, which provides a unified execution layer for all Markdown-based test definitions.
+Qualityfolio is a **Test‑Management‑as‑Code (TMaC)** platform built on a fully declarative, Markdown‑native architecture. It combines **Spry** for ontology‑driven parsing and orchestration, **Surveilr** for ingestion and ETL, and **SQLPage** for lightweight, query‑driven dashboards.
+
+All test artifacts, execution evidence, telemetry, and dashboards are derived from structured files under version control, making Qualityfolio reproducible, auditable, and automation‑friendly.
 
 ---
 
 ## Architectural Philosophy
 
-Qualityfolio is designed around three key principles:
+Qualityfolio is guided by the following core principles:
 
-1. Declarative by Design – Test logic is defined in Markdown, not in imperative scripts.
-2. Traceability First – Every action, step, and result is recorded as structured evidence.
-3. Execution as Data – MDAST is used as an intermediate, machine-readable format that drives execution.
+1. **Test Management as Code (TMaC)**
+   Test plans, cases, cycles, execution evidence, and dashboards are managed as code artifacts rather than through a UI‑centric system.
 
-This approach enables version‑controlled testing, human‑readable specifications, and machine‑executable workflows from the same source of truth.
+2. **Markdown as the Source of Truth**
+   Markdown files are both human‑readable and machine‑processable. The same documents drive validation, database generation, and visualization.
+
+3. **Ontology‑Driven Processing**
+   Spry parses Markdown into a structured ontology (AST/MDAST), enabling classification, hierarchy validation, and deterministic execution.
+
+4. **Data‑First Reporting**
+   All execution and traceability data is normalized into SQLite, enabling flexible analytics and dashboards without additional backend services.
+
+---
+
+## High‑Level Architecture
+
+```text
+Markdown Test Artifacts & Evidence
+              │
+              ▼
+        Spry (Ontology Engine)
+              │
+              ▼
+      Surveilr (Ingestion & ETL)
+              │
+              ▼
+     SQLite Telemetry Database
+              │
+              ▼
+        SQLPage Dashboards
+```
 
 ---
 
 ## Core Components
 
-### lib/runbook/cli.ts
+### Spry (Ontology & Orchestration Engine)
 
-This is the primary execution engine of Qualityfolio. It orchestrates the entire lifecycle of test execution.
+Spry is the central execution and orchestration layer in Qualityfolio. It is responsible for:
 
-Responsibilities include:
+* Parsing Markdown test artifacts
+* Applying document classification and hierarchy rules
+* Validating structure and metadata
+* Running runbooks (`spry rb run`)
+* Orchestrating SQLPage pipelines (`spry sp spc`)
+* Providing live HTML previews via the Axiom Web UI
 
-* Parsing Markdown via MDAST
-* Applying document classification rules
-* Triggering executable test steps
-* Writing structured telemetry records to SQL databases
+Spry treats documents as executable models rather than imperative scripts.
 
-### CLI Dispatcher
+---
 
-The CLI layer is responsible for:
+### Surveilr (Ingestion & ETL Engine)
 
-* Handling user commands
-* Routing file paths
-* Invoking the appropriate execution pipelines
+Surveilr handles ingestion, transformation, and normalization of Qualityfolio data. It:
 
-It acts as the entry point for all user‑initiated operations.
+* Ingests JSON execution evidence and metadata
+* Applies SQL‑based ETL logic
+* Produces a normalized SQLite database
+* Bundles SQLPage as the embedded reporting runtime
 
-### MDAST Parser
+Surveilr ensures that raw artifacts are transformed into clean, query‑ready relational data.
 
-The MDAST parser converts Markdown content into a machine‑readable abstract syntax tree (AST). This enables:
+---
 
-* Programmatic traversal of document structure
-* Role‑based classification of headings and blocks
-* Deterministic execution of steps
+### SQLPage (Dashboard & UI Layer)
+
+SQLPage provides the Test Management Dashboard. It:
+
+* Queries the generated SQLite database
+* Renders dashboards defined using Markdown + SQL
+* Runs as a lightweight local web server
+* Supports live reload when used with Spry watch mode
+
+SQLPage introduces no additional backend services and operates directly on SQLite.
+
+---
+
+## Document & Data Model
+
+### Test Artifacts (Markdown)
+
+Test artifacts are authored under the `test-artifacts/` directory using structured Markdown. These artifacts define:
+
+* Project and test hierarchy
+* Test plans, suites, cycles, and cases
+* Metadata and identifiers
+* Evidence linkage patterns
+
+Spry parses these artifacts into an ontology used consistently across validation, database generation, and UI rendering.
+
+---
+
+### Execution Evidence (Filesystem)
+
+Execution evidence is stored under the `evidence/` directory and may include:
+
+* Result JSON files
+* Auto‑generated run Markdown
+* Screenshots and binary attachments
+
+Evidence files are ingested by Surveilr and referenced within the SQLite database for traceability.
+
+---
 
 ### SQLite Telemetry Database
 
-A local SQLite database (`*.sqlite.db`) is used to store:
+The generated SQLite database (`resource-surveillance.sqlite.db`) is the **system of record**. It stores:
 
-* Execution metadata
-* Step‑level pass/fail status
-* Timestamps and durations
-* Structured evidence references
+* Test hierarchy and metadata
+* Execution status and timestamps
+* Case‑ and cycle‑level results
+* Evidence references and traceability mappings
 
-### Evidence Folder
-
-The file‑based evidence store captures physical artifacts generated during execution, including:
-
-* Screenshots
-* Log files
-* JSON outputs
-* Network traces
+This database is queried directly by SQLPage and can be inspected using any SQLite‑compatible tool.
 
 ---
 
-## Execution Flow
+## Folder Structure
 
-The standard execution flow inside Qualityfolio follows this logical path:
+Qualityfolio enforces a predictable and discoverable workspace layout:
 
-Markdown Test → lib/runbook/cli.ts → MDAST → Execution → Evidence → SQL → Reports
+```text
+ASSURANCE-PRIME/
+├── support/
+│   └── assurance/
+│       └── qualityfolio/
+│           ├── evidence/
+│           │   ├── TC-GLUE-001/
+│           │   │   └── 1.1/
+│           │   │       ├── result.auto.json
+│           │   │       └── run.auto.md
+│           │   └── TC-GLUE-002/
+│           │       └── 1.1/
+│           │           ├── loginButtonClick.png
+│           │           ├── result.auto.json
+│           │           └── run.auto.md
+│           ├── sqlpage/
+│           │   └── sqlpage.json                  # runtime configuration file for SQLPage, auto-generated
+│           ├── test-artifacts/
+│           │   └── example-artifact.md
+│           ├── qualityfolio-json-etl.sql         # SQL ETL script for Qualityfolio data
+│           ├── qualityfolio.md                   # SQLPage Markdown page (DB config + queries)
+│           └── resource-surveillance.sqlite.db   # Database generated
+```
 
-The typical command used to trigger execution from the `qualityfolio` folder is:
+This structure keeps artifacts, evidence, ETL logic, database, and dashboards co‑located and version‑controlled.
+
+---
+
+## End‑to‑End Execution Flow
+
+### 1. Authoring
+
+* Test artifacts are authored or updated under `test-artifacts/`
+* Execution evidence is generated under `evidence/`
+
+### 2. Ingestion & Database Generation
 
 ```bash
-../../../lib/runbook/cli.ts mdast tree qf-complex.md
+spry rb run qualityfolio.md
 ```
+
+This step:
+
+* Parses test artifacts
+* Ingests evidence files
+* Executes SQL‑based ETL via Surveilr
+* Produces `resource-surveillance.sqlite.db`
 
 ---
 
-## Evidence Storage Architecture
+### 3. Dashboard Generation
 
-Qualityfolio uses a hybrid storage model:
+```bash
+spry sp spc --fs dev-src.auto --destroy-first --conf sqlpage/sqlpage.json --md qualityfolio.md
+spry sp spc --fs dev-src.auto --destroy-first --conf sqlpage/sqlpage.json --md qualityfolio.md --watch
+```
 
-1. File‑based Storage
+This step:
 
-   * Located under the `evidence/` folder
-   * Stores binary and large artifacts
-
-2. Database‑backed Storage
-
-   * Implemented using `*.sqlite.db`
-   * Stores normalized, query‑ready telemetry
-
-This dual model enables both human inspection and machine analytics.
+* Configures SQLPage
+* Loads dashboard queries from `qualityfolio.md`
+* Enables continuous rebuilds in watch mode
 
 ---
 
-## Execution Pipeline (Logical View)
+### 4. Visualization
 
+```bash
+sqlpage
 ```
-Markdown File
-   ↓
-runbook/cli.ts
-   ↓
-MDAST Parsing
-   ↓
-Execution Engine
-   ↓
-Evidence Generation
-   ↓
-SQL Telemetry
-   ↓
-Reports & Dashboards
-```
+
+* Dashboards are served at `http://localhost:9227`
+* Metrics, traceability, and execution details are displayed live
 
 ---
 
-## Project Folder Structure
+## HTML UI & Live Validation
 
-The expected project layout enforces consistency and discoverability:
+Qualityfolio provides a live HTML UI for authoring and validation:
 
+```bash
+spry axiom web-ui test-artifacts/example-artifact.md
 ```
-support/
-  assurance/
-    qualityfolio/
-      evidence/
-      qf-small.md
-      qf-medium.md
-      qf-large.md
-      qf-complex.md
-      spry.ts
-      Spryfile.md
-lib/
-  runbook/
-    cli.ts
-```
+
+This UI supports:
+
+* Real‑time ontology parsing
+* Live reload on file save
+* Structural and classification validation
+* Visual inspection of hierarchy, roles, and metadata
+
+This capability is intended for **design‑time validation**, not execution.
 
 ---
 
-## How the Components Work Together
+## Architectural Summary
 
-When a user runs a test:
+Qualityfolio’s architecture is:
 
-1. The CLI receives the command and validates the input file.
-2. The Markdown file is parsed into an MDAST structure.
-3. Document classification rules map headings to execution roles.
-4. The execution engine walks the AST and executes each step.
-5. Evidence is written to both the filesystem and the telemetry database.
-6. Reports and dashboards can then query the SQL telemetry layer.
+* **Declarative** – No imperative test scripts
+* **File‑centric** – Everything is version‑controlled
+* **Ontology‑driven** – Structure defines behavior
+* **Data‑first** – SQLite is the analytics backbone
+* **UI‑optional** – Dashboards are generated, not manually curated
 
-This architecture ensures end‑to‑end traceability from specification to execution and reporting.
+This architecture enables scalable, auditable, and automation‑ready test management aligned with modern DevOps and CI/CD practices.

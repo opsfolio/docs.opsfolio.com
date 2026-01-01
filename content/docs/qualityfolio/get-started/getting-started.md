@@ -27,7 +27,7 @@ Ensure the following tools and files are available on your system before proceed
 2. Homebrew (brew) – package manager for installing dependencies
 3. Surveilr – ingestion and transformation engine
 4. Spry – runbook and SQLPage orchestration engine
-5. SQLPage – UI layer for the Test Management Dashboard
+5. SQLPage – UI layer for the Test Management Dashboard. Already built-in with Surveilr
 6. qualityfolio-json-etl.sql – SQL-based ETL script for Qualityfolio data
 7. qualityfolio.md – Markdown file containing database configuration and SQLPage queries
 8. sqlpage.json – SQLPage runtime configuration file (under `./sqlpage/`)
@@ -36,7 +36,7 @@ Ensure the following tools and files are available on your system before proceed
 
 ## Installation
 
-To work with Spry and the Surveilr-based Qualityfolio framework, you need to install Deno, Homebrew, Spry, Surveilr, and SQLPage, and ensure the required Qualityfolio files are available in your workspace.
+To work with Spry and the Surveilr-based Qualityfolio framework, you need to install Deno, Homebrew, Spry, and Surveilr, and ensure the required Qualityfolio files are available in your workspace.
 
 ---
 
@@ -96,7 +96,7 @@ If you are a first-time Spry user:
 brew install programmablemd/packages/spry
 ```
 
-If Spry is already installed:
+Upgrade Spry, if Spry is already installed:
 
 ```bash
 brew uninstall spry
@@ -110,7 +110,7 @@ Verify your Spry installation:
 spry --version
 ```
 
-For more details on Spry installation and usage, refer to the [official Spry documentation](https://github.com/programmablemd/packages).
+For more details on Spry installation and usage, refer to the [official Spry documentation](https://docs.opsfolio.com/spry/getting-started/installation).
 
 ---
 
@@ -128,16 +128,16 @@ If an existing version is found, remove it:
 sudo rm -rf <surveilr_path_with_file_name>
 ```
 
-Download Surveilr version 3.10.0 or above (the following example uses version 3.10.0):
+Download Surveilr version 3.10.0 or above (the following example uses version 3.19.0):
 
 ```bash
-wget https://github.com/surveilr/packages/releases/download/3.10.0/surveilr_3.10.0_x86_64-unknown-linux-gnu.tar.gz
+wget https://github.com/surveilr/packages/releases/download/3.19.0/surveilr_3.19.0_x86_64-unknown-linux-gnu.tar.gz
 ```
 
 Extract the archive:
 
 ```bash
-tar -xzf surveilr_3.10.0_x86_64-unknown-linux-gnu.tar.gz
+tar -xzf surveilr_3.19.0_x86_64-unknown-linux-gnu.tar.gz
 ```
 
 Move Surveilr to `/usr/local/bin/`:
@@ -150,26 +150,10 @@ Verify Surveilr installation and ensure the version is v3.10.0 or above:
 
 ```bash
 surveilr --version
-sudo surveilr upgrade -v 3.10.0
+sudo surveilr upgrade -v 3.19.0
 ```
 
-For more details on Surveilr installation and usage, refer to the [official Surveilr documentation](https://www.surveilr.com/docs/core/installation/).
-
----
-
-#### 5. Install SQLPage
-
-Install SQLPage using Homebrew:
-
-```bash
-brew install sqlpage
-```
-
-Verify SQLPage installation:
-
-```bash
-sqlpage --version
-```
+For more details on Surveilr installation and usage, refer to the [official Surveilr documentation](https://docs.opsfolio.com/surveilr/core/installation).
 
 ---
 
@@ -193,7 +177,7 @@ ASSURANCE-PRIME/
 │           │           ├── result.auto.json
 │           │           └── run.auto.md
 │           ├── sqlpage/
-│           │   └── sqlpage.json                  # runtime configuration file for SQLPage
+│           │   └── sqlpage.json                  # runtime configuration file for SQLPage, auto-generated
 │           ├── test-artifacts/
 │           │   └── example-artifact.md
 │           ├── qualityfolio-json-etl.sql         # SQL ETL script for Qualityfolio data
@@ -204,7 +188,7 @@ ASSURANCE-PRIME/
 ### Key Directories and Files
 
 - test-artifacts/ – Authoring location for test cases, plans, suites, and metadata
-- evidence/ – Auto-generated test execution evidence (results, runs, attachments)
+- evidence/ – Location for test execution evidence (results, runs, attachments)
 - qualityfolio.md – Core logic file that defines database creation and SQLPage queries
 - qualityfolio-json-etl.sql – ETL script that transforms ingested JSON into relational tables
 - sqlpage/sqlpage.json – SQLPage runtime configuration
@@ -216,9 +200,9 @@ ASSURANCE-PRIME/
 
 Qualityfolio tests follow a structured Markdown hierarchy to ensure full traceability and machine-readable execution. Qualityfolio projects can range from simple to highly complex structures. You can explore ready-made examples based on real-world implementations.
 
-An example test artifact file (example-artifact.md) for the project, OWASP - GLUE UP (with Qualityfolio's Small pattern) is available [here](https://github.com/programmablemd/assurance-prime/tree/main/support/assurance/qualityfolio/test-artifacts/example-artifact.md).
+An example test artifact file (example-artifact.md) for the project, OWASP - GLUE UP (with Qualityfolio's Small pattern) is available [here](https://raw.githubusercontent.com/programmablemd/assurance-prime/refs/heads/main/support/assurance/qualityfolio/test-artifacts/example-artifact.md).
 
-This example demonstrate:
+This example demonstrates:
 
 * Header-based classification
 * Hierarchical test design
