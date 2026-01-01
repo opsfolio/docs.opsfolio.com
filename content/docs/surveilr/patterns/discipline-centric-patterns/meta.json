@@ -1,5 +1,6 @@
 {
   "title": "Discipline-centric Patterns",
+  "icon" : "Share2",
   "pages": [
     "aerospace-engineers",
     "auditors",
@@ -35,6 +36,7 @@
     "subject-matter-expert",
     "supply-chain-managers",
     "system-engineer",
+    "system-integrators",
     "technical-writer",
     "training",
     "user-experience"

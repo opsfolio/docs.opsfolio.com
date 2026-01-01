@@ -1,5 +1,6 @@
 {
   "title": "Surveilr Core",
+  "icon" : "ScanEye",
   "pages": [
     "what-is-surveilr",
     "quick-start",
