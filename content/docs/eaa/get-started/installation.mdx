@@ -1,42 +1,42 @@
 ---
-title: Installation Guide for Fleetfolio EAA
+title: Installation Guide
 description: This document provide the installation steps for setting up the Fleetfolio EAA – Pentest Lite framework on Kali Linux.
 ---
 
 
-This guide provides the step-by-step instructions required to manually install **Kali Linux** and the **Fleetfolio EAA – Pentest Lite** framework, along with all necessary dependencies and tools. The installation process is designed to be straightforward, ensuring that you can quickly set up a controlled and efficient environment for conducting Enterprise asset assessments.
+This guide provides the step-by-step instructions required to manually install Kali Linux and the Fleetfolio EAA – Pentest Lite framework, along with all necessary dependencies and tools. The installation process is designed to be straightforward, ensuring that you can quickly set up a controlled and efficient environment for conducting Enterprise asset assessments.
 
-## **Prerequisites**
+## Prerequisites
 
 Before beginning the installation process, ensure you have the following:
 
-### **Software Requirements**
+### Software Requirements
 
-1. **VirtualBox** (for running Kali Linux as a virtual machine)
+1. VirtualBox (for running Kali Linux as a virtual machine)
 
    * [Download VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 
-2. **Kali Linux Virtual Machine**
+2. Kali Linux Virtual Machine
 
    * [Download Kali Linux VM for VirtualBox](https://www.kali.org/get-kali/#kali-platforms)
-   * File size: **3.3 GB** (in `.7z` format)
+   * File size: 3.3 GB (in `.7z` format)
 
-3. **WinRAR or 7-Zip**
+3. WinRAR or 7-Zip
 
    * [Download WinRAR](https://www.win-rar.com/download.html?&L=0) (recommended)
 
-4. **Visual C++ Redistributable (for Windows Users)**
+4. Visual C++ Redistributable (for Windows Users)
 
    * [Download Visual C++ Redistributable Runtimes All-in-One](https://www.techpowerup.com/download/visual-c-redistributable-runtime-package-all-in-one)
-   * This is required if you're using Windows as your host machine to install **VirtualBox**.
+   * This is required if you're using Windows as your host machine to install VirtualBox.
 
-5. **Homebrew** (for package management)
+5. Homebrew (for package management)
 
    * [Install Homebrew](https://brew.sh/)
 
-### **Dependencies**
+### Dependencies
 
-1. **Go** (for certain tools like `Deno`, `Subzy`, etc.)
+1. Go (for certain tools like `Deno`, `Subzy`, etc.)
 
    * Install Go using the following command:
 
@@ -44,7 +44,7 @@ Before beginning the installation process, ensure you have the following:
      sudo apt install golang-go -y
      ```
 
-2. **Deno** (JavaScript/TypeScript runtime)
+2. Deno (JavaScript/TypeScript runtime)
 
    * Install using Homebrew:
 
@@ -52,7 +52,7 @@ Before beginning the installation process, ensure you have the following:
      brew install deno
      ```
 
-3. **Surveilr** (Resource Surveillance & Integration Engine for Critical Systems)
+3. Surveilr (Resource Surveillance & Integration Engine for Critical Systems)
 
    * Install with the following command:
 
@@ -62,9 +62,9 @@ Before beginning the installation process, ensure you have the following:
      mv surveilr /usr/local/bin
      ```
 
-4. **Homebrew Dependency Setup** (for Kali Linux)
+4. Homebrew Dependency Setup (for Kali Linux)
 
-   * If **Homebrew** isn't installed, install it with the following command:
+   * If Homebrew isn't installed, install it with the following command:
 
      ```bash
      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -77,7 +77,7 @@ Before beginning the installation process, ensure you have the following:
      eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
      ```
 
-5. **Install Packages and Dependencies for Fleetfolio Tools**
+5. Install Packages and Dependencies for Fleetfolio Tools
 
    * Run the following command to install various security tools required for the Fleetfolio EAA framework:
 
@@ -98,35 +98,35 @@ Before beginning the installation process, ensure you have the following:
      brew install rustscan dalfox trivy
      ```
 
-## **Step-by-Step Installation Guide**
+## Step-by-Step Installation Guide
 
-### **Step 1: Install VirtualBox**
+### Step 1: Install VirtualBox
 
-1. Download and install **VirtualBox** from the official site.
-2. After installation, open **VirtualBox** and configure it to run **Kali Linux**.
+1. Download and install VirtualBox from the official site.
+2. After installation, open VirtualBox and configure it to run Kali Linux.
 
-### **Step 2: Download and Install Kali Linux VM**
+### Step 2: Download and Install Kali Linux VM
 
 1. Download the Kali Linux VirtualBox VM file.
-2. Extract the `.7z` file using **WinRAR** or **7-Zip**.
-3. Open the extracted `.vbox` file to automatically import the Kali Linux virtual machine into **VirtualBox**.
-4. Set the **Base Memory** to **4096 MB** and **Processor Cores** to **2–3** (recommended).
+2. Extract the `.7z` file using WinRAR or 7-Zip.
+3. Open the extracted `.vbox` file to automatically import the Kali Linux virtual machine into VirtualBox.
+4. Set the Base Memory to 4096 MB and Processor Cores to 2–3 (recommended).
 5. Start the Kali VM.
 
-### **Step 3: Log in to Kali Linux**
+### Step 3: Log in to Kali Linux
 
-1. Use the following default credentials to log into **Kali Linux**:
+1. Use the following default credentials to log into Kali Linux:
 
    * Username: `kali`
    * Password: `kali`
 
-2. Once logged in, open the **Terminal** and elevate to root privileges:
+2. Once logged in, open the Terminal and elevate to root privileges:
 
    ```bash
    sudo su
    ```
 
-### **Step 4: Update System Packages**
+### Step 4: Update System Packages
 
 1. Run the following commands to ensure your system is fully updated:
 
@@ -134,11 +134,11 @@ Before beginning the installation process, ensure you have the following:
    sudo apt update && sudo apt upgrade -y && sudo apt full-upgrade -y
    ```
 
-### **Step 5: Install Homebrew**
+### Step 5: Install Homebrew
 
-If you are using **Homebrew** to install additional dependencies, ensure it is set up with the following steps:
+If you are using Homebrew to install additional dependencies, ensure it is set up with the following steps:
 
-1. Run this command to install **Homebrew**:
+1. Run this command to install Homebrew:
 
    ```bash
    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -151,9 +151,9 @@ If you are using **Homebrew** to install additional dependencies, ensure it is s
    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
    ```
 
-### **Step 6: Install Required Dependencies and Tools**
+### Step 6: Install Required Dependencies and Tools
 
-1. Run the following command to install the required tools and dependencies for **Fleetfolio EAA – Pentest Lite**:
+1. Run the following command to install the required tools and dependencies for Fleetfolio EAA – Pentest Lite:
 
    ```bash
    sudo apt install -y subfinder dnsx httpx-toolkit naabu nuclei xq jq dirsearch testssl.sh paramspider commix && \
@@ -172,9 +172,9 @@ If you are using **Homebrew** to install additional dependencies, ensure it is s
    brew install rustscan dalfox trivy
    ```
 
-### **Step 7: Configure Fleetfolio EAA Environment Variables**
+### Step 7: Configure Fleetfolio EAA Environment Variables
 
-1. Clone the repository and configure the **`.env`** file with your specific environment variables:
+1. Clone the repository and configure the `.env` file with your specific environment variables:
 
    ```bash
    git clone https://github.com/surveilr/www.surveilr.com.git && \
@@ -200,4 +200,4 @@ If you are using **Homebrew** to install additional dependencies, ensure it is s
 
 ---
 
-With these steps, you should be ready to begin using **Fleetfolio EAA – Pentest Lite** for Enterprise asset assessments. If you encounter any errors during installation, refer to the troubleshooting section for solutions.
+With these steps, you should be ready to begin using Fleetfolio EAA – Pentest Lite for Enterprise asset assessments. If you encounter any errors during installation, refer to the troubleshooting section for solutions.

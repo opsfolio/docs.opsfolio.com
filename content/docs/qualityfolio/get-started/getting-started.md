@@ -3,9 +3,9 @@ title: Quick Start Guide
 description: This document outlines the step-by-step setup of Qualityfolio, a Test-Management-as-Code (TMaC) system powered by Spry’s Axiom-based execution pattern and Surveilr’s ingestion, transformation, and ETL pipeline.
 ---
 
-This guide helps you quickly set up **Qualityfolio**, generate a queryable SQLite database from test artifacts, and launch a Test Management Dashboard using **Spry**, **Surveilr**, and **SQLPage**.
+This guide helps you quickly set up Qualityfolio, generate a queryable SQLite database from test artifacts, and launch a Test Management Dashboard using Spry, Surveilr, and SQLPage.
 
-Welcome to Qualityfolio - a Markdown-native Test Management system backed by Spry’s ontology engine and Surveilr’s data ingestion pipeline. Qualityfolio follows a **Test Management as Code (TMaC)** approach, where test artifacts, execution evidence, and dashboards are all derived from structured files under version control.
+Welcome to Qualityfolio - a Markdown-native Test Management system backed by Spry’s ontology engine and Surveilr’s data ingestion pipeline. Qualityfolio follows a Test Management as Code (TMaC) approach, where test artifacts, execution evidence, and dashboards are all derived from structured files under version control.
 
 ---
 
@@ -13,9 +13,9 @@ Welcome to Qualityfolio - a Markdown-native Test Management system backed by Spr
 
 Qualityfolio is designed to:
 
-1. **Generate an SQLite database** from test artifact and execution evidence files.
-2. **Generate a Test Management Dashboard** for test metrics, traceability, and execution insights.
-3. **HTML UI Generation (Live Preview)** with real-time ontology parsing, live reload, and structural validation.
+1. Generate an SQLite database from test artifact and execution evidence files.
+2. Generate a Test Management Dashboard for test metrics, traceability, and execution insights.
+3. HTML UI Generation (Live Preview) with real-time ontology parsing, live reload, and structural validation.
 
 ---
 
@@ -23,20 +23,20 @@ Qualityfolio is designed to:
 
 Ensure the following tools and files are available on your system before proceeding:
 
-1. **Deno** – runtime required by Spry
-2. **Homebrew (brew)** – package manager for installing dependencies
-3. **Surveilr** – ingestion and transformation engine
-4. **Spry** – runbook and SQLPage orchestration engine
-5. **SQLPage** – UI layer for the Test Management Dashboard
-6. **qualityfolio-json-etl.sql** – SQL-based ETL script for Qualityfolio data
-7. **qualityfolio.md** – Markdown file containing database configuration and SQLPage queries
-8. **sqlpage.json** – SQLPage runtime configuration file (under `./sqlpage/`)
+1. Deno – runtime required by Spry
+2. Homebrew (brew) – package manager for installing dependencies
+3. Surveilr – ingestion and transformation engine
+4. Spry – runbook and SQLPage orchestration engine
+5. SQLPage – UI layer for the Test Management Dashboard
+6. qualityfolio-json-etl.sql – SQL-based ETL script for Qualityfolio data
+7. qualityfolio.md – Markdown file containing database configuration and SQLPage queries
+8. sqlpage.json – SQLPage runtime configuration file (under `./sqlpage/`)
 
 ---
 
 ## Installation
 
-To work with Spry and the Surveilr-based Qualityfolio framework, you need to install **Deno**, **Homebrew**, **Spry**, **Surveilr**, and **SQLPage**, and ensure the required Qualityfolio files are available in your workspace.
+To work with Spry and the Surveilr-based Qualityfolio framework, you need to install Deno, Homebrew, Spry, Surveilr, and SQLPage, and ensure the required Qualityfolio files are available in your workspace.
 
 ---
 
@@ -90,13 +90,13 @@ deno upgrade
 
 #### 3. Install Spry
 
-**If you are a first-time Spry user:**
+If you are a first-time Spry user:
 
 ```bash
 brew install programmablemd/packages/spry
 ```
 
-**If Spry is already installed:**
+If Spry is already installed:
 
 ```bash
 brew uninstall spry
@@ -128,7 +128,7 @@ If an existing version is found, remove it:
 sudo rm -rf <surveilr_path_with_file_name>
 ```
 
-Download Surveilr version 3.10.0 or above (the following example uses version **3.10.0**):
+Download Surveilr version 3.10.0 or above (the following example uses version 3.10.0):
 
 ```bash
 wget https://github.com/surveilr/packages/releases/download/3.10.0/surveilr_3.10.0_x86_64-unknown-linux-gnu.tar.gz
@@ -146,7 +146,7 @@ Move Surveilr to `/usr/local/bin/`:
 sudo mv surveilr /usr/local/bin/
 ```
 
-Verify Surveilr installation and ensure the version is **v3.10.0** or above:
+Verify Surveilr installation and ensure the version is v3.10.0 or above:
 
 ```bash
 surveilr --version
@@ -203,12 +203,12 @@ ASSURANCE-PRIME/
 
 ### Key Directories and Files
 
-- **test-artifacts/** – Authoring location for test cases, plans, suites, and metadata
-- **evidence/** – Auto-generated test execution evidence (results, runs, attachments)
-- **qualityfolio.md** – Core logic file that defines database creation and SQLPage queries
-- **qualityfolio-json-etl.sql** – ETL script that transforms ingested JSON into relational tables
-- **sqlpage/sqlpage.json** – SQLPage runtime configuration
-- **resource-surveillance.sqlite.db** – Generated SQLite database containing test data
+- test-artifacts/ – Authoring location for test cases, plans, suites, and metadata
+- evidence/ – Auto-generated test execution evidence (results, runs, attachments)
+- qualityfolio.md – Core logic file that defines database creation and SQLPage queries
+- qualityfolio-json-etl.sql – ETL script that transforms ingested JSON into relational tables
+- sqlpage/sqlpage.json – SQLPage runtime configuration
+- resource-surveillance.sqlite.db – Generated SQLite database containing test data
 
 ---
 
@@ -276,7 +276,7 @@ This pipeline:
 
 ### 2.3 Start SQLPage Server
 
-In a **separate terminal**, from the `qualityfolio` directory, start the SQLPage server:
+In a separate terminal, from the `qualityfolio` directory, start the SQLPage server:
 
 ```bash
 sqlpage
