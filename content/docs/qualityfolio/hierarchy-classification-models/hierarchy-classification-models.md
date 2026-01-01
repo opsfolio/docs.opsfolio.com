@@ -3,18 +3,18 @@ title: Heading Hierarchy & Classification Models
 description: This document explains the heading hierarchy and classification models used in Qualityfolio to interpret Markdown documents into structured, queryable data.
 ---
 
-Qualityfolio uses a **strict heading–role classification system** to interpret Markdown-based test documentation. Each heading in a Markdown file is mapped to a specific **assurance role**. This mapping allows the execution engine to understand structure, intent, and execution order.
+Qualityfolio uses a strict heading–role classification system to interpret Markdown-based test documentation. Each heading in a Markdown file is mapped to a specific assurance role. This mapping allows the execution engine to understand structure, intent, and execution order.
 
 ## Assurance Roles
 
 The following roles are used across all hierarchy models:
 
-* **project** – Top-level context for the work
-* **strategy** – Governance or compliance strategy
-* **plan** – Tactical execution plan
-* **suite** – Logical grouping of related tests
-* **case** – Individual test case
-* **evidence** – Proof of execution and results
+* project – Top-level context for the work
+* strategy – Governance or compliance strategy
+* plan – Tactical execution plan
+* suite – Logical grouping of related tests
+* case – Individual test case
+* evidence – Proof of execution and results
 
 These mappings power:
 

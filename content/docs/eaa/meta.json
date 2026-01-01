@@ -1,8 +1,8 @@
 {
   "title": "EAA",
   "pages": [
-    "core-concept",
-    "get-started"
+    "get-started" ,
+    "core-concept"
     ],
     "root": true,
     "defaultOpen": false
