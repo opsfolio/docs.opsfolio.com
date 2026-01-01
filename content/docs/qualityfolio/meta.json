@@ -1,10 +1,10 @@
 {
   "title": "Qualityfolio",
   "pages": [
-    "core-concepts",
+    "introduction" , 
     "get-started",
-    "hierarchy-classification-models",
-    "introduction"    ],
+    "core-concepts",
+    "hierarchy-classification-models"   ],
     "root": true,
     "defaultOpen": false
 }
