@@ -70,4 +70,6 @@
 } */
  .data-\[state\=active\]\:text-fd-primary[data-state=active] {
     color: #06b1e0 !important;
+    border-color: #06b1e0 !important;
+    border-bottom-width: 1.5px;
 }
