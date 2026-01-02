@@ -6,8 +6,8 @@ export function baseOptions(): BaseLayoutProps {
     nav: {
       title: (
         <div className="flex items-center gap-2">
-          <Image src="/logo.png" alt="Spry Logo" width={32} height={32} className="rounded" />
-          <span>Documentation</span>
+          <Image src="/Opsfolio-Logo-icon.png" alt="Spry Logo" width={32} height={32} className="rounded" />
+          <span>Opsfolio</span>
         </div>
       ),
     },
