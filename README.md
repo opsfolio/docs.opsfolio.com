@@ -26,7 +26,7 @@ This is a unified documentation site covering all Opsfolio products. It's built 
 | **Spry** | Operations management & workflow automation | `/spry` |
 | **Surveilr** | Surveillance & monitoring platform | `/surveilr` |
 | **QualityFolio** | Quality assurance & testing | `/qualityfolio` |
-| **EAA** | Enterprise Architecture & governance | `/eaa` |
+| **EAA** | Enterprise Asset Assessment | `/eaa` |
 
 ---
 
@@ -60,6 +60,7 @@ This is a unified documentation site covering all Opsfolio products. It's built 
 ---
 
 ## 📁 Project Structure
+
 ```
 docs.opsfolio.com/
 ├── content/
@@ -136,22 +137,26 @@ docs.opsfolio.com/
 ### Installation
 
 1. **Clone the repository**
+
 ```bash
    git clone https://github.com/opsfolio/docs.opsfolio.com.git
    cd docs.opsfolio.com
 ```
 
-2. **Install dependencies**
+1. **Install dependencies**
+
 ```bash
    npm install
 ```
 
-3. **Set up environment variables**
+1. **Set up environment variables**
+
 ```bash
    cp .env.sample .env.local
 ```
-   
-4. **Add your API key** to `.env.local`:
+
+1. **Add your API key** to `.env.local`:
+
 ```env
    # Required: Get free key at https://console.groq.com/keys
    GROQ_API_KEY=gsk_your_actual_key_here
@@ -163,13 +168,14 @@ docs.opsfolio.com/
    NEXT_PUBLIC_GITHUB_DOCS_PATH=content/docs
 ```
 
-5. **Start development server**
+1. **Start development server**
+
 ```bash
    npm run dev
 ```
 
-6. **Open in browser**
-   
+1. **Open in browser**
+
    Navigate to [http://localhost:3000](http://localhost:3000)
 
 ---
@@ -198,11 +204,13 @@ docs.opsfolio.com/
 ### Adding New Documentation
 
 1. **Create a new `.mdx` file** in `content/docs/` subdirectory
+
 ```bash
    touch content/docs/spry/section/new-page.mdx
 ```
 
-2. **Add frontmatter**:
+1. **Add frontmatter**:
+
 ```mdx
    ---
    title: "Your Page Title"
@@ -215,7 +223,8 @@ docs.opsfolio.com/
    Content using MDX syntax...
 ```
 
-3. **Update `meta.json`** to include your page in navigation:
+1. **Update `meta.json`** to include your page in navigation:
+
 ```json
    {
      "title": "Section Name",
@@ -223,7 +232,8 @@ docs.opsfolio.com/
    }
 ```
 
-4. **Preview changes**:
+1. **Preview changes**:
+
 ```bash
    npm run dev
 ```
@@ -231,6 +241,7 @@ docs.opsfolio.com/
 ### Documentation Structure
 
 Each product follows this structure:
+
 ```
 product-name/
 ├── meta.json              # Navigation config
@@ -312,6 +323,7 @@ Configure in `src/lib/layout.shared.tsx`:
 ### Feedback Storage
 
 Stored in `db/feedback.json`:
+
 ```json
 [
   {
@@ -331,9 +343,11 @@ Stored in `db/feedback.json`:
 ## 🌐 API Routes
 
 ### POST `/api/feedback`
+
 Save user feedback
 
 **Request:**
+
 ```json
 {
   "type": "good" | "bad",
@@ -345,6 +359,7 @@ Save user feedback
 **Response:** `{ "success": true }`
 
 ### POST `/api/chat`
+
 AI-powered documentation Q&A
 
 - Uses Groq API (Llama 3.3 70B)
@@ -352,6 +367,7 @@ AI-powered documentation Q&A
 - Error handling
 
 ### GET `/api/search`
+
 Full-text search
 
 - Query parameter: `q`
@@ -360,6 +376,7 @@ Full-text search
 ---
 
 ## 📦 Available Scripts
+
 ```bash
 # Development
 npm run dev              # Start dev server (:3000)
@@ -385,6 +402,7 @@ npm run types:check      # TypeScript validation
 4. Deploy
 
 ### Docker
+
 ```dockerfile
 FROM node:20-alpine
 WORKDIR /app
@@ -397,6 +415,7 @@ CMD ["npm", "start"]
 ```
 
 ### Self-Hosted
+
 ```bash
 npm run build
 # Deploy .next/, db/, public/, package.json
