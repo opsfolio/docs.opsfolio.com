@@ -1,34 +1,34 @@
----
-title: "Fumadocs Quick Start"
-description: "Complete guide for Fumadocs MDX documentation setup and usage"
----
 
-# Fumadocs - Complete Quick Start Guide
+# docs.opsfoilio.com  - Complete Quick Start Guide
 
-**Repo:** https://github.com/opsfolio/docs.opsfolio.com | **Stack:** Fumadocs v16.2.4 + Next.js v16 + Tailwind v4
+**Repo:** <https://github.com/opsfolio/docs.opsfolio.com> | **Stack:** Fumadocs v16.2.4 + Next.js v16 + Tailwind v4
 
 ---
 
 ## 🔄 Clone & Setup Repository
 
 ### Step 1: Clone Repository
+
 ```bash
 git clone https://github.com/opsfolio/docs.opsfolio.com.git
 cd docs.opsfolio.com
 ```
 
 ### Step 2: Install Dependencies
+
 ```bash
 npm install
 ```
 
 ### Step 3: Setup Environment
+
 ```bash
 cp .env.sample .env.local
 # Edit .env.local and add your API keys if needed
 ```
 
 ### Step 4: Run Development Server
+
 ```bash
 npm run dev
 # Open http://localhost:3000
@@ -137,6 +137,7 @@ docs.opsfolio.com/
 ```
 
 **Key Points:**
+
 - `content/docs/` = Where you add all documentation
 - `src/app/` = Next.js pages and layouts
 - `src/components/` = React components
@@ -147,14 +148,16 @@ docs.opsfolio.com/
 
 ## ➕ Add New MDX Files to Documentation
 
-### Method 1: Add Single Page
+### Method 1: Add Single MDX page
 
-**Step 1:** Create new file
+**Step 1:** Create new mdx file in the desired section
+
 ```bash
-touch content/docs/spry/core-concepts/my-page.mdx
+touch content/docs/[foldername representing your service]/[sectionname]/[mdxfilename].mdx
 ```
 
 **Step 2:** Add frontmatter
+
 ```mdx
 ---
 title: "My Page Title"
@@ -171,6 +174,7 @@ This is my page content...
 **Step 3:** Update parent `meta.json`
 
 Edit `content/docs/spry/core-concepts/meta.json`:
+
 ```json
 {
   "title": "Core Concepts",
@@ -184,6 +188,7 @@ Edit `content/docs/spry/core-concepts/meta.json`:
 ```
 
 **Step 4:** Save and preview
+
 ```bash
 npm run dev
 # Check http://localhost:3000/docs/spry/core-concepts/my-page
@@ -194,11 +199,13 @@ npm run dev
 ### Method 2: Create New Folder Section
 
 **Step 1:** Create folder
+
 ```bash
 mkdir -p content/docs/spry/new-section
 ```
 
 **Step 2:** Create `index.mdx`
+
 ```mdx
 ---
 title: "New Section"
@@ -213,6 +220,7 @@ Welcome to this new section...
 ```
 
 **Step 3:** Create `meta.json`
+
 ```json
 {
   "title": "New Section",
@@ -226,6 +234,7 @@ Welcome to this new section...
 **Step 4:** Update root `meta.json`
 
 Edit `content/docs/spry/meta.json`:
+
 ```json
 {
   "title": "Spry",
@@ -243,6 +252,7 @@ Edit `content/docs/spry/meta.json`:
 ## 🎨 Styling MDX Files
 
 ### Option 1: Inline Tailwind Classes
+
 ```mdx
 <div className="p-6 bg-blue-50 rounded-lg border-2 border-blue-200">
   <h3 className="text-xl font-bold mb-2">Styled Box</h3>
@@ -255,6 +265,7 @@ Edit `content/docs/spry/meta.json`:
 ```
 
 ### Option 2: Use Fumadocs Components
+
 ```mdx
 import { Card, Cards } from 'fumadocs-ui/components/card';
 
@@ -268,6 +279,7 @@ import { Card, Cards } from 'fumadocs-ui/components/card';
 ### Option 3: Global CSS Classes
 
 Add to `src/app/global.css`:
+
 ```css
 @layer components {
   .doc-highlight {
@@ -281,6 +293,7 @@ Add to `src/app/global.css`:
 ```
 
 Then use in MDX:
+
 ```mdx
 <div className="doc-highlight">
   Important highlighted content
@@ -292,6 +305,7 @@ Then use in MDX:
 ```
 
 ### Option 4: Dark Mode Support
+
 ```mdx
 <div className="p-4 bg-blue-50 dark:bg-blue-900 text-gray-800 dark:text-blue-100 rounded">
   Works in light and dark mode
@@ -303,6 +317,7 @@ Then use in MDX:
 ## 🧩 Add Components to MDX Files
 
 ### Callout (Info/Warning/Error)
+
 ```mdx
 import { Callout } from 'fumadocs-ui/components/callout';
 
@@ -320,6 +335,7 @@ import { Callout } from 'fumadocs-ui/components/callout';
 ```
 
 ### Steps (Numbered Instructions)
+
 ```mdx
 import { Steps, Step } from 'fumadocs-ui/components/steps';
 
@@ -349,6 +365,7 @@ import { Steps, Step } from 'fumadocs-ui/components/steps';
 ```
 
 ### Tabs (Code Examples)
+
 ```mdx
 import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
 
@@ -374,6 +391,7 @@ import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
 ```
 
 ### Cards (Feature Display)
+
 ```mdx
 import { Card, Cards } from 'fumadocs-ui/components/card';
 
@@ -393,6 +411,7 @@ import { Card, Cards } from 'fumadocs-ui/components/card';
 ```
 
 ### Accordion (FAQ/Expandable)
+
 ```mdx
 import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
 
@@ -412,6 +431,7 @@ import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
 ```
 
 ### Code Blocks (Auto Syntax Highlight)
+
 ```mdx
 ```javascript
 function hello() {
@@ -430,6 +450,7 @@ npm run dev
   "version": "1.0.0"
 }
 ```
+
 ```
 
 ---
@@ -515,6 +536,7 @@ Or use your IDE/file explorer to batch rename all `.md` files to `.mdx`
 If file doesn't have frontmatter, add this at the top:
 
 **Before:**
+
 ```markdown
 # Installation
 
@@ -522,6 +544,7 @@ Steps to install...
 ```
 
 **After:**
+
 ```mdx
 ---
 title: "Installation"
@@ -589,6 +612,7 @@ npm run dev
 ## 🚀 Run & Deploy
 
 ### Development (Local Preview)
+
 ```bash
 npm run dev
 # Open http://localhost:3000
@@ -596,24 +620,28 @@ npm run dev
 ```
 
 ### Build for Production
+
 ```bash
 npm run build
 # Creates optimized build in .next/ folder
 ```
 
 ### Start Production Server
+
 ```bash
 npm start
 # Runs production build locally
 ```
 
 ### Type Check
+
 ```bash
 npm run types:check
 # Checks for TypeScript errors
 ```
 
 ### Clear Cache & Rebuild
+
 ```bash
 rm -rf .next
 npm run build
