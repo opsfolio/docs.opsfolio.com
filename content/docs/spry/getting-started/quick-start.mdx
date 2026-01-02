@@ -61,6 +61,7 @@ Let's create and execute your first executable Markdown file in under 5 minutes.
     export PORT=9227
     ```
     ````
+    [Click here to see more about environment setup.](/spry/getting-started/quick-start#environment-setup)
 
     **Development Task** - A task to start the development server:
     
@@ -286,3 +287,70 @@ Example with multiple options:
 npm test
 ```
 ````
+
+### Environment Setup
+
+#### Using direnv (Recommended)
+
+Spry works well with `direnv` for automatic environment variable management:
+
+<Steps>
+  <Step>
+    #### Install direnv
+    
+    ```bash
+    # macOS
+    brew install direnv
+    
+    # Ubuntu/Debian
+    sudo apt-get install direnv
+    ```
+  </Step>
+
+  <Step>
+    #### Configure Your Shell
+    
+    Add to your shell configuration:
+
+    ```bash
+    # For bash (~/.bashrc)
+    eval "$(direnv hook bash)"
+    
+    # For zsh (~/.zshrc)
+    eval "$(direnv hook zsh)"
+    ```
+  </Step>
+
+  <Step>
+    #### Create .envrc File
+    
+    Spry can generate `.envrc` files automatically:
+
+    ```markdown
+    ```envrc prepare-env -C ./.envrc --gitignore --descr "Generate .envrc file and add it to local .gitignore if it's not already there"
+    export SPRY_DB="sqlite://app.db?mode=rwc"
+    export PORT=9227
+    ```
+    ```
+
+    Then allow direnv to load it:
+    ```bash
+    direnv allow
+    ```
+  </Step>
+</Steps>
+
+#### Manual Environment Setup
+
+If you prefer not to use direnv, you can source environment files manually:
+
+```bash
+# Create environment file
+cat > .envrc << 'EOF'
+export SPRY_DB="sqlite://app.db?mode=rwc"
+export PORT=9227
+EOF
+
+# Load environment
+source .envrc
+```
