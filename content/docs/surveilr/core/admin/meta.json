@@ -1,5 +1,6 @@
 {
   "title": "Admin",
+  "icon": "Settings",
   "pages": [
     "merge"
     ]
