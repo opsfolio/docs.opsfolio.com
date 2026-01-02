@@ -209,7 +209,7 @@ doc-classify:
 
 ## How Qualityfolio Uses Hierarchies
 
-The runbook engine (`runbook/cli.ts`) uses Spry and MDAST to convert Markdown into structured assurance data.
+The Spry runbook engine converts Markdown into structured assurance data.
 
 ### Execution Order
 
