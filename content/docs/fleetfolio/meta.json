@@ -1,5 +1,6 @@
 {
   "title": "Fleetfolio",
+  "name": "fleetfolio",
   "pages": [
     "get-started" ,
     "core-concept"
