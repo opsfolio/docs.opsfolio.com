@@ -1,8 +1,8 @@
 {
   "title": "get-started",
   "pages": [
-    "installation",
     "introduction",
+    "installation",
     "quick-start"
     ],
     "root": true,
