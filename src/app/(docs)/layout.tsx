@@ -2,15 +2,14 @@ import { source } from '@/lib/source';
 import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 import { baseOptions } from '@/lib/layout.shared';
 import { AISearchTrigger } from '@/components/search';
-import { ShieldIcon, CheckMarkIcon, ArrowIcon } from '@/components/icons';
+import { FleetFolioIcon, QualityFolioIcon, SurveilrIcon } from '@/components/icons';
 
 export default function Layout({ children }: LayoutProps<'/'>) {
   // Map folder dirname to custom icons
   const iconMap: { [key: string]: React.ReactNode } = {
-    'surveilr': <ArrowIcon />,
-    'spry': <ArrowIcon />,
-    'qualityfolio': <CheckMarkIcon />,
-    'fleetfolio': <ShieldIcon />, // You can adjust this if you have a 4th icon
+    'surveilr': <SurveilrIcon />,
+    'qualityfolio': <QualityFolioIcon />,
+    'fleetfolio': <FleetFolioIcon />, // You can adjust this if you have a 4th icon
   };
 
   return (
