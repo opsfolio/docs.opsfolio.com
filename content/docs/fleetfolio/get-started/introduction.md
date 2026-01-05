@@ -1,3 +1,11 @@
+---
+title: "Fleetfolio Enterprise Assets Assessment (EAA) – Overview & Implementation Guide"
+date: "2026-01-02"
+author: "Documentation Team"
+description: "An in-depth overview of Fleetfolio’s Enterprise Assets Assessment (EAA), detailing its purpose, architecture, containerized workflow, evidence-driven methodology, and integration within the Opsfolio CaaS ecosystem."
+---
+
+
 # Fleetfolio Enterprise Assets Assessment (EAA)
 
 Enterprise Assets Assessment (EAA) is a core capability of the Fleetfolio platform, designed to provide organizations with a repeatable, evidence-driven methodology for discovering, evaluating, and documenting their external-facing digital assets. By leveraging industry-standard penetration testing tools, open-source security frameworks, and structured artifact management, EAA helps organizations maintain visibility and accountability over the security posture of their enterprise assets.
