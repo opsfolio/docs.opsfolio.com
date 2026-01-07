@@ -11,17 +11,7 @@ const config = {
         source: '/',
         destination: '/spry/getting-started/introduction',
         permanent: false,
-      },
-      {
-        source: '/',
-        destination: '/spry/getting-started/introduction',
-        permanent: false,
-      },
-      {
-        source: '/',
-        destination: '/spry/getting-started/introduction',
-        permanent: false,
-      },
+      }
     ];
   },
 };

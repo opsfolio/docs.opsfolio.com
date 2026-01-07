@@ -5,59 +5,13 @@ icon: Layers
 index: 3
 ---
 
+import SprySimplifiedArchitecture from '@/components/spry-simplified-architecture';
+
 ## High-Level Architecture
 
 Understanding how Spry processes Markdown into executable workflows through its layered architecture.
 
-```
-╔═════════════════════════════════════════════════════════════╗
-║                         SPRY CLI                            ║
-║                                                             ║
-║     ┌──────────┐      ┌──────────┐      ┌──────────┐        ║
-║     │  axiom   │      │    rb    │      │    sp    │        ║
-║     │ (graph)  │      │(runbook) │      │(sqlpage) │        ║
-║     └────┬─────┘      └────┬─────┘      └────┬─────┘        ║
-╚══════════╪══════════════════╪══════════════════╪════════════╝
-           │                  │                  │
-           └──────────┬───────┴────────┬─────────┘
-                      │                │
-                      ▼                ▼
-╔═════════════════════════════════════════════════════════════╗
-║                       lib/axiom                             ║
-║                 [Semantic Graph Engine]                     ║
-║                                                             ║
-║   ┌─────────┐   ┌──────────┐   ┌──────────┐   ┌─────────┐   ║
-║   │   io    │──▶│  remark  │──▶│   edge   │──▶│projection│  ║
-║   │(loader) │   │(plugins) │   │ (rules)  │   │ (views)  │  ║
-║   └─────────┘   └──────────┘   └──────────┘   └────┬────┘   ║
-║                                                      │      ║
-║                      ┌───────────────────────────────┘      ║
-║                      │                                      ║
-║                      ▼                                      ║
-║              ┌───────────────┐                              ║
-║              │  Playbook/    │                              ║
-║              │  Task Model   │                              ║
-║              └───────┬───────┘                              ║
-║                      │                                      ║
-║                      ▼                                      ║
-║              ┌───────────────┐                              ║
-║              │ orchestrate   │                              ║
-║              │   (runner)    │                              ║
-║              └───────┬───────┘                              ║
-╚══════════╪══════════════════╪══════════════════╪════════════╝
-                       │
-                       │ uses
-                       ▼
-╔═════════════════════════════════════════════════════════════╗
-║                    lib/universal                            ║
-║                  [Shared Utilities]                         ║
-║                                                             ║
-║  ┌────────┐  ┌────────┐  ┌────────┐  ┌────────┐  ┌──────┐   ║
-║  │ shell  │  │  task  │  │  code  │  │ render │  │direct│   ║
-║  │        │  │  (DAG) │  │ (lang) │  │(template)│ │ -ive │  ║
-║  └────────┘  └────────┘  └────────┘  └────────┘  └──────┘   ║
-╚═════════════════════════════════════════════════════════════╝
-```
+<SprySimplifiedArchitecture />
 
 ## Processing Pipeline
 
