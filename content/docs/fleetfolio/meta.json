@@ -1,9 +1,0 @@
-{
-  "title": "Fleetfolio",
-  "pages": [
-    "get-started" ,
-    "core-concept"
-    ],
-    "root": true,
-    "defaultOpen": false
-}
