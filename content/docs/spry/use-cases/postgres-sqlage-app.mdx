@@ -1,0 +1,498 @@
+---
+title: Data-Driven Operational Dashboard Based on Postgres and SQLPage
+description: Create Postgres-backed dashboard applications with SQLPage and Spry
+icon: Database
+index: 5
+---
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+
+**Goal:** Build a robust, SQL-driven dashboard backed by Postgres where the schema is managed as a separate asset and executed via Spry.
+<Steps>
+  <Step>
+    ## Initialize and Configure
+
+    Configure environment variables via `.envrc` so Spry, SQLPage, and Postgres all use the same settings.
+
+    ````markdown
+    ```envrc prepare-env -C ./.envrc --gitignore -X --descr "Generate .envrc and ignore it"
+    export SPRY_DB="postgresql://postgres:postgres@10.10.11.255:5434/my_spry"
+    export PORT=9227
+    ```
+    ````
+
+    Then allow direnv:
+
+    ```bash
+    direnv allow
+    ```
+  </Step>
+
+  <Step>
+    ## Prepare the Database Schema (Postgres)
+
+    Initialize the schema in Postgres using the external [`ddl.sql`](/ddl.sql) file.
+
+    ````markdown
+    ```bash prepare-db-pg --descr "Initialize Sales schema in Postgres"
+    #!/usr/bin/env -S bash
+    psql $SPRY_DB -f ddl.sql
+    ```
+    ````
+
+    <Callout type="info">
+    **Why external SQL?**  
+    Keeping schema in `ddl.sql` avoids embedding SQL in Markdown and keeps schema versionable and testable.
+    </Callout>
+  </Step>
+
+  <Step>
+    ## Define the Global UI Shell
+
+    Inject global layout and navigation into all pages.
+
+    ````markdown
+    ```sql PARTIAL global-layout.sql --inject **/*
+    SELECT 'shell' AS component,
+           'Sales Intelligence' AS title,
+           'chart-bar' AS icon,
+           'index.sql' AS link,
+           '{"link":"/index.sql","title":"Home"}' AS menu_item,
+           '{"link":"/report.sql","title":"Sales Report"}' AS menu_item;
+    ```
+    ````
+  </Step>
+
+  <Step>
+    ## The Dashboard (index.sql)
+
+    ````markdown
+    ```sql index.sql { route: { caption: "Home" } }
+        select 'card' as component,
+        'Spry' as title,
+        1 as columns;
+        select 'Use Markdown to Code, Build, and Orchestrate Intelligence'  as title,
+        'https://sprymd.org' as link,
+        'Spry turns Markdown into a programmable medium. Every fenced block, directive, and section executes, verifies, and composes reproducible workflows. From SQL pipelines to AI context graphs, Spry unifies your code, data, and documentation into one living system of record.' as description;
+        select
+            'Traffic Analytics' as title,
+            '/traffic.sql' as link,
+            'View page traffic, sources, and trends.' as description;
+
+        select
+            'User Analytics' as title,
+            '/users.sql' as link,
+            'View user growth, signups, and activity.' as description;
+
+        ```
+
+        ```sql traffic.sql --descr "Traffic analysis page"
+        SELECT 'card' AS component,
+            'Navigation' AS title,
+            2 AS columns;
+        select
+            'Home' as title,
+            '/index.sql' as link,
+            'View Home Page.' as description;
+
+        select
+            'User Analytics' as title,
+            '/users.sql' as link,
+            'View user growth, signups, and activity.' as description
+
+
+        -- Page Views Table
+        SELECT 'table' as component,
+            'Top Pages' as title,
+            TRUE as sort,
+            TRUE as search;
+
+        SELECT
+            path as "Page",
+            COUNT(*) as "Views",
+            COUNT(DISTINCT visitor_id) as "Unique Visitors",
+            round(AVG(time_on_page)::numeric, 1) || ' sec' as "Avg Time"
+        FROM page_views
+        WHERE date >= now() - INTERVAL '30 days'
+        GROUP BY path
+        ORDER BY COUNT(*) DESC
+        LIMIT 20;
+
+        -- Traffic Sources
+        SELECT 'chart' as component,
+            'Traffic Sources' as title,
+            'pie' as type;
+
+        SELECT
+            COALESCE(referrer_domain, 'Direct') as label,
+            COUNT(*) as value
+        FROM page_views
+        WHERE date >= now() - INTERVAL '30 days'
+        GROUP BY referrer_domain
+        ORDER BY COUNT(*) DESC
+        LIMIT 10;
+            
+    ```
+    ````
+  </Step>
+
+  <Step>
+    ## Traffic Sources (traffic.sql)
+    ````markdown
+    ```sql traffic.sql --descr "Traffic analysis page"
+        SELECT 'card' AS component,
+            'Navigation' AS title,
+            2 AS columns;
+        select
+            'Home' as title,
+            '/index.sql' as link,
+            'View Home Page.' as description;
+
+        select
+            'User Analytics' as title,
+            '/users.sql' as link,
+            'View user growth, signups, and activity.' as description
+
+
+        -- Page Views Table
+        SELECT 'table' as component,
+            'Top Pages' as title,
+            TRUE as sort,
+            TRUE as search;
+
+        SELECT
+            path as "Page",
+            COUNT(*) as "Views",
+            COUNT(DISTINCT visitor_id) as "Unique Visitors",
+            round(AVG(time_on_page)::numeric, 1) || ' sec' as "Avg Time"
+        FROM page_views
+        WHERE date >= now() - INTERVAL '30 days'
+        GROUP BY path
+        ORDER BY COUNT(*) DESC
+        LIMIT 20;
+
+        -- Traffic Sources
+        SELECT 'chart' as component,
+            'Traffic Sources' as title,
+            'pie' as type;
+
+        SELECT
+            COALESCE(referrer_domain, 'Direct') as label,
+            COUNT(*) as value
+        FROM page_views
+        WHERE date >= now() - INTERVAL '30 days'
+        GROUP BY referrer_domain
+        ORDER BY COUNT(*) DESC
+        LIMIT 10;
+            
+    ```
+    ````
+  </Step>
+
+  <Step>
+     ## User analytics (users.sql)
+     ````markdown
+     ```sql users.sql --descr "User analytics"
+        SELECT 'card' AS component,
+            'Navigation' AS title,
+            2 AS columns;
+        select
+            'Home' as title,
+            '/index.sql' as link,
+            'View Home Page.' as description;
+        select
+            'Traffic Analytics' as title,
+            '/traffic.sql' as link,
+            'View page traffic, sources, and trends.' as description;
+        -- User Growth Chart
+        SELECT 'chart' as component,
+            'User Growth' as title,
+            'bar' as type;
+
+        SELECT to_char(created_at, 'YYYY-MM') AS label,
+            COUNT(*) AS value
+        FROM users
+        GROUP BY label
+        ORDER BY label DESC
+        LIMIT 12;
+
+        -- Recent Users
+        SELECT 'table' as component,
+            'Recent Signups' as title;
+
+        SELECT
+            id,
+            name,
+            email,
+            created_at as "Signed Up",
+            CASE WHEN last_login > now() - INTERVAL '7 days'
+            THEN 'Active' ELSE 'Inactive' END as "Status"
+        FROM users
+        ORDER BY created_at DESC
+        LIMIT 20;
+
+    ```
+     ````
+  </Step>
+  <Step>
+    ## Package and Deploy to Postgres
+
+    Convert UI pages into `sqlpage_files` records and push them into Postgres.
+
+    ````markdown
+    ```bash deploy --descr "Package SQLPage UI into Postgres"
+    rm -rf dev-src.auto
+    spry sp spc --package --dialect postgres --conf sqlpage/sqlpage.json | psql "$SPRY_DB"
+    ```
+    ````
+  </Step>
+  <Step>
+    ## Run in Development Mode
+
+    Generate the live development filesystem and start SQLPage.
+    
+    ````markdown
+    ```bash prepare-sqlpage-dev --descr "Generate dev-src.auto for SQLPage dev mode"
+    spry sp spc --fs dev-src.auto --destroy-first --conf sqlpage/sqlpage.json
+    ```
+    ````
+
+    With watch mode and auto-reload:
+
+    ````markdown
+    ```bash
+    spry sp spc --fs dev-src.auto --destroy-first --conf sqlpage/sqlpage.json --watch --with-sqlpage
+    ```
+    ````
+  </Step>
+
+  **Sample Spryfile.md**
+  ````markdown
+    ---
+    sqlpage-conf:
+    allow_exec: true
+    port: '${env.PORT}'
+    database_url: '${env.SPRY_DB}'
+    web_root: "./dev-src.auto"
+    listen_on: '0.0.0.0:${env.PORT}'
+    ---
+
+    # Sample Spryfile.md
+
+    ## Environment variables and .envrc
+
+    Recommended practice is to keep these values in a local, directory-scoped environment file. If you use direnv (recommended), create a file named `.envrc` in this directory.
+
+    POSIX-style example (bash/zsh):
+
+    ```envrc prepare-env -C ./.envrc --gitignore -X --descr "Generate .envrc file and add it to local .gitignore if it's not already there"
+    export SPRY_DB="postgresql://postgres:postgres@10.10.11.255:5434/my_spry"
+    export PORT=9227
+    ```
+
+    Then run `direnv allow` in this project directory to load the `.envrc` into your shell environment. direnv will evaluate `.envrc` only after you explicitly allow it.
+
+    ## SQLPage Dev / Watch mode
+
+    While you're developing, Spry's `dev-src.auto` generator should be used:
+
+    ```bash prepare-sqlpage-dev --descr "Generate the dev-src.auto directory to work in postgres dev mode"
+    spry sp spc --fs dev-src.auto --destroy-first --conf sqlpage/sqlpage.json
+    ```
+
+    ```bash clean --descr "Clean up the project directory's generated artifacts"
+    rm -rf dev-src.auto
+    ```
+
+    In development mode, here’s the `--watch` convenience you can use so that
+    whenever you update `Spryfile.md`, it regenerates the SQLPage `dev-src.auto`,
+    which is then picked up automatically by the SQLPage server:
+
+    ```bash
+    spry sp spc --fs dev-src.auto --destroy-first --conf sqlpage/sqlpage.json --watch --with-sqlpage
+    ```
+
+    - --watch` turns on watching all `--md` files passed in (defaults to `Spryfile.md`)
+
+    - --with-sqlpage` starts and stops SQLPage after each build
+
+    Restarting SQLPage after each re-generation of dev-src.auto is **not**
+    necessary, so you can also use `--watch` without `--with-sqlpage` in one
+    terminal window while keeping the SQLPage server running in another terminal
+    window.
+
+    If you're running SQLPage in another terminal window, use:
+
+    ```bash
+    spry sp spc --fs dev-src.auto --destroy-first --conf sqlpage/sqlpage.json --watch
+    ```
+
+    ## SQLPage single database deployment mode
+
+    After development is complete, the `dev-src.auto` can be removed and single-database deployment can be used:
+
+    ```bash deploy --descr "Generate sqlpage_files table upsert SQL and push them to postgres"
+    rm -rf dev-src.auto
+    spry sp spc --package --dialect postgres --conf sqlpage/sqlpage.json | psql $SPRY_DB
+    ```
+
+    ```bash prepare-db --descr "Delete and recreate the SQLite database used by SQLPage"
+    #!/usr/bin/env -S bash
+    psql $SPRY_DB -f ddl.sql
+    ```
+
+    ```bash prepare-db-pg --descr "Delete and recreate the SQLite database used by SQLPage"
+    #!/usr/bin/env -S bash
+    psql 'postgresql://postgres:postgres@10.10.11.255:5434/my_spry' -f ddl.sql
+    ```
+
+    ## Start the SQLPage server
+
+    ```bash
+    sqlpage
+    ```
+
+    You can create fenced cells for `bash`, `sql`, etc. here.
+
+    TODO: add examples with `doctor`, `prepare-db`, etc.
+
+    ```sql index.sql { route: { caption: "Home" } }
+    select 'card' as component,
+    'Spry' as title,
+    1 as columns;
+    select 'Use Markdown to Code, Build, and Orchestrate Intelligence'  as title,
+    'https://sprymd.org' as link,
+    'Spry turns Markdown into a programmable medium. Every fenced block, directive, and section executes, verifies, and composes reproducible workflows. From SQL pipelines to AI context graphs, Spry unifies your code, data, and documentation into one living system of record.' as description;
+    select
+        'Traffic Analytics' as title,
+        '/traffic.sql' as link,
+        'View page traffic, sources, and trends.' as description;
+
+    select
+        'User Analytics' as title,
+        '/users.sql' as link,
+        'View user growth, signups, and activity.' as description;
+
+    ```
+
+    ```sql traffic.sql --descr "Traffic analysis page"
+    SELECT 'card' AS component,
+        'Navigation' AS title,
+        2 AS columns;
+    select
+        'Home' as title,
+        '/index.sql' as link,
+        'View Home Page.' as description;
+
+    select
+        'User Analytics' as title,
+        '/users.sql' as link,
+        'View user growth, signups, and activity.' as description
+
+
+    -- Page Views Table
+    SELECT 'table' as component,
+        'Top Pages' as title,
+        TRUE as sort,
+        TRUE as search;
+
+    SELECT
+        path as "Page",
+        COUNT(*) as "Views",
+        COUNT(DISTINCT visitor_id) as "Unique Visitors",
+        round(AVG(time_on_page)::numeric, 1) || ' sec' as "Avg Time"
+    FROM page_views
+    WHERE date >= now() - INTERVAL '30 days'
+    GROUP BY path
+    ORDER BY COUNT(*) DESC
+    LIMIT 20;
+
+    -- Traffic Sources
+    SELECT 'chart' as component,
+        'Traffic Sources' as title,
+        'pie' as type;
+
+    SELECT
+        COALESCE(referrer_domain, 'Direct') as label,
+        COUNT(*) as value
+    FROM page_views
+    WHERE date >= now() - INTERVAL '30 days'
+    GROUP BY referrer_domain
+    ORDER BY COUNT(*) DESC
+    LIMIT 10;
+        
+    ```
+
+    ```sql users.sql --descr "User analytics"
+    SELECT 'card' AS component,
+        'Navigation' AS title,
+        2 AS columns;
+    select
+        'Home' as title,
+        '/index.sql' as link,
+        'View Home Page.' as description;
+    select
+        'Traffic Analytics' as title,
+        '/traffic.sql' as link,
+        'View page traffic, sources, and trends.' as description;
+    -- User Growth Chart
+    SELECT 'chart' as component,
+        'User Growth' as title,
+        'bar' as type;
+
+    SELECT to_char(created_at, 'YYYY-MM') AS label,
+        COUNT(*) AS value
+    FROM users
+    GROUP BY label
+    ORDER BY label DESC
+    LIMIT 12;
+
+    -- Recent Users
+    SELECT 'table' as component,
+        'Recent Signups' as title;
+
+    SELECT
+        id,
+        name,
+        email,
+        created_at as "Signed Up",
+        CASE WHEN last_login > now() - INTERVAL '7 days'
+        THEN 'Active' ELSE 'Inactive' END as "Status"
+    FROM users
+    ORDER BY created_at DESC
+    LIMIT 20;
+
+    ```
+
+    ```sql
+    -- traffic.sql with date filter
+    SELECT 'form' as component;
+    SELECT 'start_date' as name, 'Start Date' as label, 'date' as type,
+        date('now', '-30 days') as value;
+    SELECT 'end_date' as name, 'End Date' as label, 'date' as type,
+        now() as value;
+
+    SELECT 'table' as component, 'Traffic' as title;
+    SELECT path, COUNT(*) as views
+    FROM page_views
+    WHERE date BETWEEN COALESCE($start_date, date('now', '-30 days'))
+                AND COALESCE($end_date,now())
+    GROUP BY path;
+    ;
+    ```
+    ```sql
+    -- users.sql with search
+    SELECT 'form' as component, 'Filter' as title;
+    SELECT 'search' as name, 'Search' as placeholder;
+
+    SELECT 'table' as component;
+    SELECT * FROM users
+    WHERE ($search IS NULL OR name LIKE '%' || $search || '%')
+    ORDER BY created_at DESC;
+
+    ```
+  ````
+
+</Steps>
