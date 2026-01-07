@@ -1,6 +1,7 @@
 {
   "title": "Sprymd Docs",
   "pages": [
+    "index",
     "spry",
     "surveilr",
     "fleetfolio",

@@ -8,53 +8,11 @@ index: 11
 import { Callout } from 'fumadocs-ui/components/callout';
 import { Card, Cards } from 'fumadocs-ui/components/card';
 import { Steps, Step } from 'fumadocs-ui/components/steps';
+import SpryArchitecture from '@/components/spry-architecture';
 
 ## High-Level Architecture
 
-```
-
-┌─────────────────────────────────────────────────────────────┐
-│                        Spry CLI                             │
-│  ┌──────────┐     ┌──────────┐      ┌──────────┐            |
-│  │  axiom   │     │    rb    │      │    sp    │            |
-│  │ (graph)  │     │(runbook) │      │(sqlpage) │            |
-│  └────┬─────┘     └────┬─────┘      └────┬─────┘            |
-└───────┼────────────────┼─────────────────┼──────────────────┘
-        │                │                 │
-        ▼                ▼                 ▼
-┌─────────────────────────────────────────────────────────────┐
-│                     lib/axiom                               │
-│  ┌─────────┐  ┌──────────┐  ┌────────────┐  ┌──────────┐    │
-│  │   io    │→ │  remark  │→ │   edge     │→ │projection│    │
-│  │(loader) │  │(plugins) │  │  (rules)   │  │ (views)  │    │
-│  └─────────┘  └──────────┘  └────────────┘  └──────────┘    │
-│                                                ↓            │
-│  ┌─────────────┐  ┌───────────────────────────────────┐     │
-│  │ orchestrate │← │          Playbook/Task            │     │
-│  │  (runner)   │  │           Execution               │     │
-│  └─────────────┘  └───────────────────────────────────┘     │
-└─────────────────────────────────────────────────────────────┘
-        ↑                           ↑
-        │                           │
-┌───────┴───────────────────────────┴─────────────────────────┐
-│                      lib/spawn                              │
-│  ┌─────────┐  ┌───────────┐  ┌──────────┐  ┌──────────┐     │
-│  │ shell   │  │code-shell │  │ os-shell │  │sql-shell │     │
-│  │(process)│  │ (engine)  │  │  (bash)  │  │(postgres)│     │
-│  └─────────┘  └───────────┘  └──────────┘  └──────────┘     │
-│  ┌──────────────┐  ┌─────────────────────────────────┐      │
-│  │function-shell│  │          factory.ts             │      |
-│  │ (env/envrc)  │  │     (catalog & using API)       │      │
-│  └──────────────┘  └─────────────────────────────────┘      │
-└─────────────────────────────────────────────────────────────┘
-        ↑
-┌───────┴─────────────────────────────────────────────────────┐
-│                    lib/universal                            │
-│  ┌──────┐ ┌───────┐ ┌────────┐ ┌────────┐ ┌─────────┐       │
-│  │ task │ │ code  │ │render  │ │resource│ │directive│       │
-│  └──────┘ └───────┘ └────────┘ └────────┘ └─────────┘       │
-└─────────────────────────────────────────────────────────────┘
-```
+<SpryArchitecture />
 
 Spry transforms Markdown documents into executable workflows through a multi-stage pipeline. The architecture separates concerns into distinct layers: loading, parsing, graph construction, projection, and execution.
 
