@@ -36,7 +36,7 @@ import { Steps, Step } from 'fumadocs-ui/components/steps';
     Initialize the schema in Postgres using the external [`ddl.sql`](/ddl.sql) file.
 
     ````markdown
-    ```bash prepare-db-pg --descr "Initialize Sales schema in Postgres"
+    ```bash prepare-db --descr "Initialize Sales schema in Postgres"
     #!/usr/bin/env -S bash
     psql $SPRY_DB -f ddl.sql
     ```
@@ -341,11 +341,6 @@ import { Steps, Step } from 'fumadocs-ui/components/steps';
     ```bash prepare-db --descr "Delete and recreate the SQLite database used by SQLPage"
     #!/usr/bin/env -S bash
     psql $SPRY_DB -f ddl.sql
-    ```
-
-    ```bash prepare-db-pg --descr "Delete and recreate the SQLite database used by SQLPage"
-    #!/usr/bin/env -S bash
-    psql 'postgresql://postgres:postgres@10.10.11.255:5434/my_spry' -f ddl.sql
     ```
 
     ## Start the SQLPage server
