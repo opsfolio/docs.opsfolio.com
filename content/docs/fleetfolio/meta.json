@@ -1,8 +1,8 @@
 {
   "title": "Fleetfolio",
   "pages": [
-    "get-started" ,
-    "core-concept"
+    "EAA" ,
+    "TEM" 
     ],
     "root": true,
     "defaultOpen": false
