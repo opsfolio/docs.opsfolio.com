@@ -4,6 +4,7 @@
   "pages": [
     "audit-complains",
     "sqlpage-data-app",
+    "postgres-sqlage-app",
     "devops-runbook",
     "quality-testcase-template"
   ]
