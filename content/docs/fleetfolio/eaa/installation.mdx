@@ -1,0 +1,217 @@
+---
+title: "Installation"
+date: "2026-01-02"
+author: "Documentation Team"
+description: "A comprehensive guide to setting up your security environment with Kali Linux, VirtualBox, and essential dependencies."
+icon: Download
+index  : 1 
+---
+
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+# Installation & Workspace Setup
+
+Choose your preferred method to get Kali Linux running on your machine.
+
+<Tabs items={['Windows WSL', 'Virtual Machine (VirtualBox)']}>
+
+<Tab value="Windows WSL">
+
+### Option A: Windows WSL (Kali Linux)
+
+To spin up Kali Linux via Windows Subsystem for Linux, run the following command in PowerShell:
+
+```bash
+wsl --install -d kali-linux
+```
+
+</Tab>
+
+<Tab value="Virtual Machine (VirtualBox)">
+
+### Option B: Virtual Machine (VirtualBox)
+
+Follow these steps to set up a dedicated virtual environment.
+
+<Callout type="info" title="Prerequisites">
+
+- **VirtualBox**: [Download VirtualBox](https://www.virtualbox.org/wiki/Downloads)
+- **Visual C++ Dependencies**: If you are using Windows as the host machine, you may encounter an error. Download [Visual C++ Redistributable Runtimes All-in-One](https://www.techpowerup.com/download/visual-c-redistributable-runtime-package-all-in-one) and run `install_all.bat`.
+- **Kali Linux VM Image**: [Download Kali Linux VM](https://www.kali.org/get-kali/#kali-platforms) (VirtualBox, ~3.3 GB, `.7z` file).
+- **Compression Tool**: [WinRAR](https://www.win-rar.com/download.html?&L=0) or **7-Zip**.
+
+</Callout>
+
+<Steps>
+
+<Step>
+#### Download Kali Linux
+Select **Virtual Machine** and then **VirtualBox**. The file will be in `.7z` format.
+</Step>
+
+<Step>
+#### Install VirtualBox
+Open the installer and follow the default prompts.
+</Step>
+
+<Step>
+#### Extract and Import
+- Extract the `.7z` file.
+- Inside, find the `.vdi` file (orange icon) and a `.vbox` file (blue icon).
+- **Double-click the `.vbox` file** to automatically import the VM into VirtualBox.
+</Step>
+
+<Step>
+#### Configure the VM
+- **Base Memory**: Set to `4096 MB` (recommended).
+- **Processor Cores**: Set to `2–3` (recommended).
+- Start the virtual machine.
+</Step>
+
+<Step>
+#### Login Credentials
+- **Username**: `kali`
+- **Password**: `kali`
+</Step>
+
+<Step>
+#### Switch to Root User
+Open the terminal and type:
+```bash
+sudo su
+```
+</Step>
+
+<Step>
+#### Update the System
+```bash
+sudo apt update && sudo apt upgrade -y && sudo apt full-upgrade -y
+```
+</Step>
+
+</Steps>
+
+<Callout type="warn">
+**Fixing Update Errors:** 
+If updates fail, run these fix commands:
+```bash
+# Force HTTPS
+sudo sed -i 's|http://http.kali.org|https://http.kali.org|' /etc/apt/sources.list
+# Fix missing
+sudo apt-get clean && sudo apt-get update --fix-missing
+# Re-run
+sudo apt update && sudo apt upgrade -y && sudo apt full-upgrade -y
+```
+</Callout>
+
+</Tab>
+
+</Tabs>
+
+---
+
+## 2. Prerequisite Dependencies
+
+Follow these steps in order to install the required development tools.
+
+<Steps>
+
+<Step>
+### Homebrew
+[Homebrew](https://brew.sh/) installs the stuff you need that Apple (or your Linux system) didn’t.
+
+Run this command inside a **non-root user** terminal.
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" && \
+echo >> /home/kali/.zshrc && \
+echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/kali/.zshrc && \
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" && \
+sudo apt-get install -y build-essential && brew install gcc
+```
+</Step>
+
+<Step>
+### Go Language
+Install the Go programming language compiler:
+```bash
+sudo apt install golang-go -y
+```
+</Step>
+
+<Step>
+### Deno
+
+[Deno](https://github.com/denoland/deno) is a modern runtime for JS and TS.
+```bash
+brew install deno
+```
+</Step>
+
+<Step>
+### Surveilr
+[Surveilr](https://www.surveilr.com/) is a downloadable single binary that securely runs on Windows, Linux, and MacOS in your infrastructure. Your data is always private and can only be shared if you allow it.
+
+
+Download and install the surveillance engine:
+```bash
+wget https://github.com/surveilr/packages/releases/download/3.19.0/surveilr_3.19.0_x86_64-unknown-linux-gnu.tar.gz && \
+tar -xvf surveilr_3.19.0_x86_64-unknown-linux-gnu.tar.gz && \
+mv surveilr /usr/local/bin
+```
+Always check for the latest version on the [Surveilr Releases Page](https://github.com/surveilr/packages/releases).
+</Step>
+
+<Step>
+### Spry
+[Spry](https://sprymd.org/) is a lightweight TypeScript library that treats Markdown as a programmable medium — every fence, section, and directive in your .md file can express behavior, not just formatting. Instead of building new DSLs or YAML pipelines, you describe intent in plain Markdown and let Spry materialize it as code, data, or execution.
+
+Install Spry via Homebrew:
+```bash
+brew install programmablemd/packages/spry
+```
+If you face any issues while upgrading Spry, run:
+```bash 
+brew uninstall spry
+brew untap programmablemd/homebrew-packages
+brew install programmablemd/packages/spry
+```
+</Step>
+
+</Steps>
+
+<Callout type="info" title="Fix: Accessing Homebrew as Root">
+If `brew` is not found after switching to `sudo su`, run:
+```bash
+sudo su && echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /root/.zshrc && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+```
+- Paste it again after switching to the root user
+</Callout>
+
+---
+
+## 3. Prerequisite API Keys & Tokens
+
+Store your keys in a `.env` file for security.
+
+### WPScan
+[WPScan](https://wpscan.com/) CLI tool uses the WordPress Vulnerability Database API to retrieve WordPress vulnerability data in real time.
+
+1. Visit [WPScan Registration](http://wpscan.com/register/).
+2. Generate your API key.
+3. Add to `.env`:
+   ```bash
+   OPSFOLIO_EAA_WP_TOKEN=your_key_here
+   ```
+
+### VirusTotal
+[VirusTotal](https://www.virustotal.com/) Analyse suspicious files, domains, IPs and URLs to detect malware and other breaches, automatically share them with the security community.
+1. Visit [VirusTotal Signup](https://www.virustotal.com/gui/join-us).
+2. Copy your API key from the dashboard.
+3. Add to `.env`:
+   ```bash
+   OPSFOLIO_EAA_VIRUSTOTAL_API_KEY=your_key_here
+   ```
+
