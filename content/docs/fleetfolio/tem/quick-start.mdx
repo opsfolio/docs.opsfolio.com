@@ -1,17 +1,29 @@
 ---
-title: "Quick Start"
-date: "2026-01-02"
-author: "Documentation Team"
-description: "Quick Start."
+title: Quick Start
+description: Project setup and execution guide
+icon: Play
+index  : 2
 ---
 
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
 # Getting Started
+
+<Steps>
+
+<Step>
 
 ## Step One
 
 - Ensure you have generated an RSSD using EAA or that you already own an RSSD.
 - Write SQL views and queries in `.sql` files and supporting queries in a Markdown file.
 - Ingest these SQL views and queries into your RSSD and view the Web UI using Surveilr.
+
+</Step>
+
+<Step>
 
 ### First Project
 
@@ -20,6 +32,10 @@ description: "Quick Start."
 ```bash
 mkdir project-tem
 ```
+
+</Step>
+
+<Step>
 
 - Copy or place your RSSD file into this directory (for example: `tem.sqlite.db`).
 - Create a `sqlpage.json` file inside a sqlpage folder:
@@ -35,13 +51,26 @@ cat <<EOF > sqlpage.json
 }
 EOF
 ```
+
+</Step>
+
+<Step>
+
 - Write your SQL views in a file with a .sql extension (for example: `stateless.sql`).
-
 - Write SQL queries that call these views inside a Markdown file (for example: `Spryfile.md`).
-
 - Create interpretations and store them inside a folder named `interpretation` at the same level.
 
-```
+</Step>
+
+</Steps>
+
+---
+
+### Project Structure
+
+Your directory should look like this:
+
+```text
 project-tem/
 ├─ Spryfile.md
 ├─ stateless.sql
@@ -50,15 +79,22 @@ project-tem/
    └─ *.md
 ├─ sqlpage/
    └─ sqlpage.json
-
 ```
-Add the following executable blocks at the top of Spryfile.md.
+
+---
+
+### Manual Steps 
+
+Add the following executable blocks at the top of **Spryfile.md**.
+
+
 #### Ingest Interpretations into sqlite.db
 
 ```bash ingest --descr "Use Surveilr to ingest EAA and Interpretation results into SQLite."
 #!/usr/bin/env bash
 surveilr ingest files -r interpretation -d tem.sqlite.db
 ```
+
 
 #### Ingest SQL Views from stateless.sql into sqlite.db
 
@@ -67,6 +103,7 @@ surveilr ingest files -r interpretation -d tem.sqlite.db
 cat stateless.sql | sqlite3 tem.sqlite.db
 ```
 
+
 #### Ingest SQL Query from Spryfile.md into sqlite.db
 
 ```bash sql_query --descr "Run using spry."
@@ -74,12 +111,14 @@ cat stateless.sql | sqlite3 tem.sqlite.db
 spry sp spc --md Spryfile.md  --package --conf sqlpage/sqlpage.json | sqlite3 tem.sqlite.db
 ```
 
+
 #### View the sqlite.db Locally Using Surveilr
  
 ```bash surveilr --descr "View via Surveilr web UI."
 #!/usr/bin/env bash
 surveilr web-ui -d tem.sqlite.db
 ```
+
 #### Access the Web UI
 
 Use the following command to start the local Web UI and open it in your browser:
@@ -89,8 +128,29 @@ Use the following command to start the local Web UI and open it in your browser:
 echo "Visit http://localhost:9227"
 ```
 
-## Final command to run all scripts and launch the Web UI:
+### Automated Step
+
+- Copy paste the manual commands inside `Spryfile.md` as an executable block
+- Then verify by running these are executables by:
+```bash
+spry rb ls Spryfile.md
+```
+- if you see the tasks listed, you are good to go.
+- Finally run the entire Spryfile by:
+```bash
+spry rb run Spryfile.md --verbose rich
+```
+---
+
+## Final Execution
+
+Final command to run all scripts and launch the Web UI:
+
+<Callout type="info">
+Run this from the root of your project directory.
+</Callout>
 
 ```bash
 spry rb run Spryfile.md --verbose rich
 ```
+Then visit [localhost](http://localhost:9227)

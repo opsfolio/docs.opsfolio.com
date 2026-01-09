@@ -1,0 +1,86 @@
+---
+title: "Installation"
+description: "Installation guide for Homebrew, Surveilr, and Spry"
+icon: Download
+index  : 1 
+---
+
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Prerequisite Dependency
+
+Follow these instructions carefully to ensure all dependencies are correctly configured for your system.
+
+<Steps>
+
+<Step>
+
+### Homebrew
+[Homebrew](https://brew.sh/) installs the stuff you need that Apple (or your Linux system) didn’t.
+
+Run this command inside a **non-root user** terminal.
+
+```bash 
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" && echo >> /home/kali/.zshrc && echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/kali/.zshrc && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" && sudo apt-get install -y build-essential && brew install gcc
+```
+
+<Callout type="info">
+**Note :** Run this command inside a non-root user terminal. You will be prompted to enter the password, and then press Enter again to continue
+</Callout>
+
+</Step>
+
+<Step>
+
+### Surveilr
+[Surveilr](https://www.surveilr.com/) is a downloadable single binary that securely runs on Windows, Linux, and MacOS in your infrastructure. Your data is always private and can only be shared if you allow it.
+
+
+Download and install the surveillance engine:
+
+```bash 
+wget https://github.com/surveilr/packages/releases/download/3.21.0/surveilr_3.21.0_x86_64-unknown-linux-gnu.tar.gz && \
+tar -xvf surveilr_3.21.0_x86_64-unknown-linux-gnu.tar.gz && \
+mv surveilr /usr/local/bin
+```
+Always check for the latest version on the [Surveilr Releases Page](https://github.com/surveilr/packages/releases).
+
+<Callout type="info">
+Homebrew-installed tools not accessible when switching to root user (Solution: Add Homebrew to root’s shell environment)
+
+```bash 
+sudo su && echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /root/.zshrc && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+```
+</Callout>
+
+- Paste it again after switching to the root user.
+
+</Step>
+
+<Step>
+
+---
+
+### Spry
+[Spry](https://sprymd.org/) is a lightweight TypeScript library that treats Markdown as a programmable medium — every fence, section, and directive in your .md file can express behavior, not just formatting. Instead of building new DSLs or YAML pipelines, you describe intent in plain Markdown and let Spry materialize it as code, data, or execution.
+
+Install Spry via Homebrew:
+```bash
+brew install programmablemd/packages/spry
+```
+If you face any issues while upgrading Spry, run:
+```bash 
+brew uninstall spry
+brew untap programmablemd/homebrew-packages
+brew install programmablemd/packages/spry
+```all programmablemd/packages/spry
+```
+
+<Callout type="warn">
+Make sure you have installed `brew` using the steps above and that it is also available for the `root user`, as mentioned earlier.
+</Callout>
+
+</Step>
+
+</Steps>
