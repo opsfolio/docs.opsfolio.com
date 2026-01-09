@@ -124,7 +124,7 @@ function HomePage() {
                 <span className="text-sm font-medium">GitHub</span>
               </a>
               <Link
-                href="/docs/spry/getting-started/introduction"
+                href="/spry/getting-started/introduction"
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-medium text-sm"
               >
                 Get Started
@@ -156,14 +156,12 @@ function HomePage() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
               <Link
-                href="/docs/spry/getting-started/introduction"
+                href="/spry/getting-started/introduction"
                 className="inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-8 py-4 rounded-lg hover:bg-blue-700 transition font-semibold text-lg"
               >
-                Explore Documentation <ArrowRight className="h-5 w-5" />
+                Get Started <ArrowRight className="h-5 w-5" />
               </Link>
-              <button className="border-2 border-blue-600 text-blue-600 px-8 py-4 rounded-lg hover:bg-blue-50 transition font-semibold text-lg">
-                View on GitHub
-              </button>
+
             </div>
           </div>
         </div>
@@ -261,7 +259,7 @@ function HomePage() {
           <p className="text-xl text-blue-100 mb-8">Explore our comprehensive documentation and discover how OpsFollio can streamline your workflows.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="/docs/spry/getting-started/introduction"
+              href="//spry/getting-started/introduction"
               className="inline-flex items-center justify-center gap-2 bg-white text-blue-600 px-8 py-4 rounded-lg hover:bg-gray-100 transition font-semibold text-lg"
             >
               Start Reading <ArrowRight className="h-5 w-5" />
@@ -289,10 +287,10 @@ function HomePage() {
             <div>
               <h4 className="text-white font-semibold mb-4">Products</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="/docs/spry/getting-started/introduction" className="hover:text-white transition">Spry</Link></li>
-                <li><Link href="/docs/surveilor/getting-started/introduction" className="hover:text-white transition">Surveilor</Link></li>
-                <li><Link href="/docs/fleetfolio/getting-started/introduction" className="hover:text-white transition">Fleetfolio</Link></li>
-                <li><Link href="/docs/qualityfolio/getting-started/introduction" className="hover:text-white transition">Qualityfolio</Link></li>
+                <li><Link href="//spry/getting-started/introduction" className="hover:text-white transition">Spry</Link></li>
+                <li><Link href="//surveilor/getting-started/introduction" className="hover:text-white transition">Surveilor</Link></li>
+                <li><Link href="//fleetfolio/getting-started/introduction" className="hover:text-white transition">Fleetfolio</Link></li>
+                <li><Link href="//qualityfolio/getting-started/introduction" className="hover:text-white transition">Qualityfolio</Link></li>
               </ul>
             </div>
             <div>
@@ -346,7 +344,7 @@ export default async function Page(props: PageProps<'/[[...slug]]'>) {
 
   // Map folder dirname to custom icons
   const iconMap: { [key: string]: React.ReactNode } = {
-    'surveilor': <SurveilrIcon />,
+    'surveilr': <SurveilrIcon />,
     'qualityfolio': <QualityFolioIcon />,
     'fleetfolio': <FleetFolioIcon />,
   };
