@@ -24,38 +24,38 @@ function HomePage() {
     {
       title: 'Spry',
       description: 'Compliance tracking and regulatory intelligence for operational excellence',
-      href: '/docs/spry/getting-started/introduction',
+      href: '/spry/getting-started/introduction',
       color: 'from-blue-500 to-cyan-500',
-      icon: '📋'
+      icon: '/icons/spry-icon.png'
     },
     {
       title: 'Qualityfolio',
       description: 'Quality assurance and standards management for consistent excellence',
-      href: '/docs/qualityfolio/getting-started/introduction',
+      href: '/qualityfolio/introduction/overview-of-qualityfolio',
       color: 'from-green-500 to-emerald-500',
-      icon: '✓'
+      icon: '/icons/qualityfolio-icon.png'
     },
     {
-      title: 'Surveilor',
+      title: 'Surveilr',
       description: 'Real-time surveillance and monitoring for proactive operational insights',
-      href: '/docs/surveilor/getting-started/introduction',
+      href: '/surveilr/core/what-is-surveilr',
       color: 'from-purple-500 to-pink-500',
-      icon: '👁️'
+      icon: '/icons/surveilr-icon.png'
     },
     {
       title: 'Fleetfolio',
       description: 'Fleet management and logistics optimization for streamlined operations',
-      href: '/docs/fleetfolio/getting-started/introduction',
+      href: '/fleetfolio/eaa/introduction',
       color: 'from-yellow-500 to-orange-500',
-      icon: '🚗'
+      icon: '/icons/fleetfolio-icon.png'
     },
   ];
 
   const quickLinks = [
-    { label: 'Spry', href: '/docs/spry/getting-started/introduction' },
-    { label: 'Qualityfolio', href: '/docs/qualityfolio/getting-started/introduction' },
-    { label: 'Surveilor', href: '/docs/surveilor/getting-started/introduction' },
-    { label: 'Fleetfolio', href: '/docs/fleetfolio/getting-started/introduction' },
+    { label: 'Spry', href: '/spry/getting-started/introduction' },
+    { label: 'Qualityfolio', href: '/qualityfolio/introduction/overview-of-qualityfolio' },
+    { label: 'Surveilor', href: '/surveilr/core/what-is-surveilr' },
+    { label: 'Fleetfolio', href: '/fleetfolio/eaa/introduction' },
   ];
 
   const features = [
@@ -93,34 +93,31 @@ function HomePage() {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
-                <Layers className="w-6 h-6 text-white" />
+              <div>
+                <img src="Opsfolio-Logo.png" style={{ width: "190px" }} />
               </div>
-              <div className="flex flex-col">
-                <span className="text-xl font-bold text-gray-900">OpsFollio</span>
-                <span className="text-xs text-gray-500">Documentation</span>
-              </div>
+
             </Link>
 
             {/* Navigation Links */}
             <nav className="hidden md:flex items-center gap-6">
-              <Link href="/docs/spry/getting-started/introduction" className="text-gray-600 hover:text-blue-600 transition font-medium">
+              <Link href="/spry/getting-started/introduction" className="text-gray-600 hover:text-blue-600 transition font-medium">
                 Spry
               </Link>
-              <Link href="/docs/qualityfolio/getting-started/introduction" className="text-gray-600 hover:text-blue-600 transition font-medium">
+              <Link href="/qualityfolio/introduction/overview-of-qualityfolio" className="text-gray-600 hover:text-blue-600 transition font-medium">
                 Qualityfolio
               </Link>
-              <Link href="/docs/surveilor/getting-started/introduction" className="text-gray-600 hover:text-blue-600 transition font-medium">
+              <Link href="/surveilr/core/what-is-surveilr" className="text-gray-600 hover:text-blue-600 transition font-medium">
                 Surveilor
               </Link>
-              <Link href="/docs/fleetfolio/getting-started/introduction" className="text-gray-600 hover:text-blue-600 transition font-medium">
+              <Link href="/fleetfolio/eaa/introduction" className="text-gray-600 hover:text-blue-600 transition font-medium">
                 Fleetfolio
               </Link>
             </nav>
 
             {/* CTA Buttons */}
             <div className="flex items-center gap-3">
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hidden sm:inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition">
+              <a href="https://github.com/opsfolio" target="_blank" rel="noopener noreferrer" className="hidden sm:inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
                 </svg>
@@ -195,7 +192,7 @@ function HomePage() {
                 {/* Content */}
                 <div className="relative z-10">
                   <div className="mb-4">
-                    <span className="text-4xl">{pkg.icon}</span>
+                    <span className="text-4xl"><img src={pkg.icon} /></span>
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
                     {pkg.title}
