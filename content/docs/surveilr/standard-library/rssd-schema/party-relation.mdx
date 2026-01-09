@@ -40,7 +40,7 @@ CREATE TABLE "party_relation" (
 | party_relation_id | VARCHAR     |                   | false    |                                               | `{"isSqlDomainZodDescrMeta":true,"isVarChar":true}`       |
 | party_id          | VARCHAR     |                   | false    | [party](/surveilr/standard-library/rssd-schema/party)                             | `{"isSqlDomainZodDescrMeta":true,"isVarChar":true}`       |
 | related_party_id  | VARCHAR     |                   | false    | [party](/surveilr/standard-library/rssd-schema/party)                             | `{"isSqlDomainZodDescrMeta":true,"isVarChar":true}`       |
-| relation_type_id  | ULID        |                   | false    | [party_relation_type](/surveilr/standard-library/rssd-schema/party_relation_type) | `{"isSqlDomainZodDescrMeta":true,"isUlid":true}`          |
+| relation_type_id  | ULID        |                   | false    | [party_relation_type](/surveilr/standard-library/rssd-schema/party-relation-type) | `{"isSqlDomainZodDescrMeta":true,"isUlid":true}`          |
 | elaboration       | TEXT        |                   | true     |                                               | `{"isSqlDomainZodDescrMeta":true,"isJsonText":true}`      |
 | created_at        | TIMESTAMPTZ | CURRENT_TIMESTAMP | true     |                                               |                                                         |
 | created_by        | TEXT        | 'UNKNOWN'         | true     |                                               |                                                         |
